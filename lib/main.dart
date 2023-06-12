@@ -1,5 +1,6 @@
-import 'package:flavor_house/screens/login.dart';
-import 'package:flavor_house/screens/welcome.dart';
+import 'package:flavor_house/common/routes/route_generator.dart';
+import 'package:flavor_house/screens/login/login.dart';
+import 'package:flavor_house/screens/welcome/welcome.dart';
 import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         fontFamily: 'Inter',
       ),
-      home: Scaffold(body: Center(child: LoginScreen())),
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute
     );
   }
 }

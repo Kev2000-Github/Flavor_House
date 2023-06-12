@@ -1,3 +1,4 @@
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/utils/colors.dart';
 import 'package:flavor_house/widgets/button.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +26,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       SvgPicture.asset('assets/images/logo.svg',
                           height: 150, semanticsLabel: "logo"),
                       const SizedBox(height: 64),
-                      const Button(text: "Iniciar Sesion"),
+                      Button(text: "Iniciar Sesion", onPressed: () {
+                        Navigator.of(context).pushNamed(routes.login);
+                      },),
                       const SizedBox(height: 24),
-                      const Button(
+                      Button(
                         text: "Registrarse",
                         borderSide: null,
                         backgroundColor: primaryColor,
                         textColor: whiteColor,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(routes.register);
+                        },
                       ),
                       const SizedBox(height: 24),
                       Flexible(flex: 2, child: Container()),
