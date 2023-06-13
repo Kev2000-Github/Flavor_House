@@ -1,5 +1,6 @@
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/utils/colors.dart';
+import 'package:flavor_house/widgets/avatar.dart';
 import 'package:flavor_house/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
