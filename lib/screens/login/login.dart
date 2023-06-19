@@ -4,6 +4,7 @@ import 'package:flavor_house/services/auth/dummy_auth_service.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../models/user.dart';
 import '../../services/auth/auth_service.dart';
@@ -105,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     )
                                   ],
                                 )),
-                        (user) => print('success: $user'));
+                        (user) => Navigator.of(context).pushNamed(routes.main_screen));
                   },
                   borderSide: null,
                   backgroundColor: primaryColor,

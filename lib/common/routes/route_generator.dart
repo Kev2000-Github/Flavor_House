@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
-    List<IRoute> routes = [WelcomeRoute(), RegisterRoute(), RegisterTwoRoute(), LoginRoute(), HomeRoute()];
+    List<IRoute> routes = [WelcomeRoute(), RegisterRoute(), RegisterTwoRoute(), LoginRoute(), MainRoute()];
     for (IRoute router in routes) {
       if (settings.name != router.route) continue;
       router.validate(args);

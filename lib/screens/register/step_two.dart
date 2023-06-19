@@ -1,19 +1,11 @@
-import 'package:dartz/dartz.dart' as dartz;
-import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/screens/register/step_two_country.dart';
 import 'package:flavor_house/screens/register/step_two_gender.dart';
-import 'package:flavor_house/services/auth/dummy_auth_service.dart';
-import 'package:flavor_house/services/register/dummy_register_step_one_service.dart';
-import 'package:flavor_house/services/register/register_step_one_service.dart';
-import 'package:flavor_house/widgets/text_field.dart';
+import 'package:flavor_house/screens/register/step_two_interests.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 
-import '../../models/post.dart';
-import '../../models/user.dart';
-import '../../services/auth/auth_service.dart';
 import '../../utils/colors.dart';
-import '../../widgets/button.dart';
 
 class RegisterTwoScreen extends StatefulWidget {
   const RegisterTwoScreen({Key? key}) : super(key: key);
@@ -27,6 +19,7 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
   late String? _gender;
   late String _country;
   late List<String?> _interests;
+  bool isFinished = false;
 
   void onGenderStepContinue(String? value) {
     _gender = value;
@@ -38,32 +31,30 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
     onContinue();
   }
 
-  void onInterestsUpdate(String id){
-    if(_interests.contains(id)) _interests.remove(id);
-    else _interests.add(id);
-
+  void onInterestsUpdate(String id) {
+    if (_interests.contains(id))
+      _interests.remove(id);
+    else
+      _interests.add(id);
   }
 
-  void onFinish() {
-
+  void onFinish(bool _isFinished) {
+    isFinished = _isFinished;
+    setState(() {});
   }
 
   void onContinue() {
-    if(_currentStep < (stepList().length - 1)){
+    if (_currentStep < (stepList().length - 1)) {
       _currentStep += 1;
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void onReturn() {
-    if(_currentStep > 0){
+    if (_currentStep > 0) {
       _currentStep -= 1;
     }
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   List<Step> stepList() => [
@@ -74,12 +65,16 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
             isActive: _currentStep >= 0),
         Step(
             title: Text("Pais"),
-            content: StepCountry(onCountrySelect: onCountryStepContinue,),
+            content: StepCountry(
+              onCountrySelect: onCountryStepContinue,
+            ),
             state: StepState.editing,
             isActive: _currentStep >= 1),
         Step(
             title: Text("Intereses"),
-            content: StepInterests(),
+            content: StepInterests(
+              onFinish: onFinish,
+            ),
             state: StepState.editing,
             isActive: _currentStep >= 2)
       ];
@@ -88,31 +83,46 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(80),
+            preferredSize: const Size.fromHeight(80),
             child: AppBar(
-              toolbarHeight: 80,
-              flexibleSpace: Container(),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              title: const Text(
-                "Registro",
-                style: TextStyle(
-                    color: blackColor,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600),
-              ),
-              leading: IconButton(
-                  onPressed: () {
-                    if(_currentStep == 0) Navigator.of(context).popUntil((route) => route.isFirst);
-                    else onReturn();
-                  },
-                  icon: Icon(
-                    (() => _currentStep == 0 ? Icons.close : Icons.arrow_back_ios)(),
-                    size: 24,
-                    color: blackColor,
-                  )),
-            )),
+                toolbarHeight: 80,
+                flexibleSpace: Container(),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                centerTitle: true,
+                title: const Text(
+                  "Registro",
+                  style: TextStyle(
+                      color: blackColor,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w600),
+                ),
+                leading: IconButton(
+                    onPressed: () {
+                      if (_currentStep == 0)
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
+                      else
+                        onReturn();
+                    },
+                    icon: Icon(
+                      (() => _currentStep == 0
+                          ? Icons.close
+                          : Icons.arrow_back_ios)(),
+                      size: 24,
+                      color: blackColor,
+                    )),
+                actions: isFinished
+                    ? [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(routes.main_screen);
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios,
+                                size: 24, color: blackColor))
+                      ]
+                    : [])),
         body: Stepper(
           controlsBuilder: (BuildContext context, ControlsDetails details) {
             return Row(
@@ -126,30 +136,5 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
           currentStep: _currentStep,
           steps: stepList(),
         ));
-  }
-}
-
-class StepInterests extends StatelessWidget {
-  const StepInterests({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "¡Bienvenido a Flavor House!",
-          style: TextStyle(
-              color: blackColor, fontSize: 25, fontWeight: FontWeight.w600),
-        ),
-        SizedBox(height: 10,),
-        Text(
-          "¡cuentanos sobre tus intereses!",
-          style: TextStyle(
-              color: gray04Color, fontSize: 20, fontWeight: FontWeight.w500),
-        ),
-        
-      ],
-    );
   }
 }

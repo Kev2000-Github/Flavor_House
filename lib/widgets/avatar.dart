@@ -5,9 +5,11 @@ class Avatar extends StatelessWidget {
   final double pictureHeight;
   final String imageURL;
   final Color? borderColor;
+  final double borderSize;
   const Avatar(
       {Key? key,
       this.borderColor,
+        this.borderSize = 5,
       required this.pictureHeight,
       required this.imageURL})
       : super(key: key);
@@ -18,7 +20,7 @@ class Avatar extends StatelessWidget {
         radius: pictureHeight / 2,
         backgroundColor: borderColor ?? primaryColor,
         child: CircleAvatar(
-          radius: (pictureHeight / 2) - 5,
+          radius: (pictureHeight / 2) - borderSize,
           backgroundImage: NetworkImage(imageURL),
         ));
   }
