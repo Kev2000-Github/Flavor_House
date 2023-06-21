@@ -13,13 +13,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late SharedPreferences pref;
 
-
-  @override
-  void initState() async {
-    pref = await SharedPreferences.getInstance();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
