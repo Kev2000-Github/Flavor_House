@@ -1,8 +1,7 @@
-import 'package:flavor_house/widgets/avatar.dart';
-import 'package:flavor_house/widgets/button.dart';
-import 'package:flutter/cupertino.dart';
-
-import '../../utils/colors.dart';
+import 'package:flavor_house/widgets/input_post.dart';
+import 'package:flavor_house/widgets/post_moment.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,35 +11,39 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late SharedPreferences pref;
+
+
+  @override
+  void initState() async {
+    pref = await SharedPreferences.getInstance();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10, right: 20),
-      child: Column(children: [
-        Row(children: [
-          Expanded(
-              flex: 1,
-              child: Avatar(
-                pictureHeight: 60,
-                borderSize: 3,
-                imageURL:
-                "https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png",
-              )
+        padding: const EdgeInsets.only(top: 10, right: 20),
+        child: Column(children: [
+          const InputPost(
+              avatarURL:
+                  "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg"),
+          const SizedBox(
+            height: 20,
           ),
-          Expanded(
-              flex: 4,
-              child: Button(
-                onPressed: () {},
-                text: "¿Que vas a comer?",
-                borderSide: const BorderSide(color: gray01Color, width: 2),
-                borderRadius: BorderRadius.circular(10),
-                size: Size.fromHeight(45),
-                fontSize: 14,
-                textColor: gray03Color,
-              )
-          )
-        ])
-      ])
-    );
+          PostMoment(
+              fullName: "Juan Toledo",
+              username: "ReyDeLaCocina",
+              postTitle: "Pastel de chocolate Noruego",
+              description: "Es muy delicioso y esponjoso!",
+              likes: 80,
+              rates: 3,
+              isLiked: true,
+              isFavorite: true,
+              pictureURL:
+                  "https://cdn0.recetasgratis.net/es/posts/2/4/9/pastel_de_fresa_23942_orig.jpg",
+              avatarURL:
+                  "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg")
+        ]));
   }
 }

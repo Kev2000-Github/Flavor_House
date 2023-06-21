@@ -7,6 +7,9 @@ const darkColor = Color.fromRGBO(22, 67, 86, 1);
 const whiteColor = Colors.white;
 const blackColor = Colors.black;
 
+const yellowColor = Color(0xFFECE075);
+const redColor = Color(0xFFEC5151);
+
 const gray01Color = Color(0xFFF6F6F6);
 const gray02Color = Color(0xFFE8E8E8);
 const gray03Color = Color(0xFFBDBDBD);
