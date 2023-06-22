@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> {
         iconSize: 30,
         currentIndex: _page,
         onTap: (index) {
-          _pageController.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
         },
         type: BottomNavigationBarType.fixed,
         items: const [

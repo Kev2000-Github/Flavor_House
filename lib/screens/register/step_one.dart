@@ -92,7 +92,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               .register(username, fullName, email, password);
                           result.fold((failure) => print('failure: $failure'),
                               (user) {
-                            print('success: $user');
                             Navigator.of(context)
                                 .pushNamed(routes.register_two);
                           });

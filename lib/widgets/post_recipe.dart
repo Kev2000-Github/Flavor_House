@@ -5,21 +5,25 @@ import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
 
-class PostMoment extends StatelessWidget {
+class PostRecipe extends StatelessWidget {
   final String fullName;
   final String username;
   final String avatarURL;
+  final String postTitle;
   final String description;
   final String pictureURL;
   final double likes;
+  final double rates;
   final bool isLiked;
   final bool isFavorite;
-  const PostMoment(
+  const PostRecipe(
       {Key? key,
       required this.fullName,
       required this.username,
+      required this.postTitle,
       required this.description,
       required this.likes,
+      required this.rates,
       required this.isLiked,
       required this.isFavorite,
       required this.pictureURL,
@@ -38,6 +42,19 @@ class PostMoment extends StatelessWidget {
                 fullName: fullName,
                 username: username,
                 avatarURL: avatarURL),
+             Wrap(
+                spacing: 10,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(
+                    postTitle,
+                    style: const TextStyle(
+                        fontSize: 22,
+                        color: darkColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const Icon(Icons.import_contacts, color: secondaryColor, size: 33)
+                ]),
             const SizedBox(
               height: 10,
             ),
@@ -73,6 +90,12 @@ class PostMoment extends StatelessWidget {
                       size: 26, color: gray03Color),
                 )
               ]),
+              const Spacer(),
+              StarsRating(
+                  onRate: (index) {
+                    print(index + 1);
+                  },
+                  rate: rates)
             ]),
              Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),

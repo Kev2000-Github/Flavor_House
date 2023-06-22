@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/services/auth/dummy_auth_service.dart';
+import 'package:flavor_house/utils/cache.dart';
 import 'package:flavor_house/widgets/text_field.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/common/popups/login.dart';
 
 import '../../models/user.dart';
 import '../../services/auth/auth_service.dart';
@@ -66,20 +67,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 32),
                 TextFieldInput(
-                    hintText: "Enter your email",
+                    hintText: "Ingresa tu correo",
                     focusNode: _emailFocus,
                     textInputType: TextInputType.emailAddress,
                     textEditingController: _emailController),
                 const SizedBox(height: 24),
                 // text field input for password
                 TextFieldInput(
-                  hintText: "Enter your password",
+                  hintText: "Ingresa tu contraseña",
                   textInputType: TextInputType.text,
                   focusNode: _passwordFocus,
                   textEditingController: _passwordController,
                   isPass: true,
                 ),
-                Flexible(child: Container(), flex: 2),
+                Flexible(flex: 2, child: Container()),
                 // button login
                 Button(
                   text: "Iniciar Sesion",
@@ -91,27 +92,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     dartz.Either<Failure, User> result =
                         await auth.login(email, password);
                     result.fold(
-                        (failure) => showDialog(
-                            context: context,
-                            builder: (_) => CupertinoAlertDialog(
-                                  title: Text("Perdon!"),
-                                  content: Text(
-                                      "Tu correo electronico o contraseña estan incorrectas, por favor ingrese de nuevo"),
-                                  actions: [
-                                    CupertinoDialogAction(
-                                      child: Text("ok"),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
-                                )),
-                        (user) => Navigator.of(context).pushNamed(routes.main_screen));
+                        (failure) => LoginPopup.alertLoginFailure(context),
+                        (user) async {
+                          await setLocalUser(user);
+                          if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
+                        });
                   },
                   borderSide: null,
                   backgroundColor: primaryColor,
                   textColor: whiteColor,
-                  size: Size.fromHeight(50),
+                  size: const Size.fromHeight(50),
                 ),
                 Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),

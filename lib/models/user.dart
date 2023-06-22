@@ -31,4 +31,19 @@ class User extends Equatable {
       json['picture']
     );
   }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> map = {
+      "id": id,
+      "email": email,
+      "username": username,
+      "fullName": fullName,
+      "email": email,
+      "sex": sex,
+      "phoneNumber": phoneNumber,
+      "countryId": countryId,
+      "picture": picture
+    };
+    return map;
+  }
 }
