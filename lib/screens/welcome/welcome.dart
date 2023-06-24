@@ -1,9 +1,14 @@
 import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/providers/helper.dart';
 import 'package:flavor_house/utils/colors.dart';
-import 'package:flavor_house/widgets/avatar.dart';
 import 'package:flavor_house/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/user.dart';
+import '../../providers/user_provider.dart';
+import '../../utils/cache.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -13,6 +18,18 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    verifyLoggedUser();
+    super.initState();
+  }
+
+  void verifyLoggedUser() async {
+    User? loggedUser = await ProviderHelper.getLoggedUser(context);
+    if(loggedUser == null) return;
+    Navigator.pushNamed(context, routes.main_screen);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +44,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       SvgPicture.asset('assets/images/logo.svg',
                           height: 150, semanticsLabel: "logo"),
                       const SizedBox(height: 64),
-                      Button(text: "Iniciar Sesion", onPressed: () {
-                        Navigator.of(context).pushNamed(routes.login);
-                      },),
+                      Button(
+                        text: "Iniciar Sesion",
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(routes.login);
+                        },
+                      ),
                       const SizedBox(height: 24),
                       Button(
                         text: "Registrarse",

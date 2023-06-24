@@ -19,6 +19,15 @@ class User extends Equatable {
   @override
   List<Object> get props => [id, username, fullName, email];
 
+  factory User.initial(){
+    return User.basic(
+      "",
+      "NONE",
+      "NONE",
+      "NONE"
+    );
+  }
+
   factory User.fromJson(Map<String, dynamic> json){
     return User(
       json['id'],

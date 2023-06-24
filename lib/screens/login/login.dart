@@ -1,11 +1,13 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
+import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/services/auth/dummy_auth_service.dart';
 import 'package:flavor_house/utils/cache.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/popups/login.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/user.dart';
 import '../../services/auth/auth_service.dart';
@@ -94,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     result.fold(
                         (failure) => LoginPopup.alertLoginFailure(context),
                         (user) async {
+                          Provider.of<UserProvider>(context, listen: false).login(user);
                           await setLocalUser(user);
                           if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
                         });

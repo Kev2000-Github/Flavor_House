@@ -14,7 +14,8 @@ class CommonPopup {
             CupertinoDialogAction(
               child: const Text("ok"),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context)
+                    .popUntil((route) => route.isFirst);
               },
             )
           ],

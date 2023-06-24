@@ -4,6 +4,13 @@ import 'package:flavor_house/screens/profile/profile.dart';
 import 'package:flavor_house/screens/recipes/recipe.dart';
 import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../common/popups/common.dart';
+import '../../models/user.dart';
+import '../../providers/helper.dart';
+import '../../providers/user_provider.dart';
+import '../../utils/cache.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -20,6 +27,12 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     _pageController = PageController(initialPage: _page);
     super.initState();
+  }
+
+  void verifyLoggedUser() async {
+    User? loggedUser = await ProviderHelper.getLoggedUser(context);
+    if(loggedUser != null) return;
+    CommonPopup.alertUserNotLogged(context);
   }
 
   @override

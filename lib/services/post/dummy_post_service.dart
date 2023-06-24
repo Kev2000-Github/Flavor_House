@@ -39,6 +39,7 @@ class DummyPost implements PostService {
         "https://cdn0.recetasgratis.net/es/posts/6/2/9/galletas_con_chispas_de_chocolate_caseras_35926_orig.jpg",
       )
     ];
+    await Future.delayed(const Duration(seconds: 1));
     if(sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
@@ -81,6 +82,7 @@ class DummyPost implements PostService {
         Tag("chocolate", const Color(0xFFD2D2D2)),
       ])
     ];
+    await Future.delayed(const Duration(seconds: 1));
     if(sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
@@ -118,6 +120,7 @@ class DummyPost implements PostService {
         Tag("chocolate", const Color(0xFFD2D2D2)),
       ])
     ];
+    await Future.delayed(const Duration(seconds: 1));
     if(sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
