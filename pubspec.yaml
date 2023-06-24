@@ -40,6 +40,8 @@ dependencies:
   equatable: ^2.0.5
   like_button: ^2.0.5
   shared_preferences: ^2.1.2
+  shimmer: ^3.0.0
+  modal_bottom_sheet: ^3.0.0-pre
 
 dev_dependencies:
   flutter_test:
