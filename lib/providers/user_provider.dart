@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import '../models/user.dart';
 
 class UserProvider extends ChangeNotifier {
-  late User user = User.initial();
+  User user = User.initial();
 
   void login(User loggedUser){
     user = loggedUser;
