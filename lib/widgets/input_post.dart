@@ -17,7 +17,7 @@ class InputPost extends StatelessWidget {
           flex: 1,
           child: Avatar(
             pictureHeight: 60,
-            borderSize: 3,
+            borderSize: 2,
             imageURL: avatarURL)
       ),
       Expanded(
@@ -27,7 +27,7 @@ class InputPost extends StatelessWidget {
             text: "¿Que vas a comer?",
             borderSide: const BorderSide(color: gray01Color, width: 2),
             borderRadius: BorderRadius.circular(10),
-            size: Size.fromHeight(45),
+            size: const Size.fromHeight(45),
             fontSize: 14,
             textColor: gray03Color,
           )

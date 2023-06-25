@@ -94,10 +94,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     dartz.Either<Failure, User> result =
                         await auth.login(email, password);
                     result.fold(
-                        (failure) => LoginPopup.alertLoginFailure(context),
+                        (failure) {
+                          if(failure.runtimeType == LoginFailure){
+                            LoginPopup.alertLoginFailure(context);
+                          }
+                          else if(failure.runtimeType == LoginEmptyFailure){
+                            LoginPopup.alertLoginEmptyFailure(context);
+                          }
+                        },
                         (user) async {
-                          Provider.of<UserProvider>(context, listen: false).login(user);
-                          await setLocalUser(user);
+                          await Provider.of<UserProvider>(context, listen: false).login(user);
                           if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
                         });
                   },

@@ -1,10 +1,16 @@
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/screens/register/step_two_country.dart';
 import 'package:flavor_house/screens/register/step_two_gender.dart';
 import 'package:flavor_house/screens/register/step_two_interests.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flavor_house/services/register/dummy_register_step_two_service.dart';
+import 'package:flavor_house/services/register/register_step_two_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 
+import '../../common/error/failures.dart';
+import '../../models/user.dart';
+import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
 
 class RegisterTwoScreen extends StatefulWidget {
@@ -18,7 +24,7 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
   int _currentStep = 0;
   late String? _gender;
   late String _country;
-  late List<String?> _interests;
+  final List<String> _interests = [];
   bool isFinished = false;
 
   void onGenderStepContinue(String? value) {
@@ -115,9 +121,13 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
                 actions: isFinished
                     ? [
                         IconButton(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(routes.main_screen);
+                            onPressed: () async {
+                              RegisterStepTwo register = DummyRegisterStepTwo();
+                              dartz.Either<Failure, User> result = await register.registerAditionalInfo(_country, _gender, _interests);
+                              result.fold((l) => null, (User user) async {
+                                await Provider.of<UserProvider>(context, listen: false).login(user);
+                                if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
+                              });
                             },
                             icon: const Icon(Icons.arrow_forward_ios,
                                 size: 24, color: blackColor))

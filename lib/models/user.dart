@@ -14,10 +14,21 @@ class User extends Equatable {
    User(this.id, this.username, this.fullName, this.email, this.sex,
       this.phoneNumber, this.countryId, this.picture);
 
-   User.basic(this.id, this.username, this.fullName, this.email);
-
   @override
   List<Object> get props => [id, username, fullName, email];
+
+  factory User.basic(String id, String username, String fullName, String email){
+    return User(
+      id,
+      username,
+      fullName,
+      email,
+      null,
+      null,
+      null,
+      null
+    );
+  }
 
   factory User.initial(){
     return User.basic(

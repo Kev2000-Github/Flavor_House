@@ -8,8 +8,7 @@ class DummyRegisterStepOne implements RegisterStepOne {
   Future<Either<Failure, User>> register(
       String username, String fullName, String email, String password) async {
     try {
-      User actualUser = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
-          '4126451235', 'VEN', 'picture');
+      User actualUser = User.basic('id', 'test', 'pepe', 'pepe@gmail.com');
       return Right(actualUser);
     } catch (e) {
       return Left(ServerFailure());

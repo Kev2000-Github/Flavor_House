@@ -86,9 +86,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                           }
                           if (posts[index].runtimeType == Recipe) {
                             return Helper.createRecipeWidget(posts[index]);
-                          } else {
-                            var type = posts[index].runtimeType;
-                            print("Failure: $type Not Implemented");
                           }
                           return Container();
                         }),

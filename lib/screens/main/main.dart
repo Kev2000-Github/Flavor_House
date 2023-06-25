@@ -2,6 +2,7 @@ import 'package:flavor_house/screens/favorite/favorite.dart';
 import 'package:flavor_house/screens/home/home.dart';
 import 'package:flavor_house/screens/profile/profile.dart';
 import 'package:flavor_house/screens/recipes/recipe.dart';
+import 'package:flavor_house/screens/search/search.dart';
 import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void verifyLoggedUser() async {
     User? loggedUser = await ProviderHelper.getLoggedUser(context);
-    if(loggedUser != null) return;
+    if (loggedUser != null) return;
     CommonPopup.alertUserNotLogged(context);
   }
 
@@ -40,24 +41,27 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: SafeArea(
           child: PageView(
-            controller: _pageController,
-            children: const [
-              HomeScreen(),
-              RecipeScreen(),
-              FavoriteScreen(),
-              ProfileScreen()
-            ],
-            onPageChanged: (newPage) {
-              setState(() {
-                _page = newPage;
-              });
-            },
-          )),
+        controller: _pageController,
+        children: const [
+          HomeScreen(),
+          RecipeScreen(),
+          SearchScreen(),
+          FavoriteScreen(),
+          ProfileScreen()
+        ],
+        onPageChanged: (newPage) {
+          setState(() {
+            _page = newPage;
+          });
+        },
+      )),
       bottomNavigationBar: BottomNavigationBar(
         iconSize: 30,
         currentIndex: _page,
         onTap: (index) {
-          _pageController.animateToPage(index, duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+          _pageController.animateToPage(index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeIn);
         },
         type: BottomNavigationBarType.fixed,
         items: const [
@@ -68,6 +72,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.pie_chart_outline),
               label: "Recetas",
+              backgroundColor: primaryColor),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: "Buscar",
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite_outline),

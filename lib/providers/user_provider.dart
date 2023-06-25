@@ -1,21 +1,24 @@
 import 'package:flutter/cupertino.dart';
 
 import '../models/user.dart';
+import '../utils/cache.dart';
 
 class UserProvider extends ChangeNotifier {
   User user = User.initial();
 
-  void login(User loggedUser){
+  Future<void> login(User loggedUser) async {
+    await setLocalUser(user);
     user = loggedUser;
     notifyListeners();
   }
 
-  void update(User updatedUser){
+  Future<void> update(User updatedUser) async {
     user = updatedUser;
     notifyListeners();
   }
 
-  void logout(){
+  Future<void> logout() async {
+    await removeLocalUser();
     user = User.initial();
     notifyListeners();
   }

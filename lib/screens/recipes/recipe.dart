@@ -35,7 +35,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
       setState(() => _isPostLoading = true);
     }
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List> result =
+    dartz.Either<Failure, List<Recipe>> result =
         await postClient.getRecipes(selectedSort);
     result.fold((failure) {
       if (mounted) {
@@ -44,7 +44,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     }, (newPosts) {
       if (mounted) {
         setState(() {
-          posts = newPosts as List<Recipe>;
+          posts = newPosts;
           setState(() => _isPostLoading = false);
         });
       }

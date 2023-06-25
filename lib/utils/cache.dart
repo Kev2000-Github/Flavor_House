@@ -27,3 +27,14 @@ Future<User?> getLocalUser() async {
     return null;
   }
 }
+
+Future<bool> removeLocalUser() async {
+  try{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.remove(userData);
+    return true;
+  }
+  catch(e){
+    return false;
+  }
+}

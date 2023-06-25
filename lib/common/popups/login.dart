@@ -21,4 +21,21 @@ class LoginPopup {
           ],
         ));
   }
+
+  static void alertLoginEmptyFailure(context) {
+    showDialog(
+        context: context,
+        builder: (_) => CupertinoAlertDialog(
+          title: const Text("Perdon!"),
+          content: const Text("Debes ingresar tu corre y contraseña primero!"),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("ok"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ));
+  }
 }

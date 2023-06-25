@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => _isPostLoading = true);
     }
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List> result =
+    dartz.Either<Failure, List<Moment>> result =
         await postClient.getMoments(selectedSort);
     result.fold((failure) {
       if (mounted) {
@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }, (newPosts) {
       if (mounted) {
         setState(() {
-          posts = newPosts as List<Moment>;
+          posts = newPosts;
           _isPostLoading = false;
         });
       }
