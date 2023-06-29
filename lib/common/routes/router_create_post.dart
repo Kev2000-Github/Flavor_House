@@ -1,7 +1,6 @@
 import 'package:flavor_house/common/routes/router.dart';
-import 'package:flavor_house/screens/Create Posts/CreatePost.dart';
+import 'package:flavor_house/screens/create_post/create_post_moment.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/navigator.dart';
 
 import '../constants/routes.dart' as routes;
 
@@ -10,7 +9,7 @@ class CreatePostRoute implements IRoute{
 
   @override
   Route getRoute(Object? args) {
-    return MaterialPageRoute(builder: (_) => const CreatePostScreen());
+    return MaterialPageRoute(builder: (_) => const CreatePostMomentScreen());
   }
 
   @override

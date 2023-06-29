@@ -4,7 +4,7 @@ import 'package:flavor_house/common/routes/router_register.dart';
 import 'package:flavor_house/common/routes/router.dart';
 import 'package:flavor_house/common/routes/router_register_two.dart';
 import 'package:flavor_house/common/routes/router_welcome.dart';
-import 'package:flavor_house/common/routes/router_CreatePost.dart';
+import 'package:flavor_house/common/routes/router_create_post.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {

@@ -1,43 +1,34 @@
-import 'package:dartz/dartz.dart' as dartz;
-import 'package:flavor_house/common/error/failures.dart';
+import 'dart:io';
+
 import 'package:flavor_house/providers/user_provider.dart';
-import 'package:flavor_house/services/auth/dummy_auth_service.dart';
-import 'package:flavor_house/utils/cache.dart';
-import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
-import 'package:flavor_house/common/popups/login.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
-
 import '../../models/user.dart';
-import '../../services/auth/auth_service.dart';
 import '../../utils/colors.dart';
-import '../../widgets/button.dart';
 import '../../widgets/Avatar.dart';
-import '../../utils/colors.dart';
+import '../../widgets/button.dart';
 
-class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({Key? key}) : super(key: key);
+class CreatePostMomentScreen extends StatefulWidget {
+  const CreatePostMomentScreen({Key? key}) : super(key: key);
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  State<CreatePostMomentScreen> createState() => _CreatePostMomentScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
+class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
   String imagePath="";
   User? user;
-  final FocusNode _TextFocus = FocusNode();
-  final TextEditingController _TextController = TextEditingController();
+  final FocusNode _textFocus = FocusNode();
+  final TextEditingController _textController = TextEditingController();
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _TextFocus.dispose();
-    _TextController.dispose();
+    _textFocus.dispose();
+    _textController.dispose();
   }
 
   @override
