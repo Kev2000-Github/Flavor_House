@@ -25,7 +25,6 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _textFocus.dispose();
     _textController.dispose();
@@ -39,7 +38,7 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
     user = Provider.of<UserProvider>(context, listen: false).user;
     return Scaffold(
         appBar: PreferredSize(
-            preferredSize: Size.fromHeight(80),
+            preferredSize: const Size.fromHeight(80),
             child: AppBar(
               toolbarHeight: 80,
               flexibleSpace: Container(),
@@ -84,24 +83,23 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
                       obscureText: false,
                     ),
                 const SizedBox(height: 25),
-                  Container(
-                     child: Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       children:[
-                         (imagePath=="")?Container():Image.file(File(imagePath), width: 250, height: 250),
-                         IconButton(
-                             iconSize: 70,
-                             onPressed:() async {
-                               final ImagePicker _picker = ImagePicker();
-                               XFile? _pickedFile =
-                               await _picker.pickImage(source: ImageSource.gallery);
-                               imagePath = _pickedFile?.path ?? "";
-                               setState((){
-                               });
-                             },
-                             icon: const Icon(Icons.image, size: 70,color: gray03Color,)),
-                       ]
-                     )),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:[
+                      (imagePath=="")?Container():Image.file(File(imagePath), width: 250, height: 250),
+                      IconButton(
+                          iconSize: 70,
+                          onPressed:() async {
+                            final ImagePicker picker = ImagePicker();
+                            XFile? pickedFile =
+                            await picker.pickImage(source: ImageSource.gallery);
+                            imagePath = pickedFile?.path ?? "";
+                            setState((){
+                            });
+                          },
+                          icon: const Icon(Icons.image, size: 70,color: gray03Color,)),
+                    ]
+                  ),
                 Button(
                     text: "Publicar",
                     onPressed: () async {
