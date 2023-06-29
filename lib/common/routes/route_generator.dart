@@ -4,12 +4,13 @@ import 'package:flavor_house/common/routes/router_register.dart';
 import 'package:flavor_house/common/routes/router.dart';
 import 'package:flavor_house/common/routes/router_register_two.dart';
 import 'package:flavor_house/common/routes/router_welcome.dart';
+import 'package:flavor_house/common/routes/router_CreatePost.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
-    List<IRoute> routes = [WelcomeRoute(), RegisterRoute(), RegisterTwoRoute(), LoginRoute(), MainRoute()];
+    List<IRoute> routes = [WelcomeRoute(), RegisterRoute(), RegisterTwoRoute(), LoginRoute(), MainRoute(), CreatePostRoute()];
     for (IRoute router in routes) {
       if (settings.name != router.route) continue;
       router.validate(args);

@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/cupertino.dart';
-
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import '../utils/colors.dart';
 import 'avatar.dart';
 import 'button.dart';
@@ -23,7 +23,9 @@ class InputPost extends StatelessWidget {
       Expanded(
           flex: 4,
           child: Button(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, routes.createpost);
+            },
             text: "¿Que vas a comer?",
             borderSide: const BorderSide(color: gray01Color, width: 2),
             borderRadius: BorderRadius.circular(10),
