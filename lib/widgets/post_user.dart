@@ -1,3 +1,4 @@
+import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../utils/colors.dart';
@@ -26,15 +27,9 @@ class PostUser extends StatelessWidget {
           children: [
             Text(
               fullName,
-              style: const TextStyle(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w600,
-                  color: darkColor),
+              style: DesignTextTheme.get(type: TextThemeEnum.darkMedium),
             ),
-            Text(username, style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w300,
-                color: darkColor))
+            Text(username, style: DesignTextTheme.get(type: TextThemeEnum.darkLight))
           ])
     ]);
   }

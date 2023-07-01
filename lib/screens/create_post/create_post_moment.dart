@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../utils/colors.dart';
 import '../../widgets/Avatar.dart';
 import '../../widgets/button.dart';

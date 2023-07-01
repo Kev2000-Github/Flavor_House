@@ -9,7 +9,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/popups/login.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../services/auth/auth_service.dart';
 import '../../utils/colors.dart';
 import '../../widgets/button.dart';

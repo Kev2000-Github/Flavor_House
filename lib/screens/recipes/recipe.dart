@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../common/error/failures.dart';
 import '../../models/sort/sort_config.dart';
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
@@ -36,7 +36,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     }
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Recipe>> result =
-        await postClient.getRecipes(selectedSort);
+        await postClient.getRecipes(sort: selectedSort);
     result.fold((failure) {
       if (mounted) {
         setState(() => _isPostLoading = false);

@@ -1,8 +1,9 @@
-
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/models/post/recipe.dart';
+import 'package:flavor_house/models/user/user_item.dart' as userItemModel;
 import 'package:flavor_house/widgets/post_moment.dart';
 import 'package:flavor_house/widgets/post_recipe.dart';
+import 'package:flavor_house/widgets/user_item.dart';
 
 class Helper {
   static PostMoment createMomentWidget(Moment post) {
@@ -30,5 +31,13 @@ class Helper {
       postTitle: recipe.title,
       rates: recipe.stars,
     );
+  }
+
+  static UserItem createUserItemWidget(userItemModel.UserItem userInfo) {
+    return UserItem(
+        fullName: userInfo.fullName,
+        username: userInfo.username,
+        avatarURL: userInfo.imageURL ?? "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
+        location: userInfo.location);
   }
 }
