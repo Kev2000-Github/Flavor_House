@@ -1,6 +1,7 @@
 
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 class Interest extends Equatable {
   final String id;
@@ -18,5 +19,11 @@ class Interest extends Equatable {
         json['name'],
         json['picURL']
     );
+  }
+
+  Image get picture{
+    //TODO: change dummy implementation later
+    if(picURL != null) return Image.asset(picURL!);
+    return Image.asset("assets/images/user_avatar.png");
   }
 }

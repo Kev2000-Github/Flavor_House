@@ -1,9 +1,11 @@
+import 'package:flavor_house/widgets/modal/comments.dart';
 import 'package:flavor_house/widgets/post_user.dart';
 import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
+import 'modal/sort.dart';
 
 class PostMoment extends StatelessWidget {
   final String fullName;
@@ -25,6 +27,17 @@ class PostMoment extends StatelessWidget {
       required this.picture,
       required this.avatar})
       : super(key: key);
+
+  void onOpenComments(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20)
+            )),
+        builder: (context) => CommentsModalContent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +81,9 @@ class PostMoment extends StatelessWidget {
                   },
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    onOpenComments(context);
+                  },
                   child: const Icon(Icons.mode_comment_outlined,
                       size: 26, color: gray03Color),
                 )

@@ -65,19 +65,19 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
 
   List<Step> stepList() => [
         Step(
-            title: Text("Genero"),
+            title: const Text("Genero"),
             content: StepGender(onGenderSelect: onGenderStepContinue),
             state: StepState.editing,
             isActive: _currentStep >= 0),
         Step(
-            title: Text("Pais"),
+            title: const Text("Pais"),
             content: StepCountry(
               onCountrySelect: onCountryStepContinue,
             ),
             state: StepState.editing,
             isActive: _currentStep >= 1),
         Step(
-            title: Text("Intereses"),
+            title: const Text("Intereses"),
             content: StepInterests(
               onFinish: onFinish,
             ),
