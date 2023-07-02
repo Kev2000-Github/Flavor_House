@@ -8,6 +8,7 @@ import 'package:flavor_house/models/sort/sort_config.dart';
 
 import './post_service.dart';
 import '../../common/error/failures.dart';
+import 'package:flutter/material.dart';
 
 class DummyPost implements PostService {
   @override
@@ -17,23 +18,23 @@ class DummyPost implements PostService {
         "1",
         "ReyDeLaCocina",
         "Juan Toledo",
-        "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
+        Image.asset("assets/images/avatar.jpg"),
         "Es muy delicioso y esponjoso!",
         90,
         true,
         true,
-        "https://cdn0.recetasgratis.net/es/posts/2/4/9/pastel_de_fresa_23942_orig.jpg",
+        Image.asset("assets/images/cake.jpg"),
       ),
       Moment(
         "2",
         "ReyDeLaCocina",
         "Juan Toledo",
-        "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
+        Image.asset("assets/images/avatar.jpg"),
         "Deliciosas galletas!",
         45,
         true,
         true,
-        "https://cdn0.recetasgratis.net/es/posts/6/2/9/galletas_con_chispas_de_chocolate_caseras_35926_orig.jpg",
+        Image.asset("assets/images/cookies.jpg"),
       )
     ];
     await Future.delayed(const Duration(seconds: 1));
@@ -50,12 +51,12 @@ class DummyPost implements PostService {
           "1",
           "ReyDeLaCocina",
           "Juan Toledo",
-          "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
+          Image.asset("assets/images/avatar.jpg"),
           "Es muy delicioso y esponjoso!",
           90,
           true,
           true,
-          "https://cdn0.recetasgratis.net/es/posts/2/4/9/pastel_de_fresa_23942_orig.jpg",
+          Image.asset("assets/images/cake.jpg"),
           "Pastel de chocolate",
           4, [
         Tag("dulce", const Color(0xFFD2D2D2)),
@@ -66,12 +67,12 @@ class DummyPost implements PostService {
           "2",
           "ReyDeLaCocina",
           "Juan Toledo",
-          "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
+          Image.asset("assets/images/avatar.jpg"),
           "Deliciosas galletas!",
           45,
           true,
           true,
-          "https://cdn0.recetasgratis.net/es/posts/6/2/9/galletas_con_chispas_de_chocolate_caseras_35926_orig.jpg",
+          Image.asset("assets/images/cookies.jpg"),
           "Pastel de chocolate",
           4, [
         Tag("dulce", const Color(0xFFD2D2D2)),
@@ -93,23 +94,23 @@ class DummyPost implements PostService {
         "1",
         "ReyDeLaCocina",
         "Juan Toledo",
-        "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
+        Image.asset("assets/images/avatar.jpg"),
         "Es muy delicioso y esponjoso!",
         90,
         true,
         true,
-        "https://cdn0.recetasgratis.net/es/posts/2/4/9/pastel_de_fresa_23942_orig.jpg",
+        Image.asset("assets/images/cake.jpg"),
       ),
       Recipe(
           "1",
           "ReyDeLaCocina",
           "Juan Toledo",
-          "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
+          Image.asset("assets/images/avatar.jpg"),
           "Es muy delicioso y esponjoso!",
           90,
           true,
           true,
-          "https://cdn0.recetasgratis.net/es/posts/2/4/9/pastel_de_fresa_23942_orig.jpg",
+          Image.asset("assets/images/cake.jpg"),
           "Pastel de chocolate",
           4, [
         Tag("dulce", const Color(0xFFD2D2D2)),

@@ -1,9 +1,10 @@
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/models/post/recipe.dart';
-import 'package:flavor_house/models/user/user_item.dart' as userItemModel;
+import 'package:flavor_house/models/user/user_item.dart';
 import 'package:flavor_house/widgets/post_moment.dart';
 import 'package:flavor_house/widgets/post_recipe.dart';
 import 'package:flavor_house/widgets/user_item.dart';
+import 'package:flutter/material.dart';
 
 class Helper {
   static PostMoment createMomentWidget(Moment post) {
@@ -14,8 +15,8 @@ class Helper {
         likes: post.likes,
         isLiked: post.isLiked,
         isFavorite: post.isFavorite,
-        avatarURL: post.avatarURL ?? "",
-        pictureURL: post.pictureURL ?? "");
+        avatar: post.avatar ?? Image.asset("assets/images/avatar.jpg"),
+        picture: post.picture ?? Image.asset("assets/images/cookies.jpg"));
   }
 
   static PostRecipe createRecipeWidget(Recipe recipe) {
@@ -26,18 +27,15 @@ class Helper {
       likes: recipe.likes,
       isLiked: recipe.isLiked,
       isFavorite: recipe.isFavorite,
-      avatarURL: recipe.avatarURL ?? "",
-      pictureURL: recipe.pictureURL ?? "",
+      avatar: recipe.avatar,
+      picture: recipe.picture ?? Image.asset("assets/images/cookies.jpg"),
       postTitle: recipe.title,
       rates: recipe.stars,
     );
   }
 
-  static UserItem createUserItemWidget(userItemModel.UserItem userInfo) {
-    return UserItem(
-        fullName: userInfo.fullName,
-        username: userInfo.username,
-        avatarURL: userInfo.imageURL ?? "https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg",
-        location: userInfo.location);
+  static UserItemWidget createUserItemWidget(UserItem userInfo) {
+
+    return UserItemWidget(user: userInfo,);
   }
 }

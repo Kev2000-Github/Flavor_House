@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SingleChildScrollView(
               child: Column(children: [
                 user != null
-                    ? InputPost(avatarURL: user?.picture ?? "")
+                    ? InputPost(avatar: user?.picture)
                     : Container(),
                 const SizedBox(
                   height: 20,

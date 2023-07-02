@@ -8,9 +8,9 @@ import '../utils/colors.dart';
 class PostMoment extends StatelessWidget {
   final String fullName;
   final String username;
-  final String avatarURL;
+  final Image? avatar;
   final String description;
-  final String pictureURL;
+  final Image picture;
   final double likes;
   final bool isLiked;
   final bool isFavorite;
@@ -22,8 +22,8 @@ class PostMoment extends StatelessWidget {
       required this.likes,
       required this.isLiked,
       required this.isFavorite,
-      required this.pictureURL,
-      required this.avatarURL})
+      required this.picture,
+      required this.avatar})
       : super(key: key);
 
   @override
@@ -37,13 +37,13 @@ class PostMoment extends StatelessWidget {
              PostUser(
                 fullName: fullName,
                 username: username,
-                avatarURL: avatarURL),
+                avatar: avatar),
             const SizedBox(
               height: 10,
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(pictureURL)),
+                child: picture),
              Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(description,

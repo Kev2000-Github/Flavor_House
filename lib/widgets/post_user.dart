@@ -7,15 +7,14 @@ import 'avatar.dart';
 class PostUser extends StatelessWidget {
   final String fullName;
   final String username;
-  final String avatarURL;
-  const PostUser({Key? key, required this.fullName, required this.username, required this.avatarURL}) : super(key: key);
+  final Image? avatar;
+  const PostUser({Key? key, required this.fullName, required this.username, required this.avatar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(children: [
       Avatar(
-        imageURL:
-        avatarURL,
+        image: avatar,
         pictureHeight: 60,
         borderSize: 2,
       ),

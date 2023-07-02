@@ -107,5 +107,9 @@ flutter:
   assets:
     - assets/images/ic_instagram.svg
     - assets/images/logo.svg
+    - assets/images/avatar.jpg
+    - assets/images/cake.jpg
+    - assets/images/cookies.jpg
+    - assets/images/user_avatar.png
 
 

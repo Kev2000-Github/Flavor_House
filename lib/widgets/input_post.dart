@@ -7,8 +7,8 @@ import 'avatar.dart';
 import 'button.dart';
 
 class InputPost extends StatelessWidget {
-  final String avatarURL;
-  const InputPost({Key? key, required this.avatarURL}) : super(key: key);
+  final Image? avatar;
+  const InputPost({Key? key, required this.avatar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class InputPost extends StatelessWidget {
           child: Avatar(
             pictureHeight: 60,
             borderSize: 2,
-            imageURL: avatarURL)
+            image: avatar,)
       ),
       Expanded(
           flex: 4,

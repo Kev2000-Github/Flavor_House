@@ -1,5 +1,6 @@
-
 import 'package:equatable/equatable.dart';
+import 'package:flavor_house/models/user/user_item.dart';
+import 'package:flutter/material.dart';
 
 class User extends Equatable {
   late String id;
@@ -9,47 +10,31 @@ class User extends Equatable {
   late String? sex;
   late String? phoneNumber;
   late String? countryId;
-  late String? picture;
+  late Image? picture;
 
-   User(this.id, this.username, this.fullName, this.email, this.sex,
+  User(this.id, this.username, this.fullName, this.email, this.sex,
       this.phoneNumber, this.countryId, this.picture);
 
   @override
   List<Object> get props => [id, username, fullName, email];
 
-  factory User.basic(String id, String username, String fullName, String email){
-    return User(
-      id,
-      username,
-      fullName,
-      email,
-      null,
-      null,
-      null,
-      null
-    );
+  factory User.basic(
+      String id, String username, String fullName, String email) {
+    return User(id, username, fullName, email, null, null, null, null);
   }
 
-  factory User.initial(){
-    return User.basic(
-      "",
-      "NONE",
-      "NONE",
-      "NONE"
-    );
+  factory User.fromUserItem(UserItem userItem) {
+    return User(userItem.id, userItem.username, userItem.fullName, "NONE", null,
+        null, null, userItem.avatar);
   }
 
-  factory User.fromJson(Map<String, dynamic> json){
-    return User(
-      json['id'],
-      json['username'],
-      json['fullName'],
-      json['email'],
-      json['sex'],
-      json['phoneNumber'],
-      json['countryId'],
-      json['picture']
-    );
+  factory User.initial() {
+    return User.basic("", "NONE", "NONE", "NONE");
+  }
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(json['id'], json['username'], json['fullName'], json['email'],
+        json['sex'], json['phoneNumber'], json['countryId'], json['picture']);
   }
 
   Map<String, dynamic> toJson() {

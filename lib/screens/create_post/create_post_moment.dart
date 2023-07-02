@@ -65,7 +65,7 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
                    Avatar(
                       pictureHeight: 90,
                       borderSize: 2,
-                      imageURL: user?.picture ?? ""),
+                      image: user?.picture),
                     const SizedBox(height: 25),
                     TextField(
                       decoration:

@@ -3,6 +3,7 @@ import 'colors.dart';
 
 enum TextThemeEnum {
   darkMedium,
+  darkSemiMedium,
   darkLight,
 }
 
@@ -13,6 +14,12 @@ class DesignTextTheme {
         return const TextStyle(
           fontSize: 19,
           fontWeight: FontWeight.w600,
+          color: darkColor,
+        );
+      case TextThemeEnum.darkSemiMedium:
+        return const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
           color: darkColor,
         );
       case TextThemeEnum.darkLight:
