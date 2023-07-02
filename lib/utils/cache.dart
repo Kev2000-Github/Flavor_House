@@ -20,7 +20,6 @@ Future<User?> getLocalUser() async {
     if(stringUser == null) return null;
     Map<String, dynamic> mappedUser = jsonDecode(stringUser);
     User localUser = User.fromJson(mappedUser);
-
     return localUser;
   }
   catch(e){

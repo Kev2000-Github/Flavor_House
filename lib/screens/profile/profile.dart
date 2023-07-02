@@ -191,7 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: widget.user != null ? Button(
                   text: widget.user!.isFollowed ? "Dejar de seguir" : "Seguir",
                   onPressed: () {},
-                  borderSide: BorderSide(style: BorderStyle.none),
+                  borderSide: const BorderSide(style: BorderStyle.none),
                   backgroundColor: widget.user!.isFollowed ? redColor : primaryColor,
                   textColor: whiteColor,
                   size: const Size.fromHeight(40),

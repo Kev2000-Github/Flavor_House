@@ -17,7 +17,7 @@ class DummyRegisterStepTwo implements RegisterStepTwo {
           'Hombre',
           '4126451235',
           'VEN',
-          Image.asset("assets/images/avatar.jpg"));
+          "assets/images/avatar.jpg");
       return Right(actualUser);
     } catch (e) {
       return Left(ServerFailure());

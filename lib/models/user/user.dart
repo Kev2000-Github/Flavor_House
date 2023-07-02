@@ -3,17 +3,17 @@ import 'package:flavor_house/models/user/user_item.dart';
 import 'package:flutter/material.dart';
 
 class User extends Equatable {
-  late String id;
-  late String username;
-  late String fullName;
-  late String email;
-  late String? sex;
-  late String? phoneNumber;
-  late String? countryId;
-  late Image? picture;
+  final String id;
+  final String username;
+  final String fullName;
+  final String email;
+  final String? sex;
+  final String? phoneNumber;
+  final String? countryId;
+  final String? pictureURL;
 
   User(this.id, this.username, this.fullName, this.email, this.sex,
-      this.phoneNumber, this.countryId, this.picture);
+      this.phoneNumber, this.countryId, this.pictureURL);
 
   @override
   List<Object> get props => [id, username, fullName, email];
@@ -25,7 +25,7 @@ class User extends Equatable {
 
   factory User.fromUserItem(UserItem userItem) {
     return User(userItem.id, userItem.username, userItem.fullName, "NONE", null,
-        null, null, userItem.avatar);
+        null, null, userItem.avatarURL);
   }
 
   factory User.initial() {
@@ -34,7 +34,13 @@ class User extends Equatable {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(json['id'], json['username'], json['fullName'], json['email'],
-        json['sex'], json['phoneNumber'], json['countryId'], json['picture']);
+        json['sex'], json['phoneNumber'], json['countryId'], json['pictureURL']);
+  }
+
+  Image get picture {
+    //TODO: change dummy implementation later
+    if(pictureURL != null) return Image.asset(pictureURL!);
+    return Image.asset("assets/images/user_avatar.png");
   }
 
   Map<String, dynamic> toJson() {
@@ -47,7 +53,7 @@ class User extends Equatable {
       "sex": sex,
       "phoneNumber": phoneNumber,
       "countryId": countryId,
-      "picture": picture
+      "pictureURL": pictureURL
     };
     return map;
   }

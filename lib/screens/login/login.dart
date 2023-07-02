@@ -37,6 +37,24 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
   }
 
+  void onLogin() async {
+    String email = _emailController.value.text;
+    String password = _passwordController.value.text;
+    //TODO: Beware this is a dummy implementation!
+    Auth auth = DummyAuth();
+    dartz.Either<Failure, User> result = await auth.login(email, password);
+    result.fold((failure) {
+      if (failure.runtimeType == LoginFailure) {
+        LoginPopup.alertLoginFailure(context);
+      } else if (failure.runtimeType == LoginEmptyFailure) {
+        LoginPopup.alertLoginEmptyFailure(context);
+      }
+    }, (user) async {
+      await Provider.of<UserProvider>(context, listen: false).login(user);
+      if (context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
-                      }, icon: const Icon(Icons.close, size: 24)))),
+                      },
+                      icon: const Icon(Icons.close, size: 24)))),
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               width: double.infinity,
@@ -86,27 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // button login
                 Button(
                   text: "Iniciar Sesion",
-                  onPressed: () async {
-                    String email = _emailController.value.text;
-                    String password = _passwordController.value.text;
-                    //TODO: Beware this is a dummy implementation!
-                    Auth auth = DummyAuth();
-                    dartz.Either<Failure, User> result =
-                        await auth.login(email, password);
-                    result.fold(
-                        (failure) {
-                          if(failure.runtimeType == LoginFailure){
-                            LoginPopup.alertLoginFailure(context);
-                          }
-                          else if(failure.runtimeType == LoginEmptyFailure){
-                            LoginPopup.alertLoginEmptyFailure(context);
-                          }
-                        },
-                        (user) async {
-                          await Provider.of<UserProvider>(context, listen: false).login(user);
-                          if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
-                        });
-                  },
+                  onPressed: onLogin,
                   borderSide: null,
                   backgroundColor: primaryColor,
                   textColor: whiteColor,

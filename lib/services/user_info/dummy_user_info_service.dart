@@ -22,13 +22,13 @@ class DummyUserInfoService implements UserInfoService {
   Future<Either<Failure, List>> userSearch({String? searchTerm}) async {
     try {
       List<UserItem> users = [
-        UserItem("1", "ReyDeLaCocina", "Juan Toledo", "Venezuela", Image.asset("assets/images/avatar.jpg"), true),
-        UserItem("2", "CocinaDelPirata", "Ben Torner", "España", Image.asset("assets/images/avatar.jpg"), false),
-        UserItem("3", "ReyDeLaCocina", "Donald Trump", "USA", Image.asset("assets/images/avatar.jpg"), true),
-        UserItem("4", "mexicazo", "Lopez Obrador", "Mexico", Image.asset("assets/images/avatar.jpg"), true),
-        UserItem("5", "armando", "Armando", "Venezuela", Image.asset("assets/images/avatar.jpg"), true),
-        UserItem("6", "ReyDeLaCocina", "Juan Toledo", "Venezuela", Image.asset("assets/images/avatar.jpg"), true),
-        UserItem("7", "ReyDeLaCocina", "Juan Toledo", "Venezuela", Image.asset("assets/images/avatar.jpg"), true),
+        UserItem("1", "ReyDeLaCocina", "Juan Toledo", "Venezuela", "assets/images/avatar.jpg", true),
+        UserItem("2", "CocinaDelPirata", "Ben Torner", "España", "assets/images/avatar.jpg", false),
+        UserItem("3", "ReyDeLaCocina", "Donald Trump", "USA", "assets/images/avatar.jpg", true),
+        UserItem("4", "mexicazo", "Lopez Obrador", "Mexico", "assets/images/avatar.jpg", true),
+        UserItem("5", "armando", "Armando", "Venezuela", "assets/images/avatar.jpg", true),
+        UserItem("6", "ReyDeLaCocina", "Juan Toledo", "Venezuela", "assets/images/avatar.jpg", true),
+        UserItem("7", "ReyDeLaCocina", "Juan Toledo", "Venezuela", "assets/images/avatar.jpg", true),
       ];
       await Future.delayed(const Duration(seconds: 1));
       return Right(users);
