@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
+import 'modal/comments.dart';
 
 class PostRecipe extends StatelessWidget {
   final String fullName;
@@ -29,6 +30,18 @@ class PostRecipe extends StatelessWidget {
       required this.picture,
       required this.avatar})
       : super(key: key);
+
+  void onOpenComments(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20)
+            )),
+        builder: (context) => CommentsModalContent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +98,9 @@ class PostRecipe extends StatelessWidget {
                   },
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    onOpenComments(context);
+                  },
                   child: const Icon(Icons.mode_comment_outlined,
                       size: 26, color: gray03Color),
                 )

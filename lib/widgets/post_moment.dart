@@ -30,6 +30,7 @@ class PostMoment extends StatelessWidget {
 
   void onOpenComments(BuildContext context) {
     showModalBottomSheet(
+      isScrollControlled: true,
         context: context,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
