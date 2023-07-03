@@ -1,5 +1,4 @@
 import 'package:flavor_house/screens/search/search.dart';
-import 'package:flavor_house/widgets/input_post_skeleton.dart';
 import 'package:flavor_house/widgets/user_item_skeleton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

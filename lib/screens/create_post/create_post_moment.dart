@@ -48,7 +48,7 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
               title: const Text(
                 "Crear Publicación",
                 style: TextStyle(
-                    color: blackColor, fontSize: 32, fontWeight: FontWeight.w600),
+                    color: blackColor, fontSize: 28, fontWeight: FontWeight.w600),
               ),
               leading: IconButton(
                   onPressed: () {

@@ -8,7 +8,8 @@ import 'button.dart';
 
 class InputPost extends StatelessWidget {
   final Image? avatar;
-  const InputPost({Key? key, required this.avatar}) : super(key: key);
+  final VoidCallback? onPressed;
+  const InputPost({Key? key, required this.avatar, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class InputPost extends StatelessWidget {
           flex: 4,
           child: Button(
             onPressed: () {
-              Navigator.pushNamed(context, routes.createpost);
+              if(onPressed != null) onPressed!();
             },
             text: "¿Que vas a comer?",
             borderSide: const BorderSide(color: gray01Color, width: 2),

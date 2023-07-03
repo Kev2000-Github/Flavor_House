@@ -9,6 +9,9 @@ class TextFieldInput extends StatelessWidget {
   final Color? bgColor;
   final Widget? prefixICon;
   final Function(String)? onSubmitted;
+  final bool autofocus;
+  final int? minLine;
+  final int? maxLine;
 
   const TextFieldInput({
     Key? key,
@@ -19,7 +22,8 @@ class TextFieldInput extends StatelessWidget {
     this.bgColor,
     this.prefixICon,
     this.focusNode,
-    this.onSubmitted
+    this.onSubmitted,
+    this.autofocus = false, this.minLine, this.maxLine
 }) : super(key: key);
 
   @override
@@ -31,6 +35,7 @@ class TextFieldInput extends StatelessWidget {
       focusNode: focusNode,
       controller: textEditingController,
       onSubmitted: onSubmitted,
+      autofocus: autofocus,
       decoration: InputDecoration(
         hintText: hintText,
         border: inputBorder,
@@ -43,6 +48,8 @@ class TextFieldInput extends StatelessWidget {
       ),
       keyboardType: textInputType,
       obscureText: isPass,
+      minLines: minLine,
+      maxLines: maxLine,
     );
   }
 }
