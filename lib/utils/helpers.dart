@@ -33,6 +33,7 @@ class Helper {
       picture: recipe.picture ?? Image.asset("assets/images/cookies.jpg"),
       postTitle: recipe.title,
       rates: recipe.stars,
+      tags: recipe.tags,
     );
   }
 

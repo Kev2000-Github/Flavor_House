@@ -1,9 +1,10 @@
+import 'package:flavor_house/models/post/tag.dart';
+import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flavor_house/widgets/modal/recipe_details/details.dart';
 import 'package:flavor_house/widgets/post_user.dart';
 import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../utils/colors.dart';
 import 'modal/comments.dart';
@@ -20,6 +21,7 @@ class PostRecipe extends StatelessWidget {
   final double rates;
   final bool isLiked;
   final bool isFavorite;
+  final List<Tag> tags;
   const PostRecipe(
       {Key? key,
       required this.id,
@@ -32,7 +34,8 @@ class PostRecipe extends StatelessWidget {
       required this.isLiked,
       required this.isFavorite,
       required this.picture,
-      required this.avatar})
+      required this.avatar,
+      required this.tags})
       : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -65,7 +68,20 @@ class PostRecipe extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            PostUser(fullName: fullName, username: username, avatar: avatar),
+            Row(
+              children: [
+                PostUser(fullName: fullName, username: username, avatar: avatar),
+                const Spacer(),
+                IconButton(
+                    onPressed: () {
+                      onOpenDetails(context);
+                    },
+                    iconSize: 33,
+                    splashRadius: 22,
+                    icon: const Icon(Icons.import_contacts,
+                        color: secondaryColor))
+              ],
+            ),
             Wrap(
                 spacing: 10,
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -77,14 +93,6 @@ class PostRecipe extends StatelessWidget {
                         color: darkColor,
                         fontWeight: FontWeight.bold),
                   ),
-                  IconButton(
-                      onPressed: () {
-                        onOpenDetails(context);
-                      },
-                      iconSize: 33,
-                      splashRadius: 22,
-                      icon: const Icon(Icons.import_contacts,
-                          color: secondaryColor))
                 ]),
             const SizedBox(
               height: 10,
@@ -93,7 +101,20 @@ class PostRecipe extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(description,
-                    style: const TextStyle(color: gray04Color))),
+                    style: DesignTextTheme.get(type: TextThemeEnum.grayLight))),
+            Wrap(
+              spacing: 10,
+              children: List.generate(
+                  tags.length,
+                  (index) {
+                    return ChoiceChip(
+                      label: Text(tags[index].name),
+                      selected: true,
+                      //selectedShadowColor: primaryColor,
+                      selectedColor: tags[index].color,
+                    );
+                  }),
+            ),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
@@ -139,6 +160,5 @@ class PostRecipe extends StatelessWidget {
                 ))
           ]),
         ));
-    ;
   }
 }

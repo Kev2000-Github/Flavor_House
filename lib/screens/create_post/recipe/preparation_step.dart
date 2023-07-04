@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/recipe_preparation.dart';
+import '../../../models/post/recipe_preparation.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/button.dart';
 import '../../../widgets/elevated_container.dart';

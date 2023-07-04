@@ -5,6 +5,7 @@ enum TextThemeEnum {
   darkMedium,
   darkSemiMedium,
   darkLight,
+  grayLight
 }
 
 class DesignTextTheme {
@@ -25,6 +26,12 @@ class DesignTextTheme {
       case TextThemeEnum.darkLight:
         return const TextStyle(
             fontSize: 13, fontWeight: FontWeight.w300, color: darkColor);
+      case TextThemeEnum.grayLight:
+        return const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w300,
+          color: gray04Color,
+        );
       default:
         return const TextStyle();
     }

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/error/failures.dart';
-import '../../../models/review.dart';
+import '../../../models/post/review.dart';
 import '../../../services/post/dummy_post_service.dart';
 import '../../../services/post/post_service.dart';
 import 'package:dartz/dartz.dart' as dartz;

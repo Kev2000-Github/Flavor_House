@@ -4,11 +4,12 @@ import 'package:dartz/dartz.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/models/post/tag.dart';
-import 'package:flavor_house/models/recipe_preparation.dart';
+import 'package:flavor_house/models/post/recipe_preparation.dart';
 import 'package:flavor_house/models/sort/sort_config.dart';
+import 'package:flavor_house/utils/colors.dart';
 
-import '../../models/comment.dart';
-import '../../models/review.dart';
+import '../../models/post/comment.dart';
+import '../../models/post/review.dart';
 import './post_service.dart';
 import '../../common/error/failures.dart';
 import 'package:flutter/material.dart';
@@ -22,22 +23,22 @@ class DummyPost implements PostService {
         "ReyDeLaCocina",
         "Juan Toledo",
         Image.asset("assets/images/avatar.jpg"),
-        "Es muy delicioso y esponjoso!",
+        "¡Recuerdos de cumpleaños inolvidables! Hoy comparto esta foto donde me hundieron la cabeza en la torta. ¡Fue un momento de diversión y risas! Gracias a todos los que hicieron de ese día un cumpleaños épico. ¡No hay mejor manera de celebrar la vida que con amigos y torta en la cara! 🎉🎂 #RecuerdosFelices #CumpleañosInolvidable #AmigosDivertidos",
         90,
         true,
         true,
-        Image.asset("assets/images/cake.jpg"),
+        Image.asset("assets/images/tortazo.jpg"),
       ),
       Moment(
         "2",
         "ReyDeLaCocina",
         "Juan Toledo",
         Image.asset("assets/images/avatar.jpg"),
-        "Deliciosas galletas!",
+        "¡Descubriendo nuevos sabores! Hoy probé este exquisito plato y quedé fascinado. Cada bocado era una explosión de sabores y texturas. ¡No puedo esperar para compartir esta joya culinaria con ustedes! Si eres amante de la buena comida, no te lo puedes perder. ¿Alguien más se anima a probarlo? #DeliciasGastronómicas #SorprendentesSabores #ExperienciaCulinaria",
         45,
         true,
         true,
-        Image.asset("assets/images/cookies.jpg"),
+        Image.asset("assets/images/sushi.jpg"),
       )
     ];
     await Future.delayed(const Duration(seconds: 1));
@@ -55,32 +56,32 @@ class DummyPost implements PostService {
           "ReyDeLaCocina",
           "Juan Toledo",
           Image.asset("assets/images/avatar.jpg"),
-          "Es muy delicioso y esponjoso!",
+          "¡El postre perfecto! Sorprende a todos con este tentador pastel. Esponjoso, indulgente y decorado a la perfección. ¡Prepárate para deleitarte!",
           90,
           true,
           true,
           Image.asset("assets/images/cake.jpg"),
-          "Pastel de chocolate",
+          "Pastel de fresas y chocolate",
           4, [
-        Tag("dulce", const Color(0xFFD2D2D2)),
-        Tag("pastel", const Color(0xFFD2D2D2)),
-        Tag("chocolate", const Color(0xFFD2D2D2)),
+        Tag("1", "dulce", const Color(0xFFff6961).withOpacity(0.5)),
+        Tag("2", "pastel", const Color(0xFFfdcae1).withOpacity(0.5)),
+        Tag("3", "chocolate", primaryColor.withAlpha(90)),
       ]),
       Recipe(
           "2",
           "ReyDeLaCocina",
           "Juan Toledo",
           Image.asset("assets/images/avatar.jpg"),
-          "Deliciosas galletas!",
+          "¡Dulzura irresistible! Prepara estas deliciosas galletas con chispas de chocolate. Crujientes por fuera, suaves por dentro. ¡El placer de cada mordisco!",
           45,
           true,
           true,
           Image.asset("assets/images/cookies.jpg"),
-          "Pastel de chocolate",
+          "Galletas de Chispas de Chocolate",
           4, [
-        Tag("dulce", const Color(0xFFD2D2D2)),
-        Tag("galleta", const Color(0xFFD2D2D2)),
-        Tag("chocolate", const Color(0xFFD2D2D2)),
+        Tag("1", "dulce", const Color(0xFFff6961).withOpacity(0.5)),
+        Tag("2", "galleta", const Color(0xFFc57d56).withOpacity(0.5)),
+        Tag("3", "chocolate", primaryColor.withAlpha(90)),
       ])
     ];
     await Future.delayed(const Duration(seconds: 1));
@@ -116,9 +117,9 @@ class DummyPost implements PostService {
           Image.asset("assets/images/cake.jpg"),
           "Pastel de chocolate",
           4, [
-        Tag("dulce", const Color(0xFFD2D2D2)),
-        Tag("pastel", const Color(0xFFD2D2D2)),
-        Tag("chocolate", const Color(0xFFD2D2D2)),
+        Tag("1" ,"dulce", primaryColor.withAlpha(90)),
+        Tag("2" ,"pastel", primaryColor.withAlpha(90)),
+        Tag("3" ,"chocolate", primaryColor.withAlpha(90)),
       ])
     ];
     await Future.delayed(const Duration(seconds: 1));
@@ -197,5 +198,20 @@ class DummyPost implements PostService {
       "1 cucharadita de extracto de vainilla"
     ];
     return Right(ingredients);
+  }
+
+  @override
+  Future<Either<Failure, List<Tag>>> getTags() async {
+    List<Tag> interests = [
+      Tag("1", "dulce", primaryColor.withAlpha(90)),
+      Tag("2", "BBQ", primaryColor.withAlpha(90)),
+      Tag("3", "Frutas", primaryColor.withAlpha(90)),
+      Tag("4", "Chocolate", primaryColor.withAlpha(90)),
+      Tag("5", "Proteinas", primaryColor.withAlpha(90)),
+      Tag("6", "China", primaryColor.withAlpha(90)),
+      Tag("7", "Japones", primaryColor.withAlpha(90)),
+      Tag("8", "Papas fritas", primaryColor.withAlpha(90)),
+    ];
+    return Right(interests);
   }
 }

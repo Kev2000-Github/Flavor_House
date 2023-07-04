@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart' as dartz;
-import 'package:flavor_house/models/comment.dart';
+import 'package:flavor_house/models/post/comment.dart';
 import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/services/post/dummy_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';

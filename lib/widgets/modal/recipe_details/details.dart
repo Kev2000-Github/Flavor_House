@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
-import 'package:flavor_house/models/recipe_preparation.dart';
-import 'package:flavor_house/models/review.dart';
+import 'package:flavor_house/models/post/recipe_preparation.dart';
+import 'package:flavor_house/models/post/review.dart';
 import 'package:flavor_house/services/post/dummy_post_service.dart';
 import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flavor_house/widgets/modal/recipe_details/details_reviews.dart';

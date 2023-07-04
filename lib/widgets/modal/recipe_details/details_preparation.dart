@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flutter/cupertino.dart';
 
 import '../../../common/error/failures.dart';
-import '../../../models/recipe_preparation.dart';
+import '../../../models/post/recipe_preparation.dart';
 import '../../../services/post/dummy_post_service.dart';
 import '../../../services/post/post_service.dart';
 

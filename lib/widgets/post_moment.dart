@@ -1,11 +1,11 @@
+import 'package:flavor_house/models/interest.dart';
 import 'package:flavor_house/widgets/modal/comments.dart';
 import 'package:flavor_house/widgets/post_user.dart';
-import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
-import 'modal/sort.dart';
+import '../utils/text_themes.dart';
 
 class PostMoment extends StatelessWidget {
   final String id;
@@ -56,7 +56,7 @@ class PostMoment extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(description,
-                    style: const TextStyle(color: gray04Color))),
+                    style: DesignTextTheme.get(type: TextThemeEnum.grayLight))),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
@@ -96,6 +96,5 @@ class PostMoment extends StatelessWidget {
                 ))
           ]),
         ));
-    ;
   }
 }
