@@ -5,8 +5,8 @@ import '../text_field.dart';
 
 class TextInputModalContent extends StatefulWidget {
   final Function(String) onSend;
-
-  const TextInputModalContent({super.key, required this.onSend});
+  final Widget? child;
+  const TextInputModalContent({super.key, required this.onSend, this.child});
 
   @override
   State<TextInputModalContent> createState() => _TextInputModalContentState();
@@ -40,26 +40,32 @@ class _TextInputModalContentState extends State<TextInputModalContent> {
     return Container(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-                child: TextFieldInput(
-              hintText: "",
-              autofocus: true,
-              onSubmitted: (String value) {},
-              textInputType: TextInputType.text,
-              textEditingController: _textController,
-            )),
-            IconButton(
-                onPressed: isEmpty ? null : () {
-                  widget.onSend(_textController.value.text);
-                  Navigator.pop(context);
-                },
-                splashRadius: 22,
-                icon: Icon(
-                  Icons.send,
-                  color: isEmpty ? gray03Color : primaryColor,
-                ))
+            widget.child ?? Container(),
+            Row(
+              children: [
+                Expanded(
+                    child: TextFieldInput(
+                      hintText: "",
+                      autofocus: true,
+                      onSubmitted: (String value) {},
+                      textInputType: TextInputType.text,
+                      textEditingController: _textController,
+                    )),
+                IconButton(
+                    onPressed: isEmpty ? null : () {
+                      widget.onSend(_textController.value.text);
+                      Navigator.pop(context);
+                    },
+                    splashRadius: 22,
+                    icon: Icon(
+                      Icons.send,
+                      color: isEmpty ? gray03Color : primaryColor,
+                    ))
+              ],
+            )
           ],
         ));
   }

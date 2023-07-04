@@ -1,3 +1,4 @@
+import 'package:flavor_house/widgets/modal/recipe_details/details.dart';
 import 'package:flavor_house/widgets/post_user.dart';
 import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import '../utils/colors.dart';
 import 'modal/comments.dart';
 
 class PostRecipe extends StatelessWidget {
+  final String id;
   final String fullName;
   final String username;
   final Image? avatar;
@@ -20,6 +22,7 @@ class PostRecipe extends StatelessWidget {
   final bool isFavorite;
   const PostRecipe(
       {Key? key,
+      required this.id,
       required this.fullName,
       required this.username,
       required this.postTitle,
@@ -39,7 +42,19 @@ class PostRecipe extends StatelessWidget {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-        builder: (context) => CommentsModalContent());
+        builder: (context) => CommentsModalContent(recipeId: id));
+  }
+
+  void onOpenDetails(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (context) => DetailsModalContent(
+              recipeId: id,
+            ));
   }
 
   @override
@@ -64,6 +79,7 @@ class PostRecipe extends StatelessWidget {
                   ),
                   IconButton(
                       onPressed: () {
+                        onOpenDetails(context);
                       },
                       iconSize: 33,
                       splashRadius: 22,

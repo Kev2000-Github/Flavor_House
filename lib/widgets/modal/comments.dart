@@ -1,11 +1,13 @@
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/models/comment.dart';
 import 'package:flavor_house/models/user/user.dart';
-import 'package:flavor_house/services/comment/comment_service.dart';
-import 'package:flavor_house/services/comment/dummy_comment_service.dart';
+import 'package:flavor_house/services/post/dummy_post_service.dart';
+import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/time.dart';
 import 'package:flavor_house/widgets/Avatar.dart';
+import 'package:flavor_house/widgets/button.dart';
+import 'package:flavor_house/widgets/modal/text_input.dart';
 import 'package:flutter/material.dart';
-import 'package:dartz/dartz.dart' as dartz;
 import 'package:provider/provider.dart';
 
 import '../../common/error/failures.dart';
@@ -15,7 +17,8 @@ import '../../utils/text_themes.dart';
 import '../text_field.dart';
 
 class CommentsModalContent extends StatefulWidget {
-  const CommentsModalContent({super.key});
+  final String recipeId;
+  const CommentsModalContent({super.key, required this.recipeId});
 
   @override
   State<CommentsModalContent> createState() => _CommentsModalContentState();
@@ -41,7 +44,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
   }
 
   void getComments() async {
-    CommentService commentService = DummyCommentService();
+    PostService commentService = DummyPost();
     dartz.Either<Failure, List<Comment>> result =
         await commentService.getComments("postId");
     result.fold((l) => null, (List<Comment> comments) {
@@ -49,6 +52,19 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
         this.comments = comments;
       });
     });
+  }
+
+  void onOpenTextInput(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) =>
+            TextInputModalContent(onSend: (String comment) {
+              setState(() {
+                Comment newComment = Comment(user!.username, user!.fullName, comment, DateTime.now(), user?.pictureURL);
+                comments.add(newComment);
+              });
+            }));
   }
 
   @override
@@ -83,12 +99,17 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                     children: [
                       Avatar(pictureHeight: avatarHeight, borderSize: 2, image: user?.picture),
                       const SizedBox(width: 10,),
-                      Expanded(child: TextFieldInput(
-                        hintText: "agrega un comentario...",
-                        onSubmitted: (String value) { },
-                        textInputType: TextInputType.text,
-                        textEditingController: _commentController,)),
-                      IconButton(onPressed: () {}, splashRadius: 22, icon: const Icon(Icons.send, color: primaryColor,))
+                      Expanded(child: Button(
+                        onPressed: () {
+                          onOpenTextInput(context);
+                        },
+                        text: "Agrega un comentario...",
+                        borderSide: const BorderSide(color: gray01Color, width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                        size: const Size.fromHeight(45),
+                        fontSize: 14,
+                        textColor: gray03Color,
+                      )),
                     ],
                   ),
                 ),
@@ -119,7 +140,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                                     ),
                                     Text(formatTimeAgo(comments[index].createdAt),
                                         style: const TextStyle(
-                                            fontWeight: FontWeight.w300,
+                                            fontWeight: FontWeight.w400,
                                             color: gray04Color,
                                             fontSize: 12))
                                   ],

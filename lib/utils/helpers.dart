@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 class Helper {
   static PostMoment createMomentWidget(Moment post) {
     return PostMoment(
+        id: post.id,
         fullName: post.fullName,
         username: post.username,
         description: post.description,
@@ -21,6 +22,7 @@ class Helper {
 
   static PostRecipe createRecipeWidget(Recipe recipe) {
     return PostRecipe(
+      id: recipe.id,
       fullName: recipe.fullName,
       username: recipe.username,
       description: recipe.description,

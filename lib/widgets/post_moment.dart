@@ -8,6 +8,7 @@ import '../utils/colors.dart';
 import 'modal/sort.dart';
 
 class PostMoment extends StatelessWidget {
+  final String id;
   final String fullName;
   final String username;
   final Image? avatar;
@@ -18,6 +19,7 @@ class PostMoment extends StatelessWidget {
   final bool isFavorite;
   const PostMoment(
       {Key? key,
+      required this.id,
       required this.fullName,
       required this.username,
       required this.description,
@@ -30,14 +32,12 @@ class PostMoment extends StatelessWidget {
 
   void onOpenComments(BuildContext context) {
     showModalBottomSheet(
-      isScrollControlled: true,
+        isScrollControlled: true,
         context: context,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20)
-            )),
-        builder: (context) => CommentsModalContent());
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (context) => CommentsModalContent(recipeId: id,));
   }
 
   @override
@@ -48,24 +48,19 @@ class PostMoment extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-             PostUser(
-                fullName: fullName,
-                username: username,
-                avatar: avatar),
+            PostUser(fullName: fullName, username: username, avatar: avatar),
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: picture),
-             Padding(
+            ClipRRect(borderRadius: BorderRadius.circular(20), child: picture),
+            Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(description,
                     style: const TextStyle(color: gray04Color))),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
-                  isLiked: isLiked,
+                    isLiked: isLiked,
                     size: 28,
                     likeBuilder: (isTapped) {
                       return Icon(
@@ -90,7 +85,7 @@ class PostMoment extends StatelessWidget {
                 )
               ]),
             ]),
-             Padding(
+            Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Text(
                   "$likes Me gusta",
