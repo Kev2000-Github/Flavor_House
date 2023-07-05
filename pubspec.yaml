@@ -46,7 +46,15 @@ dependencies:
   image_picker: ^1.0.0
   timeago: ^3.4.0
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  remove_alpha_ios: true
+
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
 
@@ -117,5 +125,6 @@ flutter:
     - assets/images/sushi.jpg
     - assets/images/tortazo.jpg
     - assets/images/logo.png
+    - assets/images/icon.png
 
 
