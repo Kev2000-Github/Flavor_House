@@ -4,10 +4,11 @@ import 'package:flavor_house/screens/recipes/skeleton_recipe.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
 import '../../models/sort/sort_config.dart';
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
@@ -36,7 +37,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     }
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Recipe>> result =
-        await postClient.getRecipes(selectedSort);
+        await postClient.getRecipes(sort: selectedSort);
     result.fold((failure) {
       if (mounted) {
         setState(() => _isPostLoading = false);
@@ -70,7 +71,9 @@ class _RecipeScreenState extends State<RecipeScreen> {
             child: SingleChildScrollView(
               child: Column(children: [
                 user != null
-                    ? InputPost(avatarURL: user?.picture ?? "")
+                    ? InputPost(avatar: user?.picture, onPressed: () {
+                  Navigator.of(context).pushNamed(routes.create_recipe);
+                },)
                     : Container(),
                 const SizedBox(
                   height: 20,

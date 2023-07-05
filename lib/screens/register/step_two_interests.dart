@@ -1,28 +1,22 @@
-
+import 'package:flavor_house/services/register/dummy_register_step_two_service.dart';
+import 'package:flavor_house/services/register/register_step_two_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:dartz/dartz.dart' as dartz;
 
+import '../../common/error/failures.dart';
 import '../../models/interest.dart';
 import '../../utils/colors.dart';
-import '../../widgets/button.dart';
 
 List<Interest> interests = [
-  new Interest("1", "dulce",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
-  new Interest("2", "BBQ",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
-  new Interest("3", "Frutas",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
-  new Interest("4", "Chocolate",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
-  new Interest("5", "Proteinas",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
-  new Interest("6", "China",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
-  new Interest("7", "Japones",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
-  new Interest("8", "Papas fritas",
-      "https://cookingformysoul.com/wp-content/uploads/2023/05/feat-spatchcock-bbq-chicken-min.jpg"),
+  Interest("1", "dulce", "assets/images/interest.jpg"),
+  Interest("2", "BBQ", "assets/images/interest.jpg"),
+  Interest("3", "Frutas", "assets/images/interest.jpg"),
+  Interest("4", "Chocolate", "assets/images/interest.jpg"),
+  Interest("5", "Proteinas", "assets/images/interest.jpg"),
+  Interest("6", "China", "assets/images/interest.jpg"),
+  Interest("7", "Japones", "assets/images/interest.jpg"),
+  Interest("8", "Papas fritas", "assets/images/interest.jpg"),
 ];
 
 class StepInterests extends StatefulWidget {
@@ -34,7 +28,22 @@ class StepInterests extends StatefulWidget {
 }
 
 class _StepInterestsState extends State<StepInterests> {
+  List<Interest> interests = [];
   List<String> selectedInterests = [];
+
+  void getInterests() async {
+    RegisterStepTwo registerService = DummyRegisterStepTwo();
+    dartz.Either<Failure, List<Interest>> result = await registerService.getInterests();
+    result.fold((l) => null, (interests) {
+      setState(() => this.interests = interests);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getInterests();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,21 +78,20 @@ class _StepInterestsState extends State<StepInterests> {
                   return InterestItem(
                       onTap: () {
                         String interestId = interests[index].id;
-                        if(selectedInterests.contains(interestId)){
+                        if (selectedInterests.contains(interestId)) {
                           selectedInterests.remove(interests[index].id);
-                        }
-                        else{
+                        } else {
                           selectedInterests.add(interests[index].id);
                         }
-                        if(selectedInterests.length >= 3) widget.onFinish(true);
-                        else widget.onFinish(false);
-                        setState(() {
-
-                        });
+                        if (selectedInterests.length >= 3)
+                          widget.onFinish(true);
+                        else
+                          widget.onFinish(false);
+                        setState(() {});
                       },
                       interest: interests[index],
                       isSelected:
-                      selectedInterests.contains(interests[index].id));
+                          selectedInterests.contains(interests[index].id));
                 }))
       ],
     );
@@ -102,14 +110,13 @@ class InterestItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       customBorder:
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       onTap: onTap,
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            image: DecorationImage(
-                image: NetworkImage(interest.picURL ?? ""), fit: BoxFit.cover)),
+            image: DecorationImage(image: interest.picture.image, fit: BoxFit.cover)),
         child: Stack(children: [
           Positioned.fill(
               child: Opacity(

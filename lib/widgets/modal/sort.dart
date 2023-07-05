@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/sort/sort_config.dart';
 import '../../utils/colors.dart';
+import '../../utils/text_themes.dart';
 import '../button.dart';
 
 class SortModalContent extends StatefulWidget {
@@ -44,14 +45,11 @@ class _SortModalContentState extends State<SortModalContent> {
               child: Container(
                   height: 5, width: 40, color: gray03Color),
             ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 10),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
               child: Text(
                 "Filtros",
-                style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    color: darkColor),
+                style: DesignTextTheme.get(type: TextThemeEnum.darkMedium),
               ),
             ),
             const Padding(
@@ -65,12 +63,9 @@ class _SortModalContentState extends State<SortModalContent> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Orden",
-                      style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.w600,
-                          color: darkColor),
+                      style: DesignTextTheme.get(type: TextThemeEnum.darkMedium),
                     ),
                     const Spacer(),
                     DropdownButtonHideUnderline(

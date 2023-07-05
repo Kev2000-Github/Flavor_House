@@ -10,11 +10,12 @@ import 'package:flavor_house/widgets/sort.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
 import '../../models/post/moment.dart';
 import '../../models/sort/sort_config.dart';
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../services/post/dummy_post_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Moment>> result =
-        await postClient.getMoments(selectedSort);
+        await postClient.getMoments(sort: selectedSort);
     result.fold((failure) {
       if (mounted) {
         setState(() => _isPostLoading = false);
@@ -71,7 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: SingleChildScrollView(
               child: Column(children: [
                 user != null
-                    ? InputPost(avatarURL: user?.picture ?? "")
+                    ? InputPost(avatar: user?.picture, onPressed: () {
+                  Navigator.pushNamed(context, routes.createpost);
+                },)
                     : Container(),
                 const SizedBox(
                   height: 20,

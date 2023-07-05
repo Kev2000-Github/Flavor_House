@@ -30,8 +30,11 @@ class Sort extends StatelessWidget {
               onPressed: () {
                 showModalBottomSheet(
                     context: context,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)
+                        )),
                     builder: (context) => SortModalContent(
                           selectedValue: selectedValue,
                           onApply: (selectedConfig) {

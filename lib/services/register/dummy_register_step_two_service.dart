@@ -1,8 +1,10 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:flavor_house/common/error/failures.dart';
-import 'package:flavor_house/models/user.dart';
+import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/services/register/register_step_two_service.dart';
+
+import '../../models/interest.dart';
 
 class DummyRegisterStepTwo implements RegisterStepTwo {
   @override
@@ -16,10 +18,25 @@ class DummyRegisterStepTwo implements RegisterStepTwo {
           'Hombre',
           '4126451235',
           'VEN',
-          'https://images.ctfassets.net/hrltx12pl8hq/3Mz6t2p2yHYqZcIM0ic9E2/3b7037fe8871187415500fb9202608f7/Man-Stock-Photos.jpg');
+          "assets/images/avatar.jpg");
       return Right(actualUser);
     } catch (e) {
       return Left(ServerFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, List<Interest>>> getInterests() async {
+    List<Interest> interests = [
+      Interest("1", "dulce", "assets/images/interest.jpg"),
+      Interest("2", "BBQ", "assets/images/interest.jpg"),
+      Interest("3", "Frutas", "assets/images/interest.jpg"),
+      Interest("4", "Chocolate", "assets/images/interest.jpg"),
+      Interest("5", "Proteinas", "assets/images/interest.jpg"),
+      Interest("6", "China", "assets/images/interest.jpg"),
+      Interest("7", "Japones", "assets/images/interest.jpg"),
+      Interest("8", "Papas fritas", "assets/images/interest.jpg"),
+    ];
+    return Right(interests);
   }
 }

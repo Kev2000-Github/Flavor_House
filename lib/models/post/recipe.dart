@@ -1,5 +1,6 @@
 import 'package:flavor_house/models/post/post.dart';
 import 'package:flavor_house/models/post/tag.dart';
+import 'package:flutter/material.dart';
 
 class Recipe extends Post {
   final String title;
@@ -10,15 +11,15 @@ class Recipe extends Post {
       String id,
       String username,
       String fullName,
-      String? avatarURL,
+      Image? avatar,
       String description,
-      double likes,
+      int likes,
       bool isLiked,
       bool isFavorite,
-      String? pictureURL,
+      Image? picture,
       this.title,
       this.stars,
       this.tags)
-      : super(id, username, fullName, avatarURL, description, likes, isLiked, isFavorite, pictureURL);
+      : super(id, username, fullName, avatar, description, likes, isLiked, isFavorite, picture);
 
 }

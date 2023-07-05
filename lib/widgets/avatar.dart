@@ -3,7 +3,7 @@ import '../utils/colors.dart';
 
 class Avatar extends StatelessWidget {
   final double pictureHeight;
-  final String imageURL;
+  final Image? image;
   final Color? borderColor;
   final double borderSize;
   const Avatar(
@@ -11,7 +11,7 @@ class Avatar extends StatelessWidget {
       this.borderColor,
         this.borderSize = 5,
       required this.pictureHeight,
-      required this.imageURL})
+      required this.image})
       : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class Avatar extends StatelessWidget {
         backgroundColor: borderColor ?? primaryColor,
         child: CircleAvatar(
           radius: (pictureHeight / 2) - borderSize,
-          backgroundImage: NetworkImage(imageURL),
+          backgroundImage: image?.image ?? const AssetImage("assets/images/user_avatar.png"),
         ));
   }
 }

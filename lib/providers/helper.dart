@@ -3,7 +3,7 @@ import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import '../models/user.dart';
+import '../models/user/user.dart';
 import '../utils/cache.dart';
 
 class ProviderHelper {

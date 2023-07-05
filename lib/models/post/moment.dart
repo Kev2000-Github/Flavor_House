@@ -1,18 +1,19 @@
 import 'package:equatable/equatable.dart';
 import 'package:flavor_house/models/post/post.dart';
+import 'package:flutter/material.dart';
 
 class Moment extends Post {
   Moment(
       String id,
       String username,
       String fullName,
-      String? avatarURL,
+      Image? avatar,
       String description,
-      double likes,
+      int likes,
       bool isLiked,
       bool isFavorite,
-      String? pictureURL)
-      : super(id, username, fullName, avatarURL, description, likes, isLiked,
-            isFavorite, pictureURL);
+      Image? picture)
+      : super(id, username, fullName, avatar, description, likes, isLiked,
+            isFavorite, picture);
 
 }

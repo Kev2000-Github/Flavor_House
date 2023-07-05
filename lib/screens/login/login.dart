@@ -9,7 +9,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/popups/login.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../services/auth/auth_service.dart';
 import '../../utils/colors.dart';
 import '../../widgets/button.dart';
@@ -37,6 +37,24 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
   }
 
+  void onLogin() async {
+    String email = _emailController.value.text;
+    String password = _passwordController.value.text;
+    //TODO: Beware this is a dummy implementation!
+    Auth auth = DummyAuth();
+    dartz.Either<Failure, User> result = await auth.login(email, password);
+    result.fold((failure) {
+      if (failure.runtimeType == LoginFailure) {
+        LoginPopup.alertLoginFailure(context);
+      } else if (failure.runtimeType == LoginEmptyFailure) {
+        LoginPopup.alertLoginEmptyFailure(context);
+      }
+    }, (user) async {
+      await Provider.of<UserProvider>(context, listen: false).login(user);
+      if (context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: IconButton(
                       onPressed: () {
                         Navigator.pop(context);
-                      }, icon: const Icon(Icons.close, size: 24)))),
+                      },
+                      icon: const Icon(Icons.close, size: 24)))),
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               width: double.infinity,
@@ -85,28 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Flexible(flex: 2, child: Container()),
                 // button login
                 Button(
-                  text: "Iniciar Sesión",
-                  onPressed: () async {
-                    String email = _emailController.value.text;
-                    String password = _passwordController.value.text;
-                    //TODO: Beware this is a dummy implementation!
-                    Auth auth = DummyAuth();
-                    dartz.Either<Failure, User> result =
-                        await auth.login(email, password);
-                    result.fold(
-                        (failure) {
-                          if(failure.runtimeType == LoginFailure){
-                            LoginPopup.alertLoginFailure(context);
-                          }
-                          else if(failure.runtimeType == LoginEmptyFailure){
-                            LoginPopup.alertLoginEmptyFailure(context);
-                          }
-                        },
-                        (user) async {
-                          await Provider.of<UserProvider>(context, listen: false).login(user);
-                          if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
-                        });
-                  },
+                  text: "Iniciar Sesion",
+                  onPressed: onLogin,
                   borderSide: null,
                   backgroundColor: primaryColor,
                   textColor: whiteColor,
@@ -114,11 +113,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: const Text("¿Se te olvido la contraseña?",
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15))),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(routes.forgotpassword);
+                      },
+                      child: const Text("¿Se te olvido la contraseña?",
+                          style: TextStyle(
+                              color: primaryColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15)),
+                    )),
                 const SizedBox(height: 24),
               ]))
         ],

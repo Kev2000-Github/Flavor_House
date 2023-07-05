@@ -1,23 +1,31 @@
+import 'package:flavor_house/models/post/tag.dart';
+import 'package:flavor_house/utils/text_themes.dart';
+import 'package:flavor_house/widgets/modal/recipe_details/details.dart';
 import 'package:flavor_house/widgets/post_user.dart';
 import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
+import '../utils/helpers.dart';
+import 'modal/comments.dart';
 
 class PostRecipe extends StatelessWidget {
+  final String id;
   final String fullName;
   final String username;
-  final String avatarURL;
+  final Image? avatar;
   final String postTitle;
   final String description;
-  final String pictureURL;
-  final double likes;
+  final Image picture;
+  final int likes;
   final double rates;
   final bool isLiked;
   final bool isFavorite;
+  final List<Tag> tags;
   const PostRecipe(
       {Key? key,
+      required this.id,
       required this.fullName,
       required this.username,
       required this.postTitle,
@@ -26,9 +34,32 @@ class PostRecipe extends StatelessWidget {
       required this.rates,
       required this.isLiked,
       required this.isFavorite,
-      required this.pictureURL,
-      required this.avatarURL})
+      required this.picture,
+      required this.avatar,
+      required this.tags})
       : super(key: key);
+
+  void onOpenComments(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (context) => CommentsModalContent(recipeId: id));
+  }
+
+  void onOpenDetails(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (context) => DetailsModalContent(
+              recipeId: id,
+            ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +69,21 @@ class PostRecipe extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-             PostUser(
-                fullName: fullName,
-                username: username,
-                avatarURL: avatarURL),
-             Wrap(
+            Row(
+              children: [
+                PostUser(fullName: fullName, username: username, avatar: avatar),
+                const Spacer(),
+                IconButton(
+                    onPressed: () {
+                      onOpenDetails(context);
+                    },
+                    iconSize: 33,
+                    splashRadius: 22,
+                    icon: const Icon(Icons.import_contacts,
+                        color: secondaryColor))
+              ],
+            ),
+            Wrap(
                 spacing: 10,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
@@ -53,22 +94,31 @@ class PostRecipe extends StatelessWidget {
                         color: darkColor,
                         fontWeight: FontWeight.bold),
                   ),
-                  const Icon(Icons.import_contacts, color: secondaryColor, size: 33)
                 ]),
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(pictureURL)),
-             Padding(
+            ClipRRect(borderRadius: BorderRadius.circular(20), child: picture),
+            Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(description,
-                    style: const TextStyle(color: gray04Color))),
+                child: Helper.createPostDescription(description)),
+            Wrap(
+              spacing: 10,
+              children: List.generate(
+                  tags.length,
+                  (index) {
+                    return ChoiceChip(
+                      label: Text(tags[index].name),
+                      selected: true,
+                      //selectedShadowColor: primaryColor,
+                      selectedColor: tags[index].color,
+                    );
+                  }),
+            ),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
-                  isLiked: isLiked,
+                    isLiked: isLiked,
                     size: 28,
                     likeBuilder: (isTapped) {
                       return Icon(
@@ -85,7 +135,9 @@ class PostRecipe extends StatelessWidget {
                   },
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    onOpenComments(context);
+                  },
                   child: const Icon(Icons.mode_comment_outlined,
                       size: 26, color: gray03Color),
                 )
@@ -97,7 +149,7 @@ class PostRecipe extends StatelessWidget {
                   },
                   rate: rates)
             ]),
-             Padding(
+            Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Text(
                   "$likes Me gusta",
@@ -108,6 +160,5 @@ class PostRecipe extends StatelessWidget {
                 ))
           ]),
         ));
-    ;
   }
 }

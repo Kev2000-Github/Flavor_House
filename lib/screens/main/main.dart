@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/popups/common.dart';
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../providers/helper.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/cache.dart';

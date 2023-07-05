@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../common/error/failures.dart';
 import '../../models/post/recipe.dart';
 import '../../models/sort/sort_config.dart';
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
@@ -35,7 +35,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       setState(() => _isPostLoading = true);
     }
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List> result = await postClient.getAll(selectedSort);
+    dartz.Either<Failure, List> result = await postClient.getAll(sort: selectedSort);
     result.fold((failure) {
       if(mounted){
         setState(() => _isPostLoading = false);

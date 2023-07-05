@@ -7,7 +7,7 @@ import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../utils/colors.dart';
 import '../../widgets/button.dart';
 

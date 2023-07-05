@@ -1,30 +1,45 @@
+import 'package:flavor_house/models/interest.dart';
+import 'package:flavor_house/utils/helpers.dart';
+import 'package:flavor_house/widgets/modal/comments.dart';
 import 'package:flavor_house/widgets/post_user.dart';
-import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
+import '../utils/text_themes.dart';
 
 class PostMoment extends StatelessWidget {
+  final String id;
   final String fullName;
   final String username;
-  final String avatarURL;
+  final Image? avatar;
   final String description;
-  final String pictureURL;
-  final double likes;
+  final Image picture;
+  final int likes;
   final bool isLiked;
   final bool isFavorite;
   const PostMoment(
       {Key? key,
+      required this.id,
       required this.fullName,
       required this.username,
       required this.description,
       required this.likes,
       required this.isLiked,
       required this.isFavorite,
-      required this.pictureURL,
-      required this.avatarURL})
+      required this.picture,
+      required this.avatar})
       : super(key: key);
+
+  void onOpenComments(BuildContext context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (context) => CommentsModalContent(recipeId: id,));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,24 +49,18 @@ class PostMoment extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-             PostUser(
-                fullName: fullName,
-                username: username,
-                avatarURL: avatarURL),
+            PostUser(fullName: fullName, username: username, avatar: avatar),
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(pictureURL)),
-             Padding(
+            ClipRRect(borderRadius: BorderRadius.circular(20), child: picture),
+            Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(description,
-                    style: const TextStyle(color: gray04Color))),
+                child: Helper.createPostDescription(description)),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
-                  isLiked: isLiked,
+                    isLiked: isLiked,
                     size: 28,
                     likeBuilder: (isTapped) {
                       return Icon(
@@ -68,13 +77,15 @@ class PostMoment extends StatelessWidget {
                   },
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    onOpenComments(context);
+                  },
                   child: const Icon(Icons.mode_comment_outlined,
                       size: 26, color: gray03Color),
                 )
               ]),
             ]),
-             Padding(
+            Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Text(
                   "$likes Me gusta",
@@ -85,6 +96,5 @@ class PostMoment extends StatelessWidget {
                 ))
           ]),
         ));
-    ;
   }
 }

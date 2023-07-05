@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../utils/colors.dart';
 import '../../widgets/Avatar.dart';
 import '../../widgets/button.dart';
@@ -48,7 +48,7 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
               title: const Text(
                 "Crear Publicación",
                 style: TextStyle(
-                    color: blackColor, fontSize: 32, fontWeight: FontWeight.w600),
+                    color: blackColor, fontSize: 28, fontWeight: FontWeight.w600),
               ),
               leading: IconButton(
                   onPressed: () {
@@ -65,7 +65,7 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
                    Avatar(
                       pictureHeight: 90,
                       borderSize: 2,
-                      imageURL: user?.picture ?? ""),
+                      image: user?.picture),
                     const SizedBox(height: 25),
                     TextField(
                       decoration:

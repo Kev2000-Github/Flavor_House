@@ -78,7 +78,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Avatar(
                           pictureHeight: 80,
                           borderSize: 2,
-                          imageURL: user?.picture ?? ""),
+                          image: user.picture),
                       TextButton(
                         onPressed: () {
                           // Agregar lógica para seleccionar un archivo

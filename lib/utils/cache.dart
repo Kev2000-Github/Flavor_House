@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/user.dart';
+import '../models/user/user.dart';
 
 String userData = "userData";
 
@@ -20,7 +20,6 @@ Future<User?> getLocalUser() async {
     if(stringUser == null) return null;
     Map<String, dynamic> mappedUser = jsonDecode(stringUser);
     User localUser = User.fromJson(mappedUser);
-
     return localUser;
   }
   catch(e){

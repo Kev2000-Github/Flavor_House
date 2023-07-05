@@ -7,8 +7,9 @@ import 'avatar.dart';
 import 'button.dart';
 
 class InputPost extends StatelessWidget {
-  final String avatarURL;
-  const InputPost({Key? key, required this.avatarURL}) : super(key: key);
+  final Image? avatar;
+  final VoidCallback? onPressed;
+  const InputPost({Key? key, required this.avatar, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +19,13 @@ class InputPost extends StatelessWidget {
           child: Avatar(
             pictureHeight: 60,
             borderSize: 2,
-            imageURL: avatarURL)
+            image: avatar,)
       ),
       Expanded(
           flex: 4,
           child: Button(
             onPressed: () {
-              Navigator.pushNamed(context, routes.createpost);
+              if(onPressed != null) onPressed!();
             },
             text: "¿Que vas a comer?",
             borderSide: const BorderSide(color: gray01Color, width: 2),
