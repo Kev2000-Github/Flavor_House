@@ -12,6 +12,7 @@ import 'package:flavor_house/common/routes/router_register_two.dart';
 import 'package:flavor_house/common/routes/router_welcome.dart';
 import 'package:flavor_house/common/routes/router_change_password.dart';
 import 'package:flavor_house/common/routes/router_edit_profile.dart';
+import 'package:flavor_house/common/routes/select_country.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
@@ -29,7 +30,9 @@ class RouteGenerator {
       ForgotPasswordRoute(),
       ForgotPasswordCodeRoute(),
       ForgotPasswordNewRoute(),
-      EditProfileRoute(), ChangePasswordRoute()
+      EditProfileRoute(),
+      ChangePasswordRoute(),
+      SelectCountryRoute()
     ];
     for (IRoute router in routes) {
       if (settings.name != router.route) continue;
