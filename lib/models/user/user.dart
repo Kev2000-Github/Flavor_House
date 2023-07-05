@@ -7,12 +7,12 @@ class User extends Equatable {
   final String username;
   final String fullName;
   final String email;
-  final String? sex;
+  final String? gender;
   final String? phoneNumber;
   final String? countryId;
   final String? pictureURL;
 
-  User(this.id, this.username, this.fullName, this.email, this.sex,
+  User(this.id, this.username, this.fullName, this.email, this.gender,
       this.phoneNumber, this.countryId, this.pictureURL);
 
   @override
@@ -50,7 +50,7 @@ class User extends Equatable {
       "username": username,
       "fullName": fullName,
       "email": email,
-      "sex": sex,
+      "gender": gender,
       "phoneNumber": phoneNumber,
       "countryId": countryId,
       "pictureURL": pictureURL

@@ -5,11 +5,6 @@ import 'package:flavor_house/models/interest.dart';
 import 'package:flavor_house/models/user/user.dart';
 
 abstract class RegisterStepTwo {
-<<<<<<< HEAD
   Future<Either<Failure, User>> registerAdditionalInfo(String countryId, String? genderId, List<String> interests);
-=======
-  Future<Either<Failure, User>> registerAditionalInfo(String countryId, String? genderId, List<String> interests);
   Future<Either<Failure, List<Interest>>> getInterests();
-
->>>>>>> master
 }

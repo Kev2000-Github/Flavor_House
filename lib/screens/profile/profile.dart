@@ -199,7 +199,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fontSize: 20,
                 ) : Button(
                   text: "Editar Perfil",
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, routes.edit_profile);
+                  },
                   borderSide: null,
                   backgroundColor: primaryColor,
                   textColor: whiteColor,

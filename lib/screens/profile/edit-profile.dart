@@ -1,13 +1,9 @@
+import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/screens/profile/skeleton_profile.dart';
-import 'package:flavor_house/services/user_info/dummy_user_info_service.dart';
-import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flavor_house/models/user.dart';
-import 'dart:developer';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
-
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -78,7 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       Avatar(
                           pictureHeight: 80,
                           borderSize: 2,
-                          image: user.picture),
+                          image: user?.picture),
                       TextButton(
                         onPressed: () {
                           // Agregar lógica para seleccionar un archivo
