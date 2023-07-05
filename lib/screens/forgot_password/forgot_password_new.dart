@@ -86,11 +86,11 @@ class _ForgotPasswordNewScreenState extends State<ForgotPasswordNewScreen> {
                           if(failure.runtimeType == PasswordEmpty){
                             ForgotPasswordPopup.PasswordEmpty(context);
                           }
-
                         },
-
                         (user) async {
-                          if(context.mounted) Navigator.of(context).pushNamed(routes.welcome);
+                          ForgotPasswordPopup.Passwordsucessful(context, () {
+                            Navigator.of(context).popUntil((route) => route.isFirst);
+                          });
                         });
                   },
                   borderSide: null,

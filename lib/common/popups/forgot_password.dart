@@ -53,7 +53,7 @@ class ForgotPasswordPopup {
           ],
         ));
   }
-  static void Passwordsucessful(context) {
+  static void Passwordsucessful(context, VoidCallback onPressed) {
     showDialog(
         context: context,
         builder: (_) => CupertinoAlertDialog(
@@ -62,7 +62,7 @@ class ForgotPasswordPopup {
           actions: [
             CupertinoDialogAction(
               child: const Text("ok"),
-              onPressed: () {
+              onPressed: onPressed ?? () {
                 Navigator.pop(context);
               },
             )
