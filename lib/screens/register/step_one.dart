@@ -7,7 +7,7 @@ import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../utils/colors.dart';
 import '../../widgets/button.dart';
 
@@ -67,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           )
         ),
         body: SafeArea(
-            child: GestureDetector(
+        child: GestureDetector(
           onTap: () {
             _emailFocus.unfocus();
             _passwordFocus.unfocus();
@@ -91,10 +91,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           dartz.Either<Failure, User> result = await register
                               .register(username, fullName, email, password);
                           result.fold((failure) => print('failure: $failure'),
-                              (user) {
-                            Navigator.of(context)
-                                .pushNamed(routes.register_two);
-                          });
+                                  (user) {
+                                Navigator.of(context)
+                                    .pushNamed(routes.register_two);
+                              });
                         },
                         borderSide: null,
                         backgroundColor: primaryColor,

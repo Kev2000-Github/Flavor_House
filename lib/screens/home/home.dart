@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import '../../common/error/failures.dart';
 import '../../models/post/moment.dart';
 import '../../models/sort/sort_config.dart';
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../services/post/dummy_post_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Moment>> result =
-        await postClient.getMoments(selectedSort);
+        await postClient.getMoments(sort: selectedSort);
     result.fold((failure) {
       if (mounted) {
         setState(() => _isPostLoading = false);

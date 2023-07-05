@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/user.dart';
+import '../models/user/user.dart';
 
 String userData = "userData";
 

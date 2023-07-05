@@ -6,6 +6,9 @@ class TextFieldInput extends StatelessWidget {
   final String hintText;
   final TextInputType textInputType;
   final FocusNode? focusNode;
+  final Color? bgColor;
+  final Widget? prefixICon;
+  final Function(String)? onSubmitted;
 
   const TextFieldInput({
     Key? key,
@@ -13,7 +16,10 @@ class TextFieldInput extends StatelessWidget {
     required this.hintText,
     required this.textInputType,
     required this.textEditingController,
-    this.focusNode
+    this.bgColor,
+    this.prefixICon,
+    this.focusNode,
+    this.onSubmitted
 }) : super(key: key);
 
   @override
@@ -24,13 +30,16 @@ class TextFieldInput extends StatelessWidget {
     return TextField(
       focusNode: focusNode,
       controller: textEditingController,
+      onSubmitted: onSubmitted,
       decoration: InputDecoration(
         hintText: hintText,
         border: inputBorder,
         focusedBorder: inputBorder,
         enabledBorder: inputBorder,
         filled: true,
-        contentPadding: const EdgeInsets.all(8)
+        contentPadding: const EdgeInsets.all(8),
+        prefixIcon: prefixICon,
+        fillColor: bgColor,
       ),
       keyboardType: textInputType,
       obscureText: isPass,

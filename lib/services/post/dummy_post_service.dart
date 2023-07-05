@@ -2,19 +2,16 @@ import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
 import 'package:flavor_house/models/post/moment.dart';
-import 'package:flavor_house/models/post/post.dart';
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/models/post/tag.dart';
 import 'package:flavor_house/models/sort/sort_config.dart';
 
-import '../../common/error/failures.dart';
-import '../../models/sort/sort_config.dart';
 import './post_service.dart';
-import 'constants.dart';
+import '../../common/error/failures.dart';
 
 class DummyPost implements PostService {
   @override
-  Future<Either<Failure, List<Moment>>> getMoments(SortConfig sort) async {
+  Future<Either<Failure, List<Moment>>> getMoments({SortConfig? sort, String? search}) async {
     List<Moment> posts = [
       Moment(
         "1",
@@ -40,14 +37,14 @@ class DummyPost implements PostService {
       )
     ];
     await Future.delayed(const Duration(seconds: 1));
-    if(sort.value == SortConfig.oldest().value){
+    if(sort != null && sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
     return Right(posts);
   }
 
   @override
-  Future<Either<Failure, List<Recipe>>> getRecipes(SortConfig sort) async {
+  Future<Either<Failure, List<Recipe>>> getRecipes({SortConfig? sort, String? search}) async {
     List<Recipe> posts = [
       Recipe(
           "1",
@@ -83,14 +80,14 @@ class DummyPost implements PostService {
       ])
     ];
     await Future.delayed(const Duration(seconds: 1));
-    if(sort.value == SortConfig.oldest().value){
+    if(sort != null && sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
     return Right(posts);
   }
 
   @override
-  Future<Either<Failure, List>> getAll(SortConfig sort) async {
+  Future<Either<Failure, List>> getAll({SortConfig? sort}) async {
     List posts = [
       Moment(
         "1",
@@ -121,7 +118,7 @@ class DummyPost implements PostService {
       ])
     ];
     await Future.delayed(const Duration(seconds: 1));
-    if(sort.value == SortConfig.oldest().value){
+    if(sort != null && sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
     return Right(posts);

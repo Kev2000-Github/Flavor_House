@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
 

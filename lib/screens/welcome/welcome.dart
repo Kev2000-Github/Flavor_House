@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user.dart';
+import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/cache.dart';
 
