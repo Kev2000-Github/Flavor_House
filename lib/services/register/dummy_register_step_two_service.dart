@@ -6,7 +6,7 @@ import 'package:flavor_house/services/register/register_step_two_service.dart';
 
 class DummyRegisterStepTwo implements RegisterStepTwo {
   @override
-  Future<Either<Failure, User>> registerAditionalInfo(String countryId, String? genderId, List<String> interests) async {
+  Future<Either<Failure, User>> registerAdditionalInfo(String countryId, String? genderId, List<String> interests) async {
     try {
       User actualUser = User(
           'id',

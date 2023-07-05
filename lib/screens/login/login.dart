@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Flexible(flex: 2, child: Container()),
                 // button login
                 Button(
-                  text: "Iniciar Sesion",
+                  text: "Iniciar Sesión",
                   onPressed: () async {
                     String email = _emailController.value.text;
                     String password = _passwordController.value.text;

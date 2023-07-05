@@ -123,7 +123,7 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
                         IconButton(
                             onPressed: () async {
                               RegisterStepTwo register = DummyRegisterStepTwo();
-                              dartz.Either<Failure, User> result = await register.registerAditionalInfo(_country, _gender, _interests);
+                              dartz.Either<Failure, User> result = await register.registerAdditionalInfo(_country, _gender, _interests);
                               result.fold((l) => null, (User user) async {
                                 await Provider.of<UserProvider>(context, listen: false).login(user);
                                 if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);

@@ -9,8 +9,8 @@ String userData = "userData";
 
 Future<void> setLocalUser(User loggedUser) async {
   SharedPreferences pref = await SharedPreferences.getInstance();
-  String fomattedUser = jsonEncode(loggedUser.toJson());
-  await pref.setString(userData, fomattedUser);
+  String formattedUser = jsonEncode(loggedUser.toJson());
+  await pref.setString(userData, formattedUser);
 }
 
 Future<User?> getLocalUser() async {

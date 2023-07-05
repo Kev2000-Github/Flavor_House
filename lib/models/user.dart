@@ -6,12 +6,12 @@ class User extends Equatable {
   late String username;
   late String fullName;
   late String email;
-  late String? sex;
+  late String? gender;
   late String? phoneNumber;
   late String? countryId;
   late String? picture;
 
-   User(this.id, this.username, this.fullName, this.email, this.sex,
+   User(this.id, this.username, this.fullName, this.email, this.gender,
       this.phoneNumber, this.countryId, this.picture);
 
   @override
@@ -45,7 +45,7 @@ class User extends Equatable {
       json['username'],
       json['fullName'],
       json['email'],
-      json['sex'],
+      json['gender'],
       json['phoneNumber'],
       json['countryId'],
       json['picture']
@@ -59,7 +59,7 @@ class User extends Equatable {
       "username": username,
       "fullName": fullName,
       "email": email,
-      "sex": sex,
+      "gender": gender,
       "phoneNumber": phoneNumber,
       "countryId": countryId,
       "picture": picture
