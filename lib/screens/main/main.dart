@@ -30,12 +30,6 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
   }
 
-  void verifyLoggedUser() async {
-    User? loggedUser = await ProviderHelper.getLoggedUser(context);
-    if (loggedUser != null) return;
-    CommonPopup.alertUserNotLogged(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

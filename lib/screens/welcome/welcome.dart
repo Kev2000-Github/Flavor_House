@@ -4,11 +4,8 @@ import 'package:flavor_house/utils/colors.dart';
 import 'package:flavor_house/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 import '../../models/user/user.dart';
-import '../../providers/user_provider.dart';
-import '../../utils/cache.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -27,7 +24,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void verifyLoggedUser() async {
     User? loggedUser = await ProviderHelper.getLoggedUser(context);
     if(loggedUser == null) return;
-    Navigator.pushNamed(context, routes.main_screen);
+    if(mounted) Navigator.pushNamed(context, routes.main_screen);
   }
 
   @override
@@ -41,8 +38,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(flex: 2, child: Container()),
-                      SvgPicture.asset('assets/images/logo.svg',
-                          height: 150, semanticsLabel: "logo"),
+                      Image.asset('assets/images/logo.png', height: 150),
                       const SizedBox(height: 64),
                       Button(
                         text: "Iniciar Sesion",

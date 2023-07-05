@@ -126,28 +126,30 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                                 borderSize: 2,
                                 image: comments[index].picture),
                             const SizedBox(width: 5),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.end,
-                                  spacing: 10,
-                                  children: [
-                                    Text(
-                                      comments[index].fullName,
-                                      style: DesignTextTheme.get(
-                                          type: TextThemeEnum.darkSemiMedium),
-                                    ),
-                                    Text(formatTimeAgo(comments[index].createdAt),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: gray04Color,
-                                            fontSize: 12))
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Text(comments[index].comment)
-                              ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Wrap(
+                                    crossAxisAlignment: WrapCrossAlignment.end,
+                                    spacing: 10,
+                                    children: [
+                                      Text(
+                                        comments[index].fullName,
+                                        style: DesignTextTheme.get(
+                                            type: TextThemeEnum.darkSemiMedium),
+                                      ),
+                                      Text(formatTimeAgo(comments[index].createdAt),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: gray04Color,
+                                              fontSize: 12))
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(comments[index].comment, overflow: TextOverflow.clip,)
+                                ],
+                              )
                             )
                           ],
                         ));

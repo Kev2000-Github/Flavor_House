@@ -20,8 +20,8 @@ class DummyPost implements PostService {
     List<Moment> posts = [
       Moment(
         "1",
-        "ReyDeLaCocina",
-        "Juan Toledo",
+        "alegarcia17",
+        "Alejandro Garcia",
         null,
         "¡Recuerdos de cumpleaños inolvidables! Hoy comparto esta foto donde me hundieron la cabeza en la torta. ¡Fue un momento de diversión y risas! Gracias a todos los que hicieron de ese día un cumpleaños épico. ¡No hay mejor manera de celebrar la vida que con amigos y torta en la cara! 🎉🎂 #RecuerdosFelices #CumpleañosInolvidable #AmigosDivertidos",
         90,
@@ -37,8 +37,8 @@ class DummyPost implements PostService {
         Image.asset("assets/images/avatar.jpg"),
         "¡Descubriendo nuevos sabores! Hoy probé este exquisito plato y quedé fascinado. Cada bocado era una explosión de sabores y texturas. ¡No puedo esperar para compartir esta joya culinaria con ustedes! Si eres amante de la buena comida, no te lo puedes perder. ¿Alguien más se anima a probarlo? #DeliciasGastronómicas #SorprendentesSabores #ExperienciaCulinaria",
         45,
-        true,
-        true,
+        false,
+        false,
         Image.asset("assets/images/sushi.jpg"),
         DateTime.now().subtract(const Duration(hours: 5))
       )
@@ -154,17 +154,17 @@ class DummyPost implements PostService {
   @override
   Future<Either<Failure, List<Comment>>> getComments(String postId) async {
     List<Comment> comments = [
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(minutes: 15)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(hours: 1)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(hours: 12)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 1)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 2)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("pepe", "papyrus", "Esto es increible!", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("María López", "marialopez94LAVELADA3FUEUNROBOOOOO", "¡Qué divertido momento de cumpleaños! 🎉🎂", DateTime.now().subtract(const Duration(minutes: 15)), null),
+      Comment("Alejandro García", "alegarcia17", "Jajaja, eso es tener amigos de verdad. 😄", DateTime.now().subtract(const Duration(hours: 1)), null),
+      Comment("Ana Torres", "anatorres22", "¡Aplastando el pastel con estilo! 🍰💥", DateTime.now().subtract(const Duration(hours: 12)), null),
+      Comment("Carlos Ramírez", "cramirez87", "¡Nada como un poco de diversión en tu día especial! 😅", DateTime.now().subtract(const Duration(days: 1)), null),
+      Comment("Sofía Medina", "sofiamedina15", "¡El mejor pastelazo de cumpleaños! 🎉🎂", DateTime.now().subtract(const Duration(days: 2)), null),
+      Comment("Juan Morales", "juanmora78", "Momentos inolvidables con amigos traviesos. 😂", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("Laura Vargas", "lauravargas91", "¡Ese pastel quedó hecho añicos! 💥😄", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("José Hernández", "josehdez34", "Jajaja, ¡te vengarás en su cumpleaños! 😉", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("Valentina Silva", "valentinasilva19", "¡Qué manera tan divertida de celebrar! 🎉🍰", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("Eduardo Ríos", "erios55", "Esa foto captura la esencia de la amistad. ❤️", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("Andrea Castro", "andreacastro82", "¡Feliz cumpleaños lleno de risas y buenos recuerdos! 🎉😂", DateTime.now().subtract(const Duration(days: 15)), null),
     ];
     return Right(comments);
   }

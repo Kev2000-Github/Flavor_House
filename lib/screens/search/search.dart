@@ -36,10 +36,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void getResults() async {
     if (user == null) return;
+    String searchValue = _searchController.value.text;
+    if(searchValue.isEmpty) return;
     if (mounted) {
       setState(() => _isResultLoading = true);
     }
-    String searchValue = _searchController.value.text;
     dartz.Either<Failure, List> result;
     switch(selectedSearch){
       case SearchType.moment:
