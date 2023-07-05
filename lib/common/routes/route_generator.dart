@@ -1,16 +1,20 @@
+import 'package:flavor_house/common/constants/routes.dart';
 import 'package:flavor_house/common/routes/router_home.dart';
 import 'package:flavor_house/common/routes/router_login.dart';
 import 'package:flavor_house/common/routes/router_register.dart';
 import 'package:flavor_house/common/routes/router.dart';
 import 'package:flavor_house/common/routes/router_register_two.dart';
 import 'package:flavor_house/common/routes/router_welcome.dart';
+import 'package:flavor_house/common/routes/router_forgot_password.dart';
+import 'package:flavor_house/common/routes/router_forgot_password_code.dart';
+import 'package:flavor_house/common/routes/router_forgot_password_new.dart';
 import 'package:flavor_house/common/routes/router_create_post.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
-    List<IRoute> routes = [WelcomeRoute(), RegisterRoute(), RegisterTwoRoute(), LoginRoute(), MainRoute(), CreatePostRoute()];
+    List<IRoute> routes = [WelcomeRoute(), RegisterRoute(), RegisterTwoRoute(), LoginRoute(), MainRoute(),ForgotPasswordRoute(),ForgotPasswordCodeRoute(), ForgotPasswordNewRoute(), CreatePostRoute()];
     for (IRoute router in routes) {
       if (settings.name != router.route) continue;
       router.validate(args);
