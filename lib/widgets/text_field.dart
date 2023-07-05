@@ -13,24 +13,25 @@ class TextFieldInput extends StatelessWidget {
   final int? minLine;
   final int? maxLine;
 
-  const TextFieldInput({
-    Key? key,
-    this.isPass = false,
-    required this.hintText,
-    required this.textInputType,
-    required this.textEditingController,
-    this.bgColor,
-    this.prefixICon,
-    this.focusNode,
-    this.onSubmitted,
-    this.autofocus = false, this.minLine, this.maxLine
-}) : super(key: key);
+  const TextFieldInput(
+      {Key? key,
+      this.isPass = false,
+      required this.hintText,
+      required this.textInputType,
+      required this.textEditingController,
+      this.bgColor,
+      this.prefixICon,
+      this.focusNode,
+      this.onSubmitted,
+      this.autofocus = false,
+      this.minLine = 1,
+      this.maxLine = 1})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = OutlineInputBorder(
-      borderSide: Divider.createBorderSide(context)
-    );
+    final inputBorder =
+        OutlineInputBorder(borderSide: Divider.createBorderSide(context));
     return TextField(
       focusNode: focusNode,
       controller: textEditingController,

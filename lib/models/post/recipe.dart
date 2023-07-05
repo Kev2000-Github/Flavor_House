@@ -13,7 +13,7 @@ class Recipe extends Post {
       String fullName,
       Image? avatar,
       String description,
-      double likes,
+      int likes,
       bool isLiked,
       bool isFavorite,
       Image? picture,

@@ -1,12 +1,15 @@
+import 'package:flavor_house/common/routes/router.dart';
+import 'package:flavor_house/common/routes/router_create_post.dart';
 import 'package:flavor_house/common/routes/router_create_recipe.dart';
+import 'package:flavor_house/common/routes/router_forgot_password.dart';
+import 'package:flavor_house/common/routes/router_forgot_password_code.dart';
+import 'package:flavor_house/common/routes/router_forgot_password_new.dart';
 import 'package:flavor_house/common/routes/router_home.dart';
 import 'package:flavor_house/common/routes/router_login.dart';
 import 'package:flavor_house/common/routes/router_other_user_profile.dart';
 import 'package:flavor_house/common/routes/router_register.dart';
-import 'package:flavor_house/common/routes/router.dart';
 import 'package:flavor_house/common/routes/router_register_two.dart';
 import 'package:flavor_house/common/routes/router_welcome.dart';
-import 'package:flavor_house/common/routes/router_create_post.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
@@ -20,7 +23,10 @@ class RouteGenerator {
       MainRoute(),
       CreatePostRoute(),
       OtherUserProfileRoute(),
-      CreateRecipeRoute()
+      CreateRecipeRoute(),
+      ForgotPasswordRoute(),
+      ForgotPasswordCodeRoute(),
+      ForgotPasswordNewRoute()
     ];
     for (IRoute router in routes) {
       if (settings.name != router.route) continue;

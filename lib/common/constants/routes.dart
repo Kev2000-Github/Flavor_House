@@ -6,3 +6,6 @@ String main_screen = "/main";
 String createpost = "/createpost";
 String create_recipe = "/create_recipe";
 String other_user_profile = "/friend_profile";
+String forgotpassword = "/forgot_password";
+String forgot_password_code = "/forgot_password_code";
+String forgot_password_new = "/forgot_password_new";

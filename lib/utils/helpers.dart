@@ -1,6 +1,7 @@
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/models/user/user_item.dart';
+import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flavor_house/widgets/post_moment.dart';
 import 'package:flavor_house/widgets/post_recipe.dart';
 import 'package:flavor_house/widgets/user_item.dart';
@@ -38,7 +39,16 @@ class Helper {
   }
 
   static UserItemWidget createUserItemWidget(UserItem userInfo) {
-
     return UserItemWidget(user: userInfo,);
+  }
+
+  static RichText createPostDescription(String description) {
+    List<String> splitDescription = description.split("#");
+    return RichText(text: TextSpan(
+      style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
+      children: [
+        TextSpan(text: description)
+      ]
+    ));
   }
 }

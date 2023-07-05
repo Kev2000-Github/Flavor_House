@@ -1,4 +1,5 @@
 import 'package:flavor_house/models/interest.dart';
+import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/modal/comments.dart';
 import 'package:flavor_house/widgets/post_user.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class PostMoment extends StatelessWidget {
   final Image? avatar;
   final String description;
   final Image picture;
-  final double likes;
+  final int likes;
   final bool isLiked;
   final bool isFavorite;
   const PostMoment(
@@ -55,8 +56,7 @@ class PostMoment extends StatelessWidget {
             ClipRRect(borderRadius: BorderRadius.circular(20), child: picture),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(description,
-                    style: DesignTextTheme.get(type: TextThemeEnum.grayLight))),
+                child: Helper.createPostDescription(description)),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(

@@ -113,11 +113,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: const Text("¿Se te olvido la contraseña?",
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15))),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(routes.forgotpassword);
+                      },
+                      child: const Text("¿Se te olvido la contraseña?",
+                          style: TextStyle(
+                              color: primaryColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15)),
+                    )),
                 const SizedBox(height: 24),
               ]))
         ],

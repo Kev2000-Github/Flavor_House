@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
+import '../utils/helpers.dart';
 import 'modal/comments.dart';
 
 class PostRecipe extends StatelessWidget {
@@ -17,7 +18,7 @@ class PostRecipe extends StatelessWidget {
   final String postTitle;
   final String description;
   final Image picture;
-  final double likes;
+  final int likes;
   final double rates;
   final bool isLiked;
   final bool isFavorite;
@@ -100,8 +101,7 @@ class PostRecipe extends StatelessWidget {
             ClipRRect(borderRadius: BorderRadius.circular(20), child: picture),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(description,
-                    style: DesignTextTheme.get(type: TextThemeEnum.grayLight))),
+                child: Helper.createPostDescription(description)),
             Wrap(
               spacing: 10,
               children: List.generate(

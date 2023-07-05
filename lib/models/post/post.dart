@@ -8,7 +8,7 @@ abstract class Post {
   final String fullName;
   final Image? avatar;
   final String description;
-  final double likes;
+  final int likes;
   final bool isLiked;
   final bool isFavorite;
   final Image? picture;
