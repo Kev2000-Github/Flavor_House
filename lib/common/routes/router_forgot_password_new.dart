@@ -1,5 +1,5 @@
 import 'package:flavor_house/common/routes/router.dart';
-import 'package:flavor_house/screens/forgotpassword/forgot_password_new.dart';
+import 'package:flavor_house/screens/forgot_password/forgot_password_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/navigator.dart';
 

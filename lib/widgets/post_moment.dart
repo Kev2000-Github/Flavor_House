@@ -7,6 +7,7 @@ import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
 import '../utils/text_themes.dart';
+import '../utils/time.dart';
 
 class PostMoment extends StatelessWidget {
   final String id;
@@ -14,10 +15,11 @@ class PostMoment extends StatelessWidget {
   final String username;
   final Image? avatar;
   final String description;
-  final Image picture;
+  final Image? picture;
   final int likes;
   final bool isLiked;
   final bool isFavorite;
+  final DateTime createdAt;
   const PostMoment(
       {Key? key,
       required this.id,
@@ -28,7 +30,8 @@ class PostMoment extends StatelessWidget {
       required this.isLiked,
       required this.isFavorite,
       required this.picture,
-      required this.avatar})
+      required this.avatar,
+      required this.createdAt})
       : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -38,7 +41,9 @@ class PostMoment extends StatelessWidget {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-        builder: (context) => CommentsModalContent(recipeId: id,));
+        builder: (context) => CommentsModalContent(
+              recipeId: id,
+            ));
   }
 
   @override
@@ -53,7 +58,9 @@ class PostMoment extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(borderRadius: BorderRadius.circular(20), child: picture),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: picture ?? Image.asset("assets/images/gray.png")),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Helper.createPostDescription(description)),
@@ -93,6 +100,12 @@ class PostMoment extends StatelessWidget {
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: darkColor),
+                )),
+            Padding(
+                padding: const EdgeInsets.only(left: 5, top: 8),
+                child: Text(
+                  formatTimeAgo(createdAt),
+                  style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
                 ))
           ]),
         ));

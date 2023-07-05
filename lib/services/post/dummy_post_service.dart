@@ -22,12 +22,13 @@ class DummyPost implements PostService {
         "1",
         "ReyDeLaCocina",
         "Juan Toledo",
-        Image.asset("assets/images/avatar.jpg"),
+        null,
         "¡Recuerdos de cumpleaños inolvidables! Hoy comparto esta foto donde me hundieron la cabeza en la torta. ¡Fue un momento de diversión y risas! Gracias a todos los que hicieron de ese día un cumpleaños épico. ¡No hay mejor manera de celebrar la vida que con amigos y torta en la cara! 🎉🎂 #RecuerdosFelices #CumpleañosInolvidable #AmigosDivertidos",
         90,
         true,
         true,
         Image.asset("assets/images/tortazo.jpg"),
+          DateTime.now()
       ),
       Moment(
         "2",
@@ -39,6 +40,7 @@ class DummyPost implements PostService {
         true,
         true,
         Image.asset("assets/images/sushi.jpg"),
+        DateTime.now().subtract(const Duration(hours: 5))
       )
     ];
     await Future.delayed(const Duration(seconds: 1));
@@ -61,6 +63,7 @@ class DummyPost implements PostService {
           true,
           true,
           Image.asset("assets/images/cake.jpg"),
+          DateTime.now(),
           "Pastel de fresas y chocolate",
           4, [
         Tag("1", "dulce", const Color(0xFFff6961).withOpacity(0.5)),
@@ -77,6 +80,7 @@ class DummyPost implements PostService {
           true,
           true,
           Image.asset("assets/images/cookies.jpg"),
+          DateTime.now().subtract(const Duration(hours: 3)),
           "Galletas de Chispas de Chocolate",
           4, [
         Tag("1", "dulce", const Color(0xFFff6961).withOpacity(0.5)),
@@ -95,31 +99,33 @@ class DummyPost implements PostService {
   Future<Either<Failure, List>> getAll({SortConfig? sort}) async {
     List posts = [
       Moment(
-        "1",
-        "ReyDeLaCocina",
-        "Juan Toledo",
-        Image.asset("assets/images/avatar.jpg"),
-        "Es muy delicioso y esponjoso!",
-        90,
-        true,
-        true,
-        Image.asset("assets/images/cake.jpg"),
+          "1",
+          "ReyDeLaCocina",
+          "Juan Toledo",
+          null,
+          "¡Recuerdos de cumpleaños inolvidables! Hoy comparto esta foto donde me hundieron la cabeza en la torta. ¡Fue un momento de diversión y risas! Gracias a todos los que hicieron de ese día un cumpleaños épico. ¡No hay mejor manera de celebrar la vida que con amigos y torta en la cara! 🎉🎂 #RecuerdosFelices #CumpleañosInolvidable #AmigosDivertidos",
+          90,
+          true,
+          true,
+          Image.asset("assets/images/tortazo.jpg"),
+          DateTime.now()
       ),
       Recipe(
           "1",
           "ReyDeLaCocina",
           "Juan Toledo",
           Image.asset("assets/images/avatar.jpg"),
-          "Es muy delicioso y esponjoso!",
+          "¡El postre perfecto! Sorprende a todos con este tentador pastel. Esponjoso, indulgente y decorado a la perfección. ¡Prepárate para deleitarte!",
           90,
           true,
           true,
           Image.asset("assets/images/cake.jpg"),
-          "Pastel de chocolate",
+          DateTime.now(),
+          "Pastel de fresas y chocolate",
           4, [
-        Tag("1" ,"dulce", primaryColor.withAlpha(90)),
-        Tag("2" ,"pastel", primaryColor.withAlpha(90)),
-        Tag("3" ,"chocolate", primaryColor.withAlpha(90)),
+        Tag("1", "dulce", const Color(0xFFff6961).withOpacity(0.5)),
+        Tag("2", "pastel", const Color(0xFFfdcae1).withOpacity(0.5)),
+        Tag("3", "chocolate", primaryColor.withAlpha(90)),
       ])
     ];
     await Future.delayed(const Duration(seconds: 1));

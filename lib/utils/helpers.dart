@@ -10,15 +10,17 @@ import 'package:flutter/material.dart';
 class Helper {
   static PostMoment createMomentWidget(Moment post) {
     return PostMoment(
-        id: post.id,
-        fullName: post.fullName,
-        username: post.username,
-        description: post.description,
-        likes: post.likes,
-        isLiked: post.isLiked,
-        isFavorite: post.isFavorite,
-        avatar: post.avatar ?? Image.asset("assets/images/avatar.jpg"),
-        picture: post.picture ?? Image.asset("assets/images/cookies.jpg"));
+      id: post.id,
+      fullName: post.fullName,
+      username: post.username,
+      description: post.description,
+      likes: post.likes,
+      isLiked: post.isLiked,
+      isFavorite: post.isFavorite,
+      avatar: post.avatar,
+      picture: post.picture,
+      createdAt: post.createdAt,
+    );
   }
 
   static PostRecipe createRecipeWidget(Recipe recipe) {
@@ -31,24 +33,25 @@ class Helper {
       isLiked: recipe.isLiked,
       isFavorite: recipe.isFavorite,
       avatar: recipe.avatar,
-      picture: recipe.picture ?? Image.asset("assets/images/cookies.jpg"),
+      picture: recipe.picture,
       postTitle: recipe.title,
       rates: recipe.stars,
       tags: recipe.tags,
+      createdAt: recipe.createdAt,
     );
   }
 
   static UserItemWidget createUserItemWidget(UserItem userInfo) {
-    return UserItemWidget(user: userInfo,);
+    return UserItemWidget(
+      user: userInfo,
+    );
   }
 
   static RichText createPostDescription(String description) {
     List<String> splitDescription = description.split("#");
-    return RichText(text: TextSpan(
-      style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
-      children: [
-        TextSpan(text: description)
-      ]
-    ));
+    return RichText(
+        text: TextSpan(
+            style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
+            children: [TextSpan(text: description)]));
   }
 }

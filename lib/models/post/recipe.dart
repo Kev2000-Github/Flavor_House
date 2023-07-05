@@ -17,9 +17,10 @@ class Recipe extends Post {
       bool isLiked,
       bool isFavorite,
       Image? picture,
+      DateTime createdAt,
       this.title,
       this.stars,
       this.tags)
-      : super(id, username, fullName, avatar, description, likes, isLiked, isFavorite, picture);
+      : super(id, username, fullName, avatar, description, likes, isLiked, isFavorite, picture, createdAt);
 
 }

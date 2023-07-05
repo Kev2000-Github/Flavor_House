@@ -73,7 +73,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen > {
 
 
 
-                        Flexible(child: Container(), flex: 2),
+                        Flexible(flex: 2, child: Container()),
                         // button sendemail
                         Button(
                           text: "Enviar correo",
@@ -87,8 +87,8 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen > {
                                     (failure) => showDialog(
                                     context: context,
                                     builder: (_) => CupertinoAlertDialog(
-                                      title: Text("Perdon!"),
-                                      content: Text(
+                                      title: const Text("Perdon!"),
+                                      content: const Text(
                                           "Tu correo electronico está incorrecto, por favor ingreselo de nuevo"),
                                       actions: [
                                         CupertinoDialogAction(
@@ -104,7 +104,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen > {
                           borderSide: null,
                           backgroundColor: primaryColor,
                           textColor: whiteColor,
-                          size: Size.fromHeight(50),
+                          size: const Size.fromHeight(50),
                         ),
 
                         const SizedBox(height: 24),

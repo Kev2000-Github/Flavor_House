@@ -8,6 +8,7 @@ import 'package:like_button/like_button.dart';
 
 import '../utils/colors.dart';
 import '../utils/helpers.dart';
+import '../utils/time.dart';
 import 'modal/comments.dart';
 
 class PostRecipe extends StatelessWidget {
@@ -17,12 +18,13 @@ class PostRecipe extends StatelessWidget {
   final Image? avatar;
   final String postTitle;
   final String description;
-  final Image picture;
+  final Image? picture;
   final int likes;
   final double rates;
   final bool isLiked;
   final bool isFavorite;
   final List<Tag> tags;
+  final DateTime createdAt;
   const PostRecipe(
       {Key? key,
       required this.id,
@@ -36,7 +38,8 @@ class PostRecipe extends StatelessWidget {
       required this.isFavorite,
       required this.picture,
       required this.avatar,
-      required this.tags})
+      required this.tags,
+      required this.createdAt})
       : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -71,7 +74,8 @@ class PostRecipe extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               children: [
-                PostUser(fullName: fullName, username: username, avatar: avatar),
+                PostUser(
+                    fullName: fullName, username: username, avatar: avatar),
                 const Spacer(),
                 IconButton(
                     onPressed: () {
@@ -98,22 +102,22 @@ class PostRecipe extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(borderRadius: BorderRadius.circular(20), child: picture),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: picture ?? Image.asset("assets/images/gray.png")),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Helper.createPostDescription(description)),
             Wrap(
               spacing: 10,
-              children: List.generate(
-                  tags.length,
-                  (index) {
-                    return ChoiceChip(
-                      label: Text(tags[index].name),
-                      selected: true,
-                      //selectedShadowColor: primaryColor,
-                      selectedColor: tags[index].color,
-                    );
-                  }),
+              children: List.generate(tags.length, (index) {
+                return ChoiceChip(
+                  label: Text(tags[index].name),
+                  selected: true,
+                  //selectedShadowColor: primaryColor,
+                  selectedColor: tags[index].color,
+                );
+              }),
             ),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
@@ -157,6 +161,12 @@ class PostRecipe extends StatelessWidget {
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: darkColor),
+                )),
+            Padding(
+                padding: const EdgeInsets.only(left: 5, top: 8),
+                child: Text(
+                  formatTimeAgo(createdAt),
+                  style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
                 ))
           ]),
         ));

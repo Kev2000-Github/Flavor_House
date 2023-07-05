@@ -12,8 +12,9 @@ class Moment extends Post {
       int likes,
       bool isLiked,
       bool isFavorite,
-      Image? picture)
+      Image? picture,
+      DateTime createdAt)
       : super(id, username, fullName, avatar, description, likes, isLiked,
-            isFavorite, picture);
+            isFavorite, picture, createdAt);
 
 }
