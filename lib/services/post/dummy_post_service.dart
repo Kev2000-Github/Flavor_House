@@ -43,7 +43,7 @@ class DummyPost implements PostService {
         DateTime.now().subtract(const Duration(hours: 5))
       )
     ];
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
@@ -88,7 +88,7 @@ class DummyPost implements PostService {
         Tag("3", "chocolate", primaryColor.withAlpha(90)),
       ])
     ];
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
@@ -128,7 +128,7 @@ class DummyPost implements PostService {
         Tag("3", "chocolate", primaryColor.withAlpha(90)),
       ])
     ];
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
       return Right(posts.reversed.toList());
     }
