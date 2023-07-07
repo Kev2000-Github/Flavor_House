@@ -11,21 +11,22 @@ class User extends Equatable {
   final String? phoneNumber;
   final String? countryId;
   final String? pictureURL;
+  final bool? isFollowed;
 
   User(this.id, this.username, this.fullName, this.email, this.gender,
-      this.phoneNumber, this.countryId, this.pictureURL);
+      this.phoneNumber, this.countryId, this.pictureURL, this.isFollowed);
 
   @override
   List<Object> get props => [id, username, fullName, email];
 
   factory User.basic(
       String id, String username, String fullName, String email) {
-    return User(id, username, fullName, email, null, null, null, null);
+    return User(id, username, fullName, email, null, null, null, null, null);
   }
 
   factory User.fromUserItem(UserItem userItem) {
     return User(userItem.id, userItem.username, userItem.fullName, "NONE", null,
-        null, null, userItem.avatarURL);
+        null, null, userItem.avatarURL, userItem.isFollowed);
   }
 
   factory User.initial() {
@@ -34,7 +35,7 @@ class User extends Equatable {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(json['id'], json['username'], json['fullName'], json['email'],
-        json['sex'], json['phoneNumber'], json['countryId'], json['pictureURL']);
+        json['sex'], json['phoneNumber'], json['countryId'], json['pictureURL'], json['isFollowed']);
   }
 
   Image get picture {

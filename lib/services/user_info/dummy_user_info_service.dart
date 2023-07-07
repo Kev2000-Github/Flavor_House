@@ -7,6 +7,8 @@ import 'package:flavor_house/models/user/user_publications_info.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/user/user.dart';
+
 class DummyUserInfoService implements UserInfoService {
   @override
   Future<Either<Failure, UserPublicationsInfo>> getInfo(String id) async {
@@ -35,5 +37,12 @@ class DummyUserInfoService implements UserInfoService {
     } catch (e) {
       return Left(ServerFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, User>> getUser(String userId) async {
+    User user = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
+        '4126451235', 'VEN', "assets/images/avatar.jpg", false);
+    return Right(user);
   }
 }

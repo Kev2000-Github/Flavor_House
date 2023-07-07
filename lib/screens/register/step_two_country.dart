@@ -13,7 +13,7 @@ class StepCountry extends StatelessWidget {
     return SizedBox(
         width: double.infinity,
         child: ListTile(
-          title: const Text("Country",
+          title: const Text("Pais",
               style: TextStyle(
                   color: gray04Color,
                   fontSize: 22,

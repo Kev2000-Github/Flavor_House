@@ -25,11 +25,10 @@ import '../../utils/text_themes.dart';
 import '../../widgets/button.dart';
 import '../../widgets/post_skeleton.dart';
 import '../../widgets/sort.dart';
-import 'dart:developer';
 
 class ProfileScreen extends StatefulWidget {
-  final UserItem? user;
-  const ProfileScreen({Key? key, this.user}) : super(key: key);
+  final String? userId;
+  const ProfileScreen({Key? key, this.userId}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -91,21 +90,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  void getUser() async {
+    UserInfoService userInfoService = DummyUserInfoService();
+    dartz.Either<Failure, User> result =
+    await userInfoService.getUser(widget.userId!);
+    result.fold((failure) => null, (newUser) {
+      if (mounted) {
+        setState(() {
+          user = newUser;
+        });
+        getPosts(setInitialPostLoadingState, reset: true);
+        getUserInfo();
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     if (mounted) {
       setState(() {
-        if(widget.user == null){
+        if(widget.userId == null){
           user = Provider.of<UserProvider>(context, listen: false).user;
+          getPosts(setInitialPostLoadingState, reset: true);
+          getUserInfo();
         }
         else{
-          user = User.fromUserItem(widget.user as UserItem);
+          getUser();
         }
       });
     }
-    getPosts(setInitialPostLoadingState, reset: true);
-    getUserInfo();
   }
 
   @override
@@ -125,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fontSize: 16,
                       fontWeight: FontWeight.w600),
                 ),
-                leading: widget.user != null ? IconButton(
+                leading: widget.userId != null ? IconButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -207,11 +221,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : Container(),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: widget.user != null ? Button(
-                  text: widget.user!.isFollowed ? "Dejar de seguir" : "Seguir",
+                child: widget.userId != null ? Button(
+                  text: user?.isFollowed != null && user!.isFollowed == true ? "Dejar de seguir" : "Seguir",
                   onPressed: () {},
                   borderSide: const BorderSide(style: BorderStyle.none),
-                  backgroundColor: widget.user!.isFollowed ? redColor : primaryColor,
+                  backgroundColor: user?.isFollowed != null && user!.isFollowed == true ? redColor : primaryColor,
                   textColor: whiteColor,
                   size: const Size.fromHeight(40),
                   fontSize: 20,
@@ -229,7 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                child: widget.user != null ? Container() : Button(
+                child: widget.userId != null ? Container() : Button(
                   text: "Salir sesion",
                   onPressed: () async {
                     await Provider.of<UserProvider>(context, listen: false)
