@@ -4,6 +4,7 @@ import 'package:flavor_house/screens/search/search_skeleton.dart';
 import 'package:flavor_house/services/user_info/dummy_user_info_service.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/utils/text_themes.dart';
+import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,20 +30,33 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   User? user;
-  bool _isResultLoading = false;
   SearchType selectedSearch = SearchType.moment;
   List results = [];
   final TextEditingController _searchController = TextEditingController();
+  bool _isInitialResultLoading = false;
+  bool _loadingMore = false;
 
-  void getResults() async {
+  void setInitialResultLoadingState(bool state) {
+    setState(() {
+      _isInitialResultLoading = state;
+    });
+  }
+
+  void setLoadingModeState(bool state) {
+    setState(() {
+      _loadingMore = state;
+    });
+  }
+
+  void getResults(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user == null) return;
     String searchValue = _searchController.value.text;
-    if(searchValue.isEmpty) return;
+    if (searchValue.isEmpty) return;
     if (mounted) {
-      setState(() => _isResultLoading = true);
+      setLoadingState(true);
     }
     dartz.Either<Failure, List> result;
-    switch(selectedSearch){
+    switch (selectedSearch) {
       case SearchType.moment:
         PostService postClient = DummyPost();
         result = await postClient.getMoments(search: searchValue);
@@ -59,14 +73,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
     result.fold((failure) {
       if (mounted) {
-        setState(() => _isResultLoading = false);
+        setLoadingState(false);
       }
     }, (newItems) {
       if (mounted) {
         setState(() {
-          results = newItems;
-          _isResultLoading = false;
+          if(reset) results = [];
+          results.addAll(newItems);
         });
+        setLoadingState(false);
       }
     });
   }
@@ -87,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void onChangeSearch(SearchType type){
+  void onChangeSearch(SearchType type) {
     setState(() {
       results = [];
       _searchController.value = TextEditingValue.empty;
@@ -99,9 +114,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.only(top: 10, right: 10),
-        child: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        child: Column(
+          children: [
             Container(
                 padding: const EdgeInsets.all(8),
                 child: Row(
@@ -166,32 +180,37 @@ class _SearchScreenState extends State<SearchScreen> {
               child: TextFieldInput(
                   hintText: "Buscar",
                   onSubmitted: (String value) {
-                    getResults();
+                    getResults(setInitialResultLoadingState, reset: true);
                   },
                   prefixICon: const Icon(Icons.search, color: blackColor),
                   textInputType: TextInputType.text,
                   textEditingController: _searchController),
             ),
-            _isResultLoading ?
-                  SkeletonSearch(
+            _isInitialResultLoading
+                ? SkeletonSearch(
                     items: 2,
                     type: selectedSearch,
                   )
-                : Column(
-                    children: List.generate(results.length, (index) {
-                      if (results[index].runtimeType == Moment) {
-                        return Helper.createMomentWidget(results[index]);
-                      }
-                      if (results[index].runtimeType == Recipe) {
-                        return Helper.createRecipeWidget(results[index]);
-                      }
-                      if (results[index].runtimeType == UserItem) {
-                        return Helper.createUserItemWidget(results[index]);
-                      }
-                      return Container();
-                    }),
-                  )
-          ]),
+                : Expanded(
+              child: results.isNotEmpty ? ListViewInfiniteLoader(
+                setLoadingModeState: setLoadingModeState,
+                getMoreItems: getResults,
+                loadingState: _loadingMore,
+                children: List.generate(results.length, (index) {
+                  if (results[index].runtimeType == Moment) {
+                    return Helper.createMomentWidget(results[index]);
+                  }
+                  if (results[index].runtimeType == Recipe) {
+                    return Helper.createRecipeWidget(results[index]);
+                  }
+                  if (results[index].runtimeType == UserItem) {
+                    return Helper.createUserItemWidget(results[index]);
+                  }
+                  return Container();
+                }),
+              ) : Container()
+            )
+          ],
         ));
   }
 }

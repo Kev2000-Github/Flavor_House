@@ -1,1 +1,3 @@
-String locale = "es";
+class Config {
+  static String locale = "es";
+}

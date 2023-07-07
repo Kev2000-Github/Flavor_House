@@ -1,6 +1,7 @@
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/screens/favorite/skeleton_favorite.dart';
 import 'package:flavor_house/utils/helpers.dart';
+import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flavor_house/widgets/post_skeleton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dartz/dartz.dart' as dartz;
@@ -27,25 +28,39 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   User? user;
   List posts = [];
   SortConfig selectedSort = SortConfig.latest();
-  bool _isPostLoading = false;
+  bool _isInitialPostLoading = false;
+  bool _loadingMore = false;
 
-  void getPosts() async {
+  void setInitialPostLoadingState(bool state) {
+    setState(() {
+      _isInitialPostLoading = state;
+    });
+  }
+
+  void setLoadingModeState(bool state) {
+    setState(() {
+      _loadingMore = state;
+    });
+  }
+
+  void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user == null) return;
-    if(mounted){
-      setState(() => _isPostLoading = true);
-    }
+    if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List> result = await postClient.getAll(sort: selectedSort);
+    dartz.Either<Failure, List> result =
+    await postClient.getAll(sort: selectedSort);
     result.fold((failure) {
-      if(mounted){
-        setState(() => _isPostLoading = false);
-      }
+      if (mounted) setLoadingState(false);
     }, (newPosts) {
       if (mounted) {
         setState(() {
-          posts = newPosts;
-          _isPostLoading = false;
+          if (reset) {
+            posts = newPosts;
+          } else {
+            posts.addAll(newPosts);
+          }
         });
+        setLoadingState(false);
       }
     });
   }
@@ -58,7 +73,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         user = Provider.of<UserProvider>(context, listen: false).user;
       });
     }
-    getPosts();
+    getPosts(setInitialPostLoadingState, reset: true);
   }
 
   @override
@@ -66,31 +81,34 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     return user != null
         ? Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),
-            child: SingleChildScrollView(
-              child: Column(children: [
+            child: ListViewInfiniteLoader(
+              setLoadingModeState: setLoadingModeState,
+              getMoreItems: getPosts,
+              loadingState: _loadingMore,
+              children:  [
                 Sort(
                   selectedValue: selectedSort,
                   onChange: (val) {
                     setState(() {
                       selectedSort = val;
                     });
-                    getPosts();
+                    getPosts(setInitialPostLoadingState, reset: true);
                   },
                 ),
-                _isPostLoading
+                _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
-                        children: List.generate(posts.length, (index) {
-                          if (posts[index].runtimeType == Moment) {
-                            return Helper.createMomentWidget(posts[index]);
-                          }
-                          if (posts[index].runtimeType == Recipe) {
-                            return Helper.createRecipeWidget(posts[index]);
-                          }
-                          return Container();
-                        }),
-                      )
-              ]),
+                  children: List.generate(posts.length, (index) {
+                    if (posts[index].runtimeType == Moment) {
+                      return Helper.createMomentWidget(posts[index]);
+                    }
+                    if (posts[index].runtimeType == Recipe) {
+                      return Helper.createRecipeWidget(posts[index]);
+                    }
+                    return Container();
+                  }),
+                )
+              ],
             ))
         : const SingleChildScrollView(
             child: SkeletonFavorite(

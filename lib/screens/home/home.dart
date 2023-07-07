@@ -5,9 +5,9 @@ import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/utils/skeleton_wrapper.dart';
 import 'package:flavor_house/widgets/input_post.dart';
+import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flavor_house/widgets/post_skeleton.dart';
 import 'package:flavor_house/widgets/sort.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
@@ -29,26 +29,39 @@ class _HomeScreenState extends State<HomeScreen> {
   User? user;
   List<Moment> posts = [];
   SortConfig selectedSort = SortConfig.latest();
-  bool _isPostLoading = false;
+  bool _isInitialPostLoading = false;
+  bool _loadingMore = false;
 
-  void getPosts() async {
+  void setInitialPostLoadingState(bool state) {
+    setState(() {
+      _isInitialPostLoading = state;
+    });
+  }
+
+  void setLoadingModeState(bool state) {
+    setState(() {
+      _loadingMore = state;
+    });
+  }
+
+  void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user == null) return;
-    if (mounted) {
-      setState(() => _isPostLoading = true);
-    }
+    if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Moment>> result =
         await postClient.getMoments(sort: selectedSort);
     result.fold((failure) {
-      if (mounted) {
-        setState(() => _isPostLoading = false);
-      }
+      if (mounted) setLoadingState(false);
     }, (newPosts) {
       if (mounted) {
         setState(() {
-          posts = newPosts;
-          _isPostLoading = false;
+          if (reset) {
+            posts = newPosts;
+          } else {
+            posts.addAll(newPosts);
+          }
         });
+        setLoadingState(false);
       }
     });
   }
@@ -61,20 +74,27 @@ class _HomeScreenState extends State<HomeScreen> {
         user = Provider.of<UserProvider>(context, listen: false).user;
       });
     }
-    getPosts();
+    getPosts(setInitialPostLoadingState, reset: true);
   }
+
 
   @override
   Widget build(BuildContext context) {
     return user != null
-        ? Padding(
+        ? Container(
             padding: const EdgeInsets.only(top: 10, right: 10),
-            child: SingleChildScrollView(
-              child: Column(children: [
+            child: ListViewInfiniteLoader(
+              loadingState: _loadingMore,
+              getMoreItems: getPosts,
+              setLoadingModeState: setLoadingModeState,
+              children: [
                 user != null
-                    ? InputPost(avatar: user?.picture, onPressed: () {
-                  Navigator.pushNamed(context, routes.createpost);
-                },)
+                    ? InputPost(
+                  avatar: user?.picture,
+                  onPressed: () {
+                    Navigator.pushNamed(context, routes.createpost);
+                  },
+                )
                     : Container(),
                 const SizedBox(
                   height: 20,
@@ -85,16 +105,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     setState(() {
                       selectedSort = val;
                     });
-                    getPosts();
+                    getPosts(setInitialPostLoadingState, reset: true);
                   },
                 ),
-                _isPostLoading
+                _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
-                        children: List.generate(posts!.length,
-                            (index) => Helper.createMomentWidget(posts[index])),
-                      )
-              ]),
+                  children: List.generate(posts.length,
+                          (index) => Helper.createMomentWidget(posts[index])),
+                ),
+              ],
             ))
         : const SingleChildScrollView(
             child: SkeletonHome(

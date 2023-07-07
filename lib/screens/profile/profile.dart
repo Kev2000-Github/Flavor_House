@@ -4,6 +4,7 @@ import 'package:flavor_house/screens/profile/skeleton_profile.dart';
 import 'package:flavor_house/services/user_info/dummy_user_info_service.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
+import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dartz/dartz.dart' as dartz;
@@ -39,25 +40,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
   UserPublicationsInfo? userInfo;
   List posts = [];
   SortConfig selectedSort = SortConfig.latest();
-  bool _isPostLoading = false;
+  bool _isInitialPostLoading = false;
+  bool _loadingMore = false;
 
-  void getPosts() async {
+  void setInitialPostLoadingState(bool state) {
+    setState(() {
+      _isInitialPostLoading = state;
+    });
+  }
+
+  void setLoadingModeState(bool state) {
+    setState(() {
+      _loadingMore = state;
+    });
+  }
+
+  void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user == null) return;
-    if (mounted) {
-      setState(() => _isPostLoading = true);
-    }
+    if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List> result = await postClient.getAll(sort: selectedSort);
+    dartz.Either<Failure, List> result =
+    await postClient.getAll(sort: selectedSort);
     result.fold((failure) {
-      if (mounted) {
-        setState(() => _isPostLoading = false);
-      }
+      if (mounted) setLoadingState(false);
     }, (newPosts) {
       if (mounted) {
         setState(() {
-          posts = newPosts;
-          _isPostLoading = false;
+          if (reset) {
+            posts = newPosts;
+          } else {
+            posts.addAll(newPosts);
+          }
         });
+        setLoadingState(false);
       }
     });
   }
@@ -89,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       });
     }
-    getPosts();
+    getPosts(setInitialPostLoadingState, reset: true);
     getUserInfo();
   }
 
@@ -123,8 +138,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: user != null
           ? Padding(
           padding: const EdgeInsets.only(top: 10, right: 10),
-          child: SingleChildScrollView(
-            child: Column(children: [
+          child: ListViewInfiniteLoader(
+            loadingState: _loadingMore,
+            getMoreItems: getPosts,
+            setLoadingModeState: setLoadingModeState,
+            children: [
               userInfo != null
                   ? Padding(
                 padding: const EdgeInsets.all(8),
@@ -133,26 +151,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(
-                        flex: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Avatar(
-                                pictureHeight: 60,
-                                borderSize: 2,
-                                image: user?.picture),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                user!.fullName,
-                                textAlign: TextAlign.center,
-                                style: DesignTextTheme.get(
-                                    type: TextThemeEnum.darkSemiMedium),
-                                overflow: TextOverflow.clip,
-                              ),
-                            )
-                          ],
-                        )
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Avatar(
+                                  pictureHeight: 60,
+                                  borderSize: 2,
+                                  image: user?.picture),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  user!.fullName,
+                                  textAlign: TextAlign.center,
+                                  style: DesignTextTheme.get(
+                                      type: TextThemeEnum.darkSemiMedium),
+                                  overflow: TextOverflow.clip,
+                                ),
+                              )
+                            ],
+                          )
                       ),
                       Expanded(flex: 8, child: Row( mainAxisAlignment: MainAxisAlignment.spaceAround, children: [ Column(
                         children: [
@@ -231,10 +249,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   setState(() {
                     selectedSort = val;
                   });
-                  getPosts();
+                  getPosts(setLoadingModeState, reset: true);
                 },
               ),
-              _isPostLoading
+              _isInitialPostLoading
                   ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                   : Column(
                 children: List.generate(posts.length, (index) {
@@ -247,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   return Container();
                 }),
               )
-            ]),
+            ],
           ))
           : const SingleChildScrollView(
           child: SkeletonProfile(

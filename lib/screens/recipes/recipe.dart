@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/screens/recipes/skeleton_recipe.dart';
 import 'package:flavor_house/utils/helpers.dart';
+import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
@@ -28,26 +29,39 @@ class _RecipeScreenState extends State<RecipeScreen> {
   User? user;
   List<Recipe> posts = [];
   SortConfig selectedSort = SortConfig.latest();
-  bool _isPostLoading = false;
+  bool _isInitialPostLoading = false;
+  bool _loadingMore = false;
 
-  void getPosts() async {
+  void setInitialPostLoadingState(bool state) {
+    setState(() {
+      _isInitialPostLoading = state;
+    });
+  }
+
+  void setLoadingModeState(bool state) {
+    setState(() {
+      _loadingMore = state;
+    });
+  }
+
+  void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user == null) return;
-    if (mounted) {
-      setState(() => _isPostLoading = true);
-    }
+    if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Recipe>> result =
-        await postClient.getRecipes(sort: selectedSort);
+    await postClient.getRecipes(sort: selectedSort);
     result.fold((failure) {
-      if (mounted) {
-        setState(() => _isPostLoading = false);
-      }
+      if (mounted) setLoadingState(false);
     }, (newPosts) {
       if (mounted) {
         setState(() {
-          posts = newPosts;
-          setState(() => _isPostLoading = false);
+          if (reset) {
+            posts = newPosts;
+          } else {
+            posts.addAll(newPosts);
+          }
         });
+        setLoadingState(false);
       }
     });
   }
@@ -60,7 +74,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
         user = Provider.of<UserProvider>(context, listen: false).user;
       });
     }
-    getPosts();
+    getPosts(setInitialPostLoadingState, reset: true);
   }
 
   @override
@@ -68,8 +82,11 @@ class _RecipeScreenState extends State<RecipeScreen> {
     return user != null
         ? Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),
-            child: SingleChildScrollView(
-              child: Column(children: [
+            child: ListViewInfiniteLoader(
+              loadingState: _loadingMore,
+              getMoreItems: getPosts,
+              setLoadingModeState: setLoadingModeState,
+              children: [
                 user != null
                     ? InputPost(avatar: user?.picture, onPressed: () {
                   Navigator.of(context).pushNamed(routes.create_recipe);
@@ -84,15 +101,15 @@ class _RecipeScreenState extends State<RecipeScreen> {
                     setState(() {
                       selectedSort = val;
                     });
-                    getPosts();
+                    getPosts(setInitialPostLoadingState, reset: true);
                   },
                 ),
-                _isPostLoading
+                _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
-                        children: List.generate(posts.length,
+                    children: List.generate(posts.length,
                             (index) => Helper.createRecipeWidget(posts[index])))
-              ]),
+              ]
             ))
         : const SingleChildScrollView(child: SkeletonRecipe(items: 2));
   }

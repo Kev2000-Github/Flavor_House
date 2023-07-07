@@ -12,16 +12,15 @@ class SkeletonSearch extends StatelessWidget {
   final SkeletonTheme? theme;
   final SearchType type;
 
-  const SkeletonSearch({
-    Key? key,
-    this.type = SearchType.moment,
-    this.items = 1,
-    this.theme
-  }) : super(key: key);
+  const SkeletonSearch(
+      {Key? key, this.type = SearchType.moment, this.items = 1, this.theme})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Expanded(
+        child: SingleChildScrollView(
+            child: Column(
       children: [
         SkeletonWrapper(
             skeletonTheme: theme,
@@ -29,10 +28,12 @@ class SkeletonSearch extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10, right: 10),
                 child: SingleChildScrollView(
                   child: Column(children: [
-                    type == SearchType.user ? const UserItemSkeleton(items: 8) : const PostSkeleton(items: 2)
+                    type == SearchType.user
+                        ? const UserItemSkeleton(items: 8)
+                        : const PostSkeleton(items: 2)
                   ]),
                 ))),
       ],
-    );
+    )));
   }
 }
