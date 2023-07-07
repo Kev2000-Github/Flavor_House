@@ -1,6 +1,5 @@
 
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/colors.dart';
@@ -40,7 +39,7 @@ class _IngredientStepState extends State<IngredientStep> {
               children: [
                 Flexible(
                     child: ElevatedContainer(
-                        content: ingredients[index] ?? "Hubo un error...")),
+                        content: ingredients[index])),
                 ElevatedButton(
                   onPressed: () {
                     setState(() {

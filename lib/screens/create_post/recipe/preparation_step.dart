@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../models/post/recipe_preparation.dart';
 import '../../../utils/colors.dart';
@@ -46,25 +47,47 @@ class _PreparationStepState extends State<PreparationStep> {
                 children: [
                   Flexible(
                       flex: 3,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            width: 90,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                image: DecorationImage(
-                                    image: preparationSteps[index]
-                                        .picture
-                                        .image,
-                                    fit: BoxFit.cover)),
-                          ))),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final ImagePicker picker = ImagePicker();
+                          XFile? pickedFile =
+                          await picker.pickImage(source: ImageSource.gallery);
+                          preparationSteps[index].imageURL = pickedFile?.path;
+                          setState((){});
+                        },
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 90,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  image: DecorationImage(
+                                      image: preparationSteps[index].imageURL != null ? preparationSteps[index].picture.image : const AssetImage("assets/images/gray-add.png"),
+                                      fit: BoxFit.cover)),
+                            ))
+                      )),
                   const SizedBox(width: 20),
                   Flexible(
                       flex: 7,
                       child: ElevatedContainer(
-                          content: preparationSteps[index].description ??
-                              "Hubo un error...")),
+                          content: preparationSteps[index].description)),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        preparationSteps.remove(preparationSteps[index]);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(5),
+                        backgroundColor: redColor),
+                    child: const Icon(
+                      Icons.delete,
+                      color: whiteColor,
+                      size: 20,
+                    ),
+                  )
                 ],
               ),
             )),
