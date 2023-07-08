@@ -14,6 +14,7 @@ abstract class PostService {
   Future<Either<Failure, List<Moment>>> getMoments({SortConfig? sort, String? search});
   Future<Either<Failure, List<Recipe>>> getRecipes({SortConfig? sort, String? search});
   Future<Either<Failure, List>> getAll({SortConfig? sort});
+  Future<Either<Failure, List>> getMyPosts({SortConfig? sort});
   Future<Either<Failure, List<Comment>>> getComments(String postId);
   Future<Either<Failure, List<Review>>> getReviews(String postId);
   Future<Either<Failure, List<Tag>>> getTags();

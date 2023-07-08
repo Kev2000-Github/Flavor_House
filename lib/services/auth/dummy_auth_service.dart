@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/services/auth/auth_service.dart';
-import 'package:flutter/material.dart';
 
 class DummyAuth implements Auth {
   @override

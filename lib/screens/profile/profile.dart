@@ -55,11 +55,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
-    if (user == null) return;
+    if (user.id == User.initial().id) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List> result =
-    await postClient.getAll(sort: selectedSort);
+    await postClient.getMyPosts(sort: selectedSort);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
     }, (newPosts) {
@@ -147,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Icons.arrow_back_ios,
                       size: 24,
                       color: blackColor,
-                    )) : null,
+                    )) : Container(),
                 )),
       body: user != null
           ? Padding(
@@ -223,7 +223,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 child: widget.userId != null ? Button(
                   text: user?.isFollowed != null && user!.isFollowed == true ? "Dejar de seguir" : "Seguir",
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      user.isFollowed = !user.isFollowed!;
+                    });
+                  },
                   borderSide: const BorderSide(style: BorderStyle.none),
                   backgroundColor: user?.isFollowed != null && user!.isFollowed == true ? redColor : primaryColor,
                   textColor: whiteColor,

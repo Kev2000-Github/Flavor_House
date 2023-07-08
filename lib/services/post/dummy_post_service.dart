@@ -142,6 +142,48 @@ class DummyPost implements PostService {
   }
 
   @override
+  Future<Either<Failure, List>> getMyPosts({SortConfig? sort}) async {
+    List posts = [
+      Moment(
+          "2",
+          "id",
+          "ReyDeLaCocina",
+          "Juan Toledo",
+          Image.asset("assets/images/avatar.jpg"),
+          "¡Descubriendo nuevos sabores! Hoy probé este exquisito plato y quedé fascinado. Cada bocado era una explosión de sabores y texturas. ¡No puedo esperar para compartir esta joya culinaria con ustedes! Si eres amante de la buena comida, no te lo puedes perder. ¿Alguien más se anima a probarlo? #DeliciasGastronómicas #SorprendentesSabores #ExperienciaCulinaria",
+          45,
+          false,
+          false,
+          Image.asset("assets/images/sushi.jpg"),
+          DateTime.now().subtract(const Duration(hours: 5))
+      ),
+      Recipe(
+          "1",
+          "id",
+          "ReyDeLaCocina",
+          "Juan Toledo",
+          Image.asset("assets/images/avatar.jpg"),
+          "¡El postre perfecto! Sorprende a todos con este tentador pastel. Esponjoso, indulgente y decorado a la perfección. ¡Prepárate para deleitarte!",
+          90,
+          true,
+          true,
+          Image.asset("assets/images/cake.jpg"),
+          DateTime.now(),
+          "Pastel de fresas y chocolate",
+          4, [
+        Tag("1", "dulce", const Color(0xFFff6961).withOpacity(0.5)),
+        Tag("2", "pastel", const Color(0xFFfdcae1).withOpacity(0.5)),
+        Tag("3", "chocolate", primaryColor.withAlpha(90)),
+      ])
+    ];
+    await Future.delayed(const Duration(milliseconds: 500));
+    if(sort != null && sort.value == SortConfig.oldest().value){
+      return Right(posts.reversed.toList());
+    }
+    return Right(posts);
+  }
+
+  @override
   Future<Either<Failure, List<RecipePreparationStep>>> getRecipePreparation(String recipeId) async {
     List<RecipePreparationStep> steps = [
       RecipePreparationStep("Precalentar el horno a 180°C.", null),

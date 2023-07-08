@@ -1,6 +1,5 @@
 import 'package:flavor_house/models/user/user_item.dart';
 import 'package:flavor_house/widgets/Avatar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/colors.dart';

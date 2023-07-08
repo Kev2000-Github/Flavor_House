@@ -11,9 +11,9 @@ class OtherUserProfileRoute implements IRoute{
 
   @override
   Route getRoute(Object? args) {
-    if(args is UserItem){
-      UserItem? userItem = args;
-      return MaterialPageRoute(builder: (_) => ProfileScreen(userId: userItem.id,));
+    if(args is String){
+      String? userId = args;
+      return MaterialPageRoute(builder: (_) => ProfileScreen(userId: userId,));
     }
     return MaterialPageRoute(builder: (_) => const ProfileScreen());
   }

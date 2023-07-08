@@ -54,10 +54,15 @@ class PostRecipe extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               children: [
-                PostUser(
-                    fullName: post.fullName,
-                    username: post.username,
-                    avatar: post.avatar),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(routes.other_user_profile,
+                          arguments: post.userId);
+                    },
+                    child: PostUser(
+                        fullName: post.fullName,
+                        username: post.username,
+                        avatar: post.avatar)),
                 const Spacer(),
                 isSameUser && !hasOneDayPassed(post.createdAt)
                     ? GestureDetector(
@@ -142,9 +147,7 @@ class PostRecipe extends StatelessWidget {
                 )
               ]),
               const Spacer(),
-              StarsRating(
-                  onRate: (index) {},
-                  rate: post.stars)
+              StarsRating(onRate: (index) {}, rate: post.stars)
             ]),
             Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),

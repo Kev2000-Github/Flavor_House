@@ -11,7 +11,7 @@ class User extends Equatable {
   final String? phoneNumber;
   final String? countryId;
   final String? pictureURL;
-  final bool? isFollowed;
+  bool? isFollowed;
 
   User(this.id, this.username, this.fullName, this.email, this.gender,
       this.phoneNumber, this.countryId, this.pictureURL, this.isFollowed);

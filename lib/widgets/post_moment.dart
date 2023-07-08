@@ -13,8 +13,7 @@ import '../utils/time.dart';
 class PostMoment extends StatelessWidget {
   final Moment post;
   final bool isSameUser;
-  const PostMoment(
-      {Key? key, required this.isSameUser, required this.post})
+  const PostMoment({Key? key, required this.isSameUser, required this.post})
       : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -39,17 +38,29 @@ class PostMoment extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               children: [
-                PostUser(fullName: post.fullName, username: post.username, avatar: post.avatar),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(routes.other_user_profile,
+                          arguments: post.userId);
+                    },
+                    child: PostUser(
+                        fullName: post.fullName,
+                        username: post.username,
+                        avatar: post.avatar)),
                 const Spacer(),
-                isSameUser && !hasOneDayPassed(post.createdAt) ? GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(routes.createpost, arguments: post);
-                  },
-                  child: const Padding(
-                      padding: EdgeInsets.only(right: 12),
-                      child: Text("editar", style: TextStyle(color: primaryColor),)
-                  )
-                ) : Container()
+                isSameUser && !hasOneDayPassed(post.createdAt)
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(routes.createpost, arguments: post);
+                        },
+                        child: const Padding(
+                            padding: EdgeInsets.only(right: 12),
+                            child: Text(
+                              "editar",
+                              style: TextStyle(color: primaryColor),
+                            )))
+                    : Container()
               ],
             ),
             const SizedBox(
