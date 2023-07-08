@@ -66,6 +66,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void onDeletePost(String postId){
+    //TODO: Beware dummy implementation!
+    setState(() {
+      posts.removeWhere((element) => element.id == postId);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -112,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
                   children: List.generate(posts.length,
-                          (index) => Helper.createMomentWidget(posts[index], user.id)),
+                          (index) => Helper.createMomentWidget(posts[index], user.id, onDeletePost)),
                 ),
               ],
             ))

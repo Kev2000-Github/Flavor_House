@@ -65,6 +65,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     });
   }
 
+  void onDeletePost(String postId){
+    //TODO: Beware dummy implementation!
+    setState(() {
+      posts.removeWhere((element) => element.id == postId);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,10 +107,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     : Column(
                   children: List.generate(posts.length, (index) {
                     if (posts[index].runtimeType == Moment) {
-                      return Helper.createMomentWidget(posts[index], user.id);
+                      return Helper.createMomentWidget(posts[index], user.id, onDeletePost);
                     }
                     if (posts[index].runtimeType == Recipe) {
-                      return Helper.createRecipeWidget(posts[index], user.id);
+                      return Helper.createRecipeWidget(posts[index], user.id, onDeletePost);
                     }
                     return Container();
                   }),

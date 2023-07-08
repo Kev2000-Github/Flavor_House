@@ -21,4 +21,29 @@ class CommonPopup {
           ],
         ));
   }
+
+  static void deletePost(context,
+      {VoidCallback? onCancel, VoidCallback? onConfirm}){
+    showDialog(
+        context: context,
+        builder: (_) => CupertinoAlertDialog(
+          title: const Text("Confirmar Eliminacion"),
+          content: const Text(
+              "¿Desea eliminar esta publicacion?"),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: onCancel ?? () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("cancelar"),
+            ),
+            CupertinoDialogAction(
+              onPressed: onConfirm ?? () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("confirmar"),
+            )
+          ],
+        ));
+  }
 }

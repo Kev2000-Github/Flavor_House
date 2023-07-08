@@ -8,6 +8,7 @@ import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
+import '../common/popups/common.dart';
 import '../utils/colors.dart';
 import '../utils/helpers.dart';
 import '../utils/time.dart';
@@ -16,10 +17,12 @@ import 'modal/comments.dart';
 class PostRecipe extends StatelessWidget {
   final Recipe post;
   final bool isSameUser;
+  final Function(String)? deletePost;
   const PostRecipe({
     Key? key,
     required this.post,
     required this.isSameUser,
+    this.deletePost,
   }) : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -75,6 +78,23 @@ class PostRecipe extends StatelessWidget {
                             child: Text(
                               "editar",
                               style: TextStyle(color: primaryColor),
+                            )))
+                    : Container(),
+                isSameUser && !hasOneDayPassed(post.createdAt)
+                    ? GestureDetector(
+                        onTap: () {
+                          CommonPopup.deletePost(context, onConfirm: () {
+                            if (deletePost != null) {
+                              deletePost!(post.id);
+                            }
+                            Navigator.of(context).pop();
+                          });
+                        },
+                        child: const Padding(
+                            padding: EdgeInsets.only(right: 12),
+                            child: Text(
+                              "eliminar",
+                              style: TextStyle(color: redColor),
                             )))
                     : Container(),
                 IconButton(

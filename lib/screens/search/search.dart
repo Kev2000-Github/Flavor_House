@@ -110,6 +110,13 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void onDeletePost(String postId){
+    //TODO: Beware dummy implementation!
+    setState(() {
+      results.removeWhere((element) => element.id == postId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -198,10 +205,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 loadingState: _loadingMore,
                 children: List.generate(results.length, (index) {
                   if (results[index].runtimeType == Moment) {
-                    return Helper.createMomentWidget(results[index], user.id);
+                    return Helper.createMomentWidget(results[index], user.id, onDeletePost);
                   }
                   if (results[index].runtimeType == Recipe) {
-                    return Helper.createRecipeWidget(results[index], user.id);
+                    return Helper.createRecipeWidget(results[index], user.id, onDeletePost);
                   }
                   if (results[index].runtimeType == UserItem) {
                     return Helper.createUserItemWidget(results[index]);

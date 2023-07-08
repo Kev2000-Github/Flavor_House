@@ -1,4 +1,5 @@
 import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/modal/comments.dart';
@@ -13,7 +14,9 @@ import '../utils/time.dart';
 class PostMoment extends StatelessWidget {
   final Moment post;
   final bool isSameUser;
-  const PostMoment({Key? key, required this.isSameUser, required this.post})
+  final Function(String)? deletePost;
+  const PostMoment(
+      {Key? key, required this.isSameUser, required this.post, this.deletePost})
       : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -59,6 +62,23 @@ class PostMoment extends StatelessWidget {
                             child: Text(
                               "editar",
                               style: TextStyle(color: primaryColor),
+                            )))
+                    : Container(),
+                isSameUser && !hasOneDayPassed(post.createdAt)
+                    ? GestureDetector(
+                        onTap: () {
+                          CommonPopup.deletePost(context, onConfirm: () {
+                            if (deletePost != null) {
+                              deletePost!(post.id);
+                            }
+                            Navigator.of(context).pop();
+                          });
+                        },
+                        child: const Padding(
+                            padding: EdgeInsets.only(right: 12),
+                            child: Text(
+                              "eliminar",
+                              style: TextStyle(color: redColor),
                             )))
                     : Container()
               ],

@@ -66,6 +66,13 @@ class _RecipeScreenState extends State<RecipeScreen> {
     });
   }
 
+  void onDeletePost(String postId){
+    //TODO: Beware dummy implementation!
+    setState(() {
+      posts.removeWhere((element) => element.id == postId);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -108,7 +115,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
                     children: List.generate(posts.length,
-                            (index) => Helper.createRecipeWidget(posts[index], user.id)))
+                            (index) => Helper.createRecipeWidget(posts[index], user.id, onDeletePost)))
               ]
             ))
         : const SingleChildScrollView(child: SkeletonRecipe(items: 2));
