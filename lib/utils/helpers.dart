@@ -8,36 +8,17 @@ import 'package:flavor_house/widgets/user_item.dart';
 import 'package:flutter/material.dart';
 
 class Helper {
-  static PostMoment createMomentWidget(Moment post) {
+  static PostMoment createMomentWidget(Moment post, String userId) {
     return PostMoment(
-      id: post.id,
-      fullName: post.fullName,
-      username: post.username,
-      description: post.description,
-      likes: post.likes,
-      isLiked: post.isLiked,
-      isFavorite: post.isFavorite,
-      avatar: post.avatar,
-      picture: post.picture,
-      createdAt: post.createdAt,
+      isSameUser: post.userId == userId,
+      post: post
     );
   }
 
-  static PostRecipe createRecipeWidget(Recipe recipe) {
+  static PostRecipe createRecipeWidget(Recipe recipe, String userId) {
     return PostRecipe(
-      id: recipe.id,
-      fullName: recipe.fullName,
-      username: recipe.username,
-      description: recipe.description,
-      likes: recipe.likes,
-      isLiked: recipe.isLiked,
-      isFavorite: recipe.isFavorite,
-      avatar: recipe.avatar,
-      picture: recipe.picture,
-      postTitle: recipe.title,
-      rates: recipe.stars,
-      tags: recipe.tags,
-      createdAt: recipe.createdAt,
+      isSameUser: recipe.userId == userId,
+      post: recipe,
     );
   }
 

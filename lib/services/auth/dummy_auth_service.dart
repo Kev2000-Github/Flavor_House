@@ -10,7 +10,7 @@ class DummyAuth implements Auth {
     try {
       if (username == "" || password == "") return Left(LoginEmptyFailure());
       if (username != "test" || password != "test") return Left(LoginFailure());
-      User actualUser = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
+      User actualUser = User('id', 'ReyDeLaCocina', 'Juan Toledo', 'pepe@gmail.com', 'Hombre',
           '4126451235', 'VEN', "assets/images/avatar.jpg", null);
       return Right(actualUser);
     } catch (e) {

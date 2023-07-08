@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class Moment extends Post {
   Moment(
       String id,
+      String userId,
       String username,
       String fullName,
       Image? avatar,
@@ -14,7 +15,7 @@ class Moment extends Post {
       bool isFavorite,
       Image? picture,
       DateTime createdAt)
-      : super(id, username, fullName, avatar, description, likes, isLiked,
+      : super(id, userId, username, fullName, avatar, description, likes, isLiked,
             isFavorite, picture, createdAt);
 
 }

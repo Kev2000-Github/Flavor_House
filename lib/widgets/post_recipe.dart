@@ -1,3 +1,5 @@
+import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/models/post/tag.dart';
 import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flavor_house/widgets/modal/recipe_details/details.dart';
@@ -12,35 +14,13 @@ import '../utils/time.dart';
 import 'modal/comments.dart';
 
 class PostRecipe extends StatelessWidget {
-  final String id;
-  final String fullName;
-  final String username;
-  final Image? avatar;
-  final String postTitle;
-  final String description;
-  final Image? picture;
-  final int likes;
-  final double rates;
-  final bool isLiked;
-  final bool isFavorite;
-  final List<Tag> tags;
-  final DateTime createdAt;
-  const PostRecipe(
-      {Key? key,
-      required this.id,
-      required this.fullName,
-      required this.username,
-      required this.postTitle,
-      required this.description,
-      required this.likes,
-      required this.rates,
-      required this.isLiked,
-      required this.isFavorite,
-      required this.picture,
-      required this.avatar,
-      required this.tags,
-      required this.createdAt})
-      : super(key: key);
+  final Recipe post;
+  final bool isSameUser;
+  const PostRecipe({
+    Key? key,
+    required this.post,
+    required this.isSameUser,
+  }) : super(key: key);
 
   void onOpenComments(BuildContext context) {
     showModalBottomSheet(
@@ -49,7 +29,7 @@ class PostRecipe extends StatelessWidget {
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-        builder: (context) => CommentsModalContent(recipeId: id));
+        builder: (context) => CommentsModalContent(recipeId: post.id));
   }
 
   void onOpenDetails(BuildContext context) {
@@ -60,7 +40,7 @@ class PostRecipe extends StatelessWidget {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (context) => DetailsModalContent(
-              recipeId: id,
+              recipeId: post.id,
             ));
   }
 
@@ -75,8 +55,23 @@ class PostRecipe extends StatelessWidget {
             Row(
               children: [
                 PostUser(
-                    fullName: fullName, username: username, avatar: avatar),
+                    fullName: post.fullName,
+                    username: post.username,
+                    avatar: post.avatar),
                 const Spacer(),
+                isSameUser && !hasOneDayPassed(post.createdAt)
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(routes.create_recipe, arguments: post);
+                        },
+                        child: const Padding(
+                            padding: EdgeInsets.only(right: 12),
+                            child: Text(
+                              "editar",
+                              style: TextStyle(color: primaryColor),
+                            )))
+                    : Container(),
                 IconButton(
                     onPressed: () {
                       onOpenDetails(context);
@@ -92,7 +87,7 @@ class PostRecipe extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   Text(
-                    postTitle,
+                    post.title,
                     style: const TextStyle(
                         fontSize: 22,
                         color: darkColor,
@@ -104,25 +99,25 @@ class PostRecipe extends StatelessWidget {
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: picture ?? Image.asset("assets/images/gray.png")),
+                child: post.picture ?? Image.asset("assets/images/gray.png")),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Helper.createPostDescription(description)),
+                child: Helper.createPostDescription(post.description)),
             Wrap(
               spacing: 10,
-              children: List.generate(tags.length, (index) {
+              children: List.generate(post.tags.length, (index) {
                 return ChoiceChip(
-                  label: Text(tags[index].name),
+                  label: Text(post.tags[index].name),
                   selected: true,
                   //selectedShadowColor: primaryColor,
-                  selectedColor: tags[index].color,
+                  selectedColor: post.tags[index].color,
                 );
               }),
             ),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
-                    isLiked: isLiked,
+                    isLiked: post.isLiked,
                     size: 28,
                     likeBuilder: (isTapped) {
                       return Icon(
@@ -130,7 +125,7 @@ class PostRecipe extends StatelessWidget {
                           color: isTapped ? redColor : gray03Color);
                     }),
                 LikeButton(
-                  isLiked: isFavorite,
+                  isLiked: post.isFavorite,
                   size: 28,
                   likeBuilder: (isTapped) {
                     return Icon(
@@ -148,15 +143,13 @@ class PostRecipe extends StatelessWidget {
               ]),
               const Spacer(),
               StarsRating(
-                  onRate: (index) {
-                    print(index + 1);
-                  },
-                  rate: rates)
+                  onRate: (index) {},
+                  rate: post.stars)
             ]),
             Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Text(
-                  "$likes Me gusta",
+                  "${post.likes} Me gusta",
                   style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -165,7 +158,7 @@ class PostRecipe extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(left: 5, top: 8),
                 child: Text(
-                  formatTimeAgo(createdAt),
+                  formatTimeAgo(post.createdAt),
                   style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
                 ))
           ]),

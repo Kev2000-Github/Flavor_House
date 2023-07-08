@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  User? user;
+  User user = User.initial();
   List<Moment> posts = [];
   SortConfig selectedSort = SortConfig.latest();
   bool _isInitialPostLoading = false;
@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
                   children: List.generate(posts.length,
-                          (index) => Helper.createMomentWidget(posts[index])),
+                          (index) => Helper.createMomentWidget(posts[index], user.id)),
                 ),
               ],
             ))

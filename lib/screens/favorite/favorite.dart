@@ -25,7 +25,7 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-  User? user;
+  User user = User.initial();
   List posts = [];
   SortConfig selectedSort = SortConfig.latest();
   bool _isInitialPostLoading = false;
@@ -100,10 +100,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     : Column(
                   children: List.generate(posts.length, (index) {
                     if (posts[index].runtimeType == Moment) {
-                      return Helper.createMomentWidget(posts[index]);
+                      return Helper.createMomentWidget(posts[index], user.id);
                     }
                     if (posts[index].runtimeType == Recipe) {
-                      return Helper.createRecipeWidget(posts[index]);
+                      return Helper.createRecipeWidget(posts[index], user.id);
                     }
                     return Container();
                   }),

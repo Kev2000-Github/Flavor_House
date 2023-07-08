@@ -20,6 +20,7 @@ class DummyPost implements PostService {
     List<Moment> posts = [
       Moment(
         "1",
+        "id2",
         "alegarcia17",
         "Alejandro Garcia",
         null,
@@ -32,6 +33,7 @@ class DummyPost implements PostService {
       ),
       Moment(
         "2",
+          "id",
         "ReyDeLaCocina",
         "Juan Toledo",
         Image.asset("assets/images/avatar.jpg"),
@@ -55,6 +57,7 @@ class DummyPost implements PostService {
     List<Recipe> posts = [
       Recipe(
           "1",
+          "id",
           "ReyDeLaCocina",
           "Juan Toledo",
           Image.asset("assets/images/avatar.jpg"),
@@ -72,6 +75,7 @@ class DummyPost implements PostService {
       ]),
       Recipe(
           "2",
+          "id",
           "ReyDeLaCocina",
           "Juan Toledo",
           Image.asset("assets/images/avatar.jpg"),
@@ -80,7 +84,7 @@ class DummyPost implements PostService {
           true,
           true,
           Image.asset("assets/images/cookies.jpg"),
-          DateTime.now().subtract(const Duration(hours: 3)),
+          DateTime.now().subtract(const Duration(hours: 24)),
           "Galletas de Chispas de Chocolate",
           4, [
         Tag("1", "dulce", const Color(0xFFff6961).withOpacity(0.5)),
@@ -100,8 +104,9 @@ class DummyPost implements PostService {
     List posts = [
       Moment(
           "1",
-          "ReyDeLaCocina",
-          "Juan Toledo",
+          "id2",
+          "alegarcia17",
+          "Alejandro Garcia",
           null,
           "¡Recuerdos de cumpleaños inolvidables! Hoy comparto esta foto donde me hundieron la cabeza en la torta. ¡Fue un momento de diversión y risas! Gracias a todos los que hicieron de ese día un cumpleaños épico. ¡No hay mejor manera de celebrar la vida que con amigos y torta en la cara! 🎉🎂 #RecuerdosFelices #CumpleañosInolvidable #AmigosDivertidos",
           90,
@@ -112,6 +117,7 @@ class DummyPost implements PostService {
       ),
       Recipe(
           "1",
+          "id",
           "ReyDeLaCocina",
           "Juan Toledo",
           Image.asset("assets/images/avatar.jpg"),

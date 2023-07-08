@@ -1,3 +1,4 @@
+import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/screens/create_post/recipe/preparation_step.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,8 @@ import 'general_step.dart';
 import 'ingredients_step.dart';
 
 class CreatePostRecipeScreen extends StatefulWidget {
-  const CreatePostRecipeScreen({Key? key}) : super(key: key);
+  final Recipe? recipe;
+  const CreatePostRecipeScreen({Key? key, this.recipe}) : super(key: key);
 
   @override
   State<CreatePostRecipeScreen> createState() => _CreatePostRecipeScreenState();
@@ -34,18 +36,19 @@ class _CreatePostRecipeScreenState extends State<CreatePostRecipeScreen> {
         Step(
             title: const Text("General"),
             content: GeneralStep(
+              recipe: widget.recipe,
               user: user ?? User.initial(),
             ),
             state: StepState.editing,
             isActive: _currentStep >= 0),
         Step(
             title: const Text("Ingredientes"),
-            content: IngredientStep(),
+            content: IngredientStep(recipeId: widget.recipe?.id),
             state: StepState.editing,
             isActive: _currentStep >= 1),
         Step(
             title: const Text("Preparacion"),
-            content: PreparationStep(),
+            content: PreparationStep(recipeId: widget.recipe?.id),
             state: StepState.editing,
             isActive: _currentStep >= 2)
       ];

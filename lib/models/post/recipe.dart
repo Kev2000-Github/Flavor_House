@@ -9,6 +9,7 @@ class Recipe extends Post {
 
   Recipe(
       String id,
+      String userId,
       String username,
       String fullName,
       Image? avatar,
@@ -21,6 +22,6 @@ class Recipe extends Post {
       this.title,
       this.stars,
       this.tags)
-      : super(id, username, fullName, avatar, description, likes, isLiked, isFavorite, picture, createdAt);
+      : super(id, userId, username, fullName, avatar, description, likes, isLiked, isFavorite, picture, createdAt);
 
 }

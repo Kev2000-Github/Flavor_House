@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
+import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/services/post/dummy_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,9 @@ import '../../../widgets/Avatar.dart';
 import '../../../widgets/text_field.dart';
 
 class GeneralStep extends StatefulWidget {
+  final Recipe? recipe;
   final User user;
-  const GeneralStep({super.key, required this.user});
+  const GeneralStep({super.key, required this.user, required this.recipe});
 
   @override
   State<GeneralStep> createState() => _GeneralStepState();
@@ -24,7 +26,7 @@ class GeneralStep extends StatefulWidget {
 class _GeneralStepState extends State<GeneralStep> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  String imagePath = "";
+  Image? image;
   bool isSelected = false;
   List<Tag> tags = [];
   List<String> selectedTags = [];
@@ -35,6 +37,8 @@ class _GeneralStepState extends State<GeneralStep> {
     result.fold((l) => null, (List<Tag> interests) {
       setState(() {
         tags = interests;
+        Iterable<String> recipeTagNames = (widget.recipe?.tags ?? []).map((Tag e) => e.id);
+        selectedTags.addAll(recipeTagNames);
       });
     });
   }
@@ -42,6 +46,9 @@ class _GeneralStepState extends State<GeneralStep> {
   @override
   void initState() {
     super.initState();
+    _titleController.text = widget.recipe?.title ?? "";
+    _descriptionController.text = widget.recipe?.description ?? "";
+    image = widget.recipe?.picture;
     getTags();
   }
 
@@ -82,17 +89,18 @@ class _GeneralStepState extends State<GeneralStep> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        (imagePath == "")
-                            ? Container()
-                            : Image.file(File(imagePath),
-                                width: 250, height: 250),
+                        image != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: image)
+                            : Container(),
                         IconButton(
                             iconSize: 70,
                             onPressed: () async {
                               final ImagePicker picker = ImagePicker();
                               XFile? pickedFile = await picker.pickImage(
                                   source: ImageSource.gallery);
-                              imagePath = pickedFile?.path ?? "";
+                              image = Image.file(File(pickedFile?.path ?? ""));
                               setState(() {});
                             },
                             icon: const Icon(
@@ -102,30 +110,38 @@ class _GeneralStepState extends State<GeneralStep> {
                             )),
                         Wrap(
                           spacing: 10,
-                          children: List.generate(tags.length, (index) => ChoiceChip(
-                            label: Text(tags[index].name),
-                            avatar: Padding(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: Icon(
-                                selectedTags.contains(tags[index].id) ? Icons.done : Icons.circle_outlined,
-                                color: selectedTags.contains(tags[index].id) ? secondaryColor : gray03Color,
-                              ),
-                            ),
-                            selected: selectedTags.contains(tags[index].id),
-                            selectedShadowColor: primaryColor,
-                            selectedColor: primaryColor.withAlpha(90),
-                            shadowColor: primaryColor,
-                            onSelected: (bool value) {
-                              setState(() {
-                                if(selectedTags.contains(tags[index].id)){
-                                  selectedTags.remove(tags[index].id);
-                                }
-                                else{
-                                  selectedTags.add(tags[index].id);
-                                }
-                              });
-                            },
-                          )),
+                          children: List.generate(
+                              tags.length,
+                              (index) => ChoiceChip(
+                                    label: Text(tags[index].name),
+                                    avatar: Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Icon(
+                                        selectedTags.contains(tags[index].id)
+                                            ? Icons.done
+                                            : Icons.circle_outlined,
+                                        color: selectedTags
+                                                .contains(tags[index].id)
+                                            ? secondaryColor
+                                            : gray03Color,
+                                      ),
+                                    ),
+                                    selected:
+                                        selectedTags.contains(tags[index].id),
+                                    selectedShadowColor: primaryColor,
+                                    selectedColor: primaryColor.withAlpha(90),
+                                    shadowColor: primaryColor,
+                                    onSelected: (bool value) {
+                                      setState(() {
+                                        if (selectedTags
+                                            .contains(tags[index].id)) {
+                                          selectedTags.remove(tags[index].id);
+                                        } else {
+                                          selectedTags.add(tags[index].id);
+                                        }
+                                      });
+                                    },
+                                  )),
                         )
                       ]),
                 ]))

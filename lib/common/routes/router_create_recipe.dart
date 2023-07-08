@@ -1,4 +1,6 @@
 import 'package:flavor_house/common/routes/router.dart';
+import 'package:flavor_house/models/post/recipe.dart';
+import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/screens/create_post/create_post_moment.dart';
 import 'package:flavor_house/screens/create_post/recipe/create_post_recipe.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,10 @@ class CreateRecipeRoute implements IRoute{
 
   @override
   Route getRoute(Object? args) {
+    if(args is Recipe){
+      Recipe recipe = args;
+      return MaterialPageRoute(builder: (_) => CreatePostRecipeScreen(recipe: recipe,));
+    }
     return MaterialPageRoute(builder: (_) => const CreatePostRecipeScreen());
   }
 

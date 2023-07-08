@@ -2,19 +2,42 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../common/error/failures.dart';
+import '../../../services/post/dummy_post_service.dart';
+import '../../../services/post/post_service.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/elevated_container.dart';
 import '../../../widgets/modal/text_input.dart';
+import 'package:dartz/dartz.dart' as dartz;
 
 class IngredientStep extends StatefulWidget {
-  const IngredientStep({super.key});
+  final String? recipeId;
+  const IngredientStep({super.key, this.recipeId});
 
   @override
   State<IngredientStep> createState() => _IngredientStepState();
-}
+} 
 
 class _IngredientStepState extends State<IngredientStep> {
   List<String> ingredients = [];
+  
+  @override
+  void initState() {
+    super.initState();
+    if(widget.recipeId != null){
+      getIngredients();
+    }
+  }
+
+  void getIngredients() async {
+    PostService postService = DummyPost();
+    dartz.Either<Failure, List<String>> result = await postService.getIngredients(widget.recipeId!);
+    result.fold((l) => null, (List<String> ingredients) {
+      setState(() {
+        this.ingredients.addAll(ingredients);
+      });
+    });
+  }
 
   void onOpenTextInput(BuildContext context) {
     showModalBottomSheet(

@@ -4,14 +4,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../common/error/failures.dart';
 import '../../../models/post/recipe_preparation.dart';
+import '../../../services/post/dummy_post_service.dart';
+import '../../../services/post/post_service.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/button.dart';
 import '../../../widgets/elevated_container.dart';
 import '../../../widgets/modal/text_input.dart';
+import 'package:dartz/dartz.dart' as dartz;
 
 class PreparationStep extends StatefulWidget {
-  const PreparationStep({super.key});
+  final String? recipeId;
+  const PreparationStep({super.key, this.recipeId});
 
   @override
   State<PreparationStep> createState() => _PreparationStepState();
@@ -19,6 +24,25 @@ class PreparationStep extends StatefulWidget {
 
 class _PreparationStepState extends State<PreparationStep> {
   List<RecipePreparationStep> preparationSteps = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.recipeId != null){
+      getPreparationSteps();
+    }
+  }
+
+  void getPreparationSteps() async {
+    PostService postService = DummyPost();
+    dartz.Either<Failure, List<RecipePreparationStep>> result =
+    await postService.getRecipePreparation(widget.recipeId!);
+    result.fold((l) => null, (List<RecipePreparationStep> steps) {
+      setState(() {
+        preparationSteps.addAll(steps);
+      });
+    });
+  }
 
   void onOpenTextInput(BuildContext context) {
     showModalBottomSheet(

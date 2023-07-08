@@ -1,4 +1,5 @@
-import 'package:flavor_house/models/interest.dart';
+import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/modal/comments.dart';
 import 'package:flavor_house/widgets/post_user.dart';
@@ -10,28 +11,10 @@ import '../utils/text_themes.dart';
 import '../utils/time.dart';
 
 class PostMoment extends StatelessWidget {
-  final String id;
-  final String fullName;
-  final String username;
-  final Image? avatar;
-  final String description;
-  final Image? picture;
-  final int likes;
-  final bool isLiked;
-  final bool isFavorite;
-  final DateTime createdAt;
+  final Moment post;
+  final bool isSameUser;
   const PostMoment(
-      {Key? key,
-      required this.id,
-      required this.fullName,
-      required this.username,
-      required this.description,
-      required this.likes,
-      required this.isLiked,
-      required this.isFavorite,
-      required this.picture,
-      required this.avatar,
-      required this.createdAt})
+      {Key? key, required this.isSameUser, required this.post})
       : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -42,7 +25,7 @@ class PostMoment extends StatelessWidget {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (context) => CommentsModalContent(
-              recipeId: id,
+              recipeId: post.id,
             ));
   }
 
@@ -54,20 +37,34 @@ class PostMoment extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            PostUser(fullName: fullName, username: username, avatar: avatar),
+            Row(
+              children: [
+                PostUser(fullName: post.fullName, username: post.username, avatar: post.avatar),
+                const Spacer(),
+                isSameUser && !hasOneDayPassed(post.createdAt) ? GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(routes.createpost, arguments: post);
+                  },
+                  child: const Padding(
+                      padding: EdgeInsets.only(right: 12),
+                      child: Text("editar", style: TextStyle(color: primaryColor),)
+                  )
+                ) : Container()
+              ],
+            ),
             const SizedBox(
               height: 10,
             ),
             ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: picture ?? Image.asset("assets/images/gray.png")),
+                child: post.picture ?? Image.asset("assets/images/gray.png")),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Helper.createPostDescription(description)),
+                child: Helper.createPostDescription(post.description)),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
-                    isLiked: isLiked,
+                    isLiked: post.isLiked,
                     size: 28,
                     likeBuilder: (isTapped) {
                       return Icon(
@@ -75,7 +72,7 @@ class PostMoment extends StatelessWidget {
                           color: isTapped ? redColor : gray03Color);
                     }),
                 LikeButton(
-                  isLiked: isFavorite,
+                  isLiked: post.isFavorite,
                   size: 28,
                   likeBuilder: (isTapped) {
                     return Icon(
@@ -95,7 +92,7 @@ class PostMoment extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(left: 5, top: 5),
                 child: Text(
-                  "$likes Me gusta",
+                  "${post.likes} Me gusta",
                   style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -104,7 +101,7 @@ class PostMoment extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(left: 5, top: 8),
                 child: Text(
-                  formatTimeAgo(createdAt),
+                  formatTimeAgo(post.createdAt),
                   style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
                 ))
           ]),

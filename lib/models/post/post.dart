@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 abstract class Post {
   final String id;
+  final String userId;
   final String username;
   final String fullName;
   final Image? avatar;
@@ -14,6 +15,6 @@ abstract class Post {
   final Image? picture;
   final DateTime createdAt;
 
-  Post(this.id, this.username, this.fullName, this.avatar, this.description, this.likes,
+  Post(this.id, this.userId, this.username, this.fullName, this.avatar, this.description, this.likes,
       this.isLiked, this.isFavorite, this.picture, this.createdAt);
 }

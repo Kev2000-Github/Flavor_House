@@ -29,7 +29,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  User? user;
+  User user = User.initial();
   SearchType selectedSearch = SearchType.moment;
   List results = [];
   final TextEditingController _searchController = TextEditingController();
@@ -198,10 +198,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 loadingState: _loadingMore,
                 children: List.generate(results.length, (index) {
                   if (results[index].runtimeType == Moment) {
-                    return Helper.createMomentWidget(results[index]);
+                    return Helper.createMomentWidget(results[index], user.id);
                   }
                   if (results[index].runtimeType == Recipe) {
-                    return Helper.createRecipeWidget(results[index]);
+                    return Helper.createRecipeWidget(results[index], user.id);
                   }
                   if (results[index].runtimeType == UserItem) {
                     return Helper.createUserItemWidget(results[index]);

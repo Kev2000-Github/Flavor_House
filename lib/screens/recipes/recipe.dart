@@ -26,7 +26,7 @@ class RecipeScreen extends StatefulWidget {
 }
 
 class _RecipeScreenState extends State<RecipeScreen> {
-  User? user;
+  User user = User.initial();
   List<Recipe> posts = [];
   SortConfig selectedSort = SortConfig.latest();
   bool _isInitialPostLoading = false;
@@ -108,7 +108,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
                     children: List.generate(posts.length,
-                            (index) => Helper.createRecipeWidget(posts[index])))
+                            (index) => Helper.createRecipeWidget(posts[index], user.id)))
               ]
             ))
         : const SingleChildScrollView(child: SkeletonRecipe(items: 2));

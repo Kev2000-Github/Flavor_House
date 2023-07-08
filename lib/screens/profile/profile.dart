@@ -35,7 +35,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  User? user;
+  User user = User.initial();
   UserPublicationsInfo? userInfo;
   List posts = [];
   SortConfig selectedSort = SortConfig.latest();
@@ -271,10 +271,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : Column(
                 children: List.generate(posts.length, (index) {
                   if (posts[index].runtimeType == Moment) {
-                    return Helper.createMomentWidget(posts[index]);
+                    return Helper.createMomentWidget(posts[index], user.id);
                   }
                   if (posts[index].runtimeType == Recipe) {
-                    return Helper.createRecipeWidget(posts[index]);
+                    return Helper.createRecipeWidget(posts[index], user.id);
                   }
                   return Container();
                 }),
