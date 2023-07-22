@@ -17,6 +17,7 @@ import '../../models/post/moment.dart';
 import '../../models/sort/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../services/post/dummy_post_service.dart';
+import '../../widgets/conditional.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -45,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
-    if (user == null) return;
+    if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Moment>> result =
@@ -66,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void onDeletePost(String postId){
+  void onDeletePost(String postId) {
     //TODO: Beware dummy implementation!
     setState(() {
       posts.removeWhere((element) => element.id == postId);
@@ -84,25 +85,23 @@ class _HomeScreenState extends State<HomeScreen> {
     getPosts(setInitialPostLoadingState, reset: true);
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return user != null
-        ? Container(
+    return Conditional(
+        condition: user.id != User.initial().id,
+        positive: Container(
             padding: const EdgeInsets.only(top: 10, right: 10),
             child: ListViewInfiniteLoader(
               loadingState: _loadingMore,
               getMoreItems: getPosts,
               setLoadingModeState: setLoadingModeState,
               children: [
-                user != null
-                    ? InputPost(
-                  avatar: user?.picture,
+                InputPost(
+                  avatar: user.picture,
                   onPressed: () {
                     Navigator.pushNamed(context, routes.createpost);
                   },
-                )
-                    : Container(),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -115,17 +114,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     getPosts(setInitialPostLoadingState, reset: true);
                   },
                 ),
-                _isInitialPostLoading
-                    ? const SkeletonWrapper(child: PostSkeleton(items: 2))
-                    : Column(
-                  children: List.generate(posts.length,
-                          (index) => Helper.createMomentWidget(posts[index], user.id, onDeletePost)),
-                ),
+                Conditional(
+                  condition: _isInitialPostLoading,
+                  positive: const SkeletonWrapper(child: PostSkeleton(items: 2)),
+                  negative: Column(
+                    children: List.generate(
+                        posts.length,
+                            (index) => Helper.createMomentWidget(
+                            posts[index], user.id, onDeletePost)),
+                  )
+                )
               ],
-            ))
-        : const SingleChildScrollView(
+            )),
+        negative: const SingleChildScrollView(
             child: SkeletonHome(
-            items: 2,
-          ));
+          items: 2,
+        )));
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/providers/user_provider.dart';
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,8 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
   @override
   void initState() {
     super.initState();
-    _textController.value = TextEditingValue(text: widget.post?.description ?? "");
+    _textController.value =
+        TextEditingValue(text: widget.post?.description ?? "");
     image = widget.post?.picture;
     setState(() {});
   }
@@ -98,11 +100,12 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        image != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: image)
-                            : Container(),
+                        Conditional(
+                          condition: image != null,
+                          positive: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: image),
+                        ),
                         IconButton(
                             iconSize: 70,
                             onPressed: () async {

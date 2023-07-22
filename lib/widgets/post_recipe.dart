@@ -12,6 +12,7 @@ import '../common/popups/common.dart';
 import '../utils/colors.dart';
 import '../utils/helpers.dart';
 import '../utils/time.dart';
+import 'conditional.dart';
 import 'modal/comments.dart';
 
 class PostRecipe extends StatelessWidget {
@@ -67,22 +68,23 @@ class PostRecipe extends StatelessWidget {
                         username: post.username,
                         avatar: post.avatar)),
                 const Spacer(),
-                isSameUser && !hasOneDayPassed(post.createdAt)
-                    ? GestureDetector(
-                        onTap: () {
+                Conditional(
+                    condition: isSameUser && !hasOneDayPassed(post.createdAt),
+                    positive: IconButton(
+                        onPressed: () {
                           Navigator.of(context)
                               .pushNamed(routes.create_recipe, arguments: post);
                         },
-                        child: const Padding(
-                            padding: EdgeInsets.only(right: 12),
-                            child: Text(
-                              "editar",
-                              style: TextStyle(color: primaryColor),
-                            )))
-                    : Container(),
-                isSameUser && !hasOneDayPassed(post.createdAt)
-                    ? GestureDetector(
-                        onTap: () {
+                        splashRadius: 20,
+                        icon: const Icon(
+                          Icons.edit,
+                          color: primaryColor,
+                        ))
+                ),
+                Conditional(
+                    condition: isSameUser && !hasOneDayPassed(post.createdAt),
+                    positive: IconButton(
+                        onPressed: () {
                           CommonPopup.deletePost(context, onConfirm: () {
                             if (deletePost != null) {
                               deletePost!(post.id);
@@ -90,13 +92,12 @@ class PostRecipe extends StatelessWidget {
                             Navigator.of(context).pop();
                           });
                         },
-                        child: const Padding(
-                            padding: EdgeInsets.only(right: 12),
-                            child: Text(
-                              "eliminar",
-                              style: TextStyle(color: redColor),
-                            )))
-                    : Container(),
+                        splashRadius: 20,
+                        icon: const Icon(
+                          Icons.delete,
+                          color: redColor,
+                        ))
+                ),
                 IconButton(
                     onPressed: () {
                       onOpenDetails(context);

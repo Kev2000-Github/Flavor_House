@@ -2,6 +2,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/utils/helpers.dart';
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/modal/comments.dart';
 import 'package:flavor_house/widgets/post_user.dart';
 import 'package:flutter/material.dart';
@@ -51,22 +52,23 @@ class PostMoment extends StatelessWidget {
                         username: post.username,
                         avatar: post.avatar)),
                 const Spacer(),
-                isSameUser && !hasOneDayPassed(post.createdAt)
-                    ? GestureDetector(
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(routes.createpost, arguments: post);
-                        },
-                        child: const Padding(
-                            padding: EdgeInsets.only(right: 12),
-                            child: Text(
-                              "editar",
-                              style: TextStyle(color: primaryColor),
-                            )))
-                    : Container(),
-                isSameUser && !hasOneDayPassed(post.createdAt)
-                    ? GestureDetector(
-                        onTap: () {
+                Conditional(
+                  condition: isSameUser && !hasOneDayPassed(post.createdAt),
+                  positive: IconButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(routes.createpost, arguments: post);
+                      },
+                      splashRadius: 20,
+                      icon: const Icon(
+                        Icons.edit,
+                        color: primaryColor,
+                      ))
+                ),
+                Conditional(
+                    condition: isSameUser && !hasOneDayPassed(post.createdAt),
+                    positive: IconButton(
+                        onPressed: () {
                           CommonPopup.deletePost(context, onConfirm: () {
                             if (deletePost != null) {
                               deletePost!(post.id);
@@ -74,13 +76,12 @@ class PostMoment extends StatelessWidget {
                             Navigator.of(context).pop();
                           });
                         },
-                        child: const Padding(
-                            padding: EdgeInsets.only(right: 12),
-                            child: Text(
-                              "eliminar",
-                              style: TextStyle(color: redColor),
-                            )))
-                    : Container()
+                        splashRadius: 20,
+                        icon: const Icon(
+                          Icons.delete,
+                          color: redColor,
+                        ))
+                ),
               ],
             ),
             const SizedBox(

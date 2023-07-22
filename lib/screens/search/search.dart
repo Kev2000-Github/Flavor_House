@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void getResults(Function(bool) setLoadingState, {bool reset = false}) async {
-    if (user == null) return;
+    if (user.isInitial()) return;
     String searchValue = _searchController.value.text;
     if (searchValue.isEmpty) return;
     if (mounted) {

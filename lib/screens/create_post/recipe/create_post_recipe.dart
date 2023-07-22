@@ -1,6 +1,7 @@
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/screens/create_post/recipe/preparation_step.dart';
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -145,28 +146,33 @@ class _CreatePostRecipeScreenState extends State<CreatePostRecipeScreen> {
                       size: 20,
                     ),
                   ),
-                  isNotLastStep()
-                      ? ElevatedButton(
-                          onPressed: onContinue,
-                          style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(5),
-                              backgroundColor: primaryColor),
-                          child: const Icon(
-                            Icons.arrow_forward_ios,
-                            color: whiteColor,
-                            size: 20,
-                          ),
-                        ) :
-                  TextButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                          MaterialStateProperty.all(primaryColor)),
-                      onPressed: onPublish,
-                      child: const Text(
-                        "publicar",
-                        style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.w600),
-                      ))
+                  Conditional(
+                    condition: isNotLastStep(),
+                    positive: ElevatedButton(
+                      onPressed: onContinue,
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(5),
+                          backgroundColor: primaryColor),
+                      child: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: whiteColor,
+                        size: 20,
+                      ),
+                    ),
+                    negative: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(primaryColor)),
+                        onPressed: onPublish,
+                        child: const Text(
+                          "publicar",
+                          style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        )),
+                  ),
                 ],
               );
             }));

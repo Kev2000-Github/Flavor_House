@@ -1,6 +1,6 @@
 import 'package:flavor_house/common/routes/router.dart';
 import 'package:flavor_house/screens/login/login.dart';
-import 'package:flavor_house/screens/profile/edit-profile.dart';
+import 'package:flavor_house/screens/profile/edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/navigator.dart';
 

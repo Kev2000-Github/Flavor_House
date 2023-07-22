@@ -38,6 +38,10 @@ class User extends Equatable {
         json['sex'], json['phoneNumber'], json['countryId'], json['pictureURL'], json['isFollowed']);
   }
 
+  bool isInitial() {
+    return id == "";
+  }
+
   Image get picture {
     //TODO: change dummy implementation later
     if(pictureURL != null) return Image.asset(pictureURL!);

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/screens/recipes/skeleton_recipe.dart';
 import 'package:flavor_house/utils/helpers.dart';
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
   }
 
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
-    if (user == null) return;
+    if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List<Recipe>> result =
@@ -86,7 +87,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return user != null
+    return !user.isInitial()
         ? Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),
             child: ListViewInfiniteLoader(
@@ -94,11 +95,13 @@ class _RecipeScreenState extends State<RecipeScreen> {
               getMoreItems: getPosts,
               setLoadingModeState: setLoadingModeState,
               children: [
-                user != null
-                    ? InputPost(avatar: user?.picture, onPressed: () {
-                  Navigator.of(context).pushNamed(routes.create_recipe);
-                },)
-                    : Container(),
+                Conditional(
+                  condition: !user.isInitial(),
+                  positive: InputPost(avatar: user.picture, onPressed: () {
+                    Navigator.of(context).pushNamed(routes.create_recipe);
+                  },),
+                  negative: Container(),
+                ),
                 const SizedBox(
                   height: 20,
                 ),

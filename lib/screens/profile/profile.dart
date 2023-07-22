@@ -4,6 +4,7 @@ import 'package:flavor_house/screens/profile/skeleton_profile.dart';
 import 'package:flavor_house/services/user_info/dummy_user_info_service.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
-    if (user.id == User.initial().id) return;
+    if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List> result =
@@ -77,7 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void getUserInfo() async {
-    if (user == null) return;
+    if (user.isInitial()) return;
     UserInfoService userInfoService = DummyUserInfoService();
     dartz.Either<Failure, UserPublicationsInfo> result =
         await userInfoService.getInfo(user!.id);
@@ -140,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 elevation: 0,
                 centerTitle: true,
                 title: Text(
-                  user?.username ?? "",
+                  user.username,
                   style: const TextStyle(
                       color: blackColor,
                       fontSize: 16,
@@ -156,146 +157,148 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: blackColor,
                     )) : Container(),
                 )),
-      body: user != null
-          ? Padding(
-          padding: const EdgeInsets.only(top: 10, right: 10),
-          child: ListViewInfiniteLoader(
-            loadingState: _loadingMore,
-            getMoreItems: getPosts,
-            setLoadingModeState: setLoadingModeState,
-            children: [
-              userInfo != null
-                  ? Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Avatar(
-                                  pictureHeight: 60,
-                                  borderSize: 2,
-                                  image: user?.picture),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  user!.fullName,
-                                  textAlign: TextAlign.center,
-                                  style: DesignTextTheme.get(
-                                      type: TextThemeEnum.darkSemiMedium),
-                                  overflow: TextOverflow.clip,
-                                ),
-                              )
-                            ],
-                          )
-                      ),
-                      Expanded(flex: 8, child: Row( mainAxisAlignment: MainAxisAlignment.spaceAround, children: [ Column(
-                        children: [
-                          Text(userInfo!.publications.toString(),
-                              style: const TextStyle(
-                                  color: gray04Color, fontSize: 20)),
-                          const Text("publicaciones",
-                              style: TextStyle(
-                                  color: gray04Color, fontSize: 14))
-                        ],
-                      ),
-                        Column(
+      body: Conditional(
+        condition: !user.isInitial(),
+        positive: Padding(
+            padding: const EdgeInsets.only(top: 10, right: 10),
+            child: ListViewInfiniteLoader(
+              loadingState: _loadingMore,
+              getMoreItems: getPosts,
+              setLoadingModeState: setLoadingModeState,
+              children: [
+                userInfo != null
+                    ? Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                            flex: 2,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Avatar(
+                                    pictureHeight: 60,
+                                    borderSize: 2,
+                                    image: user?.picture),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    user!.fullName,
+                                    textAlign: TextAlign.center,
+                                    style: DesignTextTheme.get(
+                                        type: TextThemeEnum.darkSemiMedium),
+                                    overflow: TextOverflow.clip,
+                                  ),
+                                )
+                              ],
+                            )
+                        ),
+                        Expanded(flex: 8, child: Row( mainAxisAlignment: MainAxisAlignment.spaceAround, children: [ Column(
                           children: [
-                            Text(userInfo!.followers.toString(),
+                            Text(userInfo!.publications.toString(),
                                 style: const TextStyle(
                                     color: gray04Color, fontSize: 20)),
-                            const Text("seguidores",
+                            const Text("publicaciones",
                                 style: TextStyle(
                                     color: gray04Color, fontSize: 14))
                           ],
                         ),
-                        Column(
-                          children: [
-                            Text(userInfo!.followed.toString(),
-                                style: const TextStyle(
-                                    color: gray04Color, fontSize: 20)),
-                            const Text("seguidos",
-                                style: TextStyle(
-                                    color: gray04Color, fontSize: 14))
-                          ],
-                        )]))
-                    ]),
-              )
-                  : Container(),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: widget.userId != null ? Button(
-                  text: user?.isFollowed != null && user!.isFollowed == true ? "Dejar de seguir" : "Seguir",
-                  onPressed: () {
+                          Column(
+                            children: [
+                              Text(userInfo!.followers.toString(),
+                                  style: const TextStyle(
+                                      color: gray04Color, fontSize: 20)),
+                              const Text("seguidores",
+                                  style: TextStyle(
+                                      color: gray04Color, fontSize: 14))
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(userInfo!.followed.toString(),
+                                  style: const TextStyle(
+                                      color: gray04Color, fontSize: 20)),
+                              const Text("seguidos",
+                                  style: TextStyle(
+                                      color: gray04Color, fontSize: 14))
+                            ],
+                          )]))
+                      ]),
+                )
+                    : Container(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: widget.userId != null ? Button(
+                    text: user?.isFollowed != null && user!.isFollowed == true ? "Dejar de seguir" : "Seguir",
+                    onPressed: () {
+                      setState(() {
+                        user.isFollowed = !user.isFollowed!;
+                      });
+                    },
+                    borderSide: const BorderSide(style: BorderStyle.none),
+                    backgroundColor: user?.isFollowed != null && user!.isFollowed == true ? redColor : primaryColor,
+                    textColor: whiteColor,
+                    size: const Size.fromHeight(40),
+                    fontSize: 20,
+                  ) : Button(
+                    text: "Editar Perfil",
+                    onPressed: () {
+                      Navigator.pushNamed(context, routes.edit_profile);
+                    },
+                    borderSide: null,
+                    backgroundColor: primaryColor,
+                    textColor: whiteColor,
+                    size: const Size.fromHeight(40),
+                    fontSize: 20,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                  child: widget.userId != null ? Container() : Button(
+                    text: "Salir sesion",
+                    onPressed: () async {
+                      await Provider.of<UserProvider>(context, listen: false)
+                          .logout();
+                      Navigator.pushNamed(context, routes.welcome);
+                    },
+                    borderSide: const BorderSide(color: redColor),
+                    backgroundColor: redColor,
+                    textColor: whiteColor,
+                    size: const Size.fromHeight(40),
+                    fontSize: 20,
+                  ),
+                ),
+                Sort(
+                  selectedValue: selectedSort,
+                  onChange: (val) {
                     setState(() {
-                      user.isFollowed = !user.isFollowed!;
+                      selectedSort = val;
                     });
+                    getPosts(setLoadingModeState, reset: true);
                   },
-                  borderSide: const BorderSide(style: BorderStyle.none),
-                  backgroundColor: user?.isFollowed != null && user!.isFollowed == true ? redColor : primaryColor,
-                  textColor: whiteColor,
-                  size: const Size.fromHeight(40),
-                  fontSize: 20,
-                ) : Button(
-                  text: "Editar Perfil",
-                  onPressed: () {
-                    Navigator.pushNamed(context, routes.edit_profile);
-                  },
-                  borderSide: null,
-                  backgroundColor: primaryColor,
-                  textColor: whiteColor,
-                  size: const Size.fromHeight(40),
-                  fontSize: 20,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
-                child: widget.userId != null ? Container() : Button(
-                  text: "Salir sesion",
-                  onPressed: () async {
-                    await Provider.of<UserProvider>(context, listen: false)
-                        .logout();
-                    Navigator.pushNamed(context, routes.welcome);
-                  },
-                  borderSide: const BorderSide(color: redColor),
-                  backgroundColor: redColor,
-                  textColor: whiteColor,
-                  size: const Size.fromHeight(40),
-                  fontSize: 20,
-                ),
-              ),
-              Sort(
-                selectedValue: selectedSort,
-                onChange: (val) {
-                  setState(() {
-                    selectedSort = val;
-                  });
-                  getPosts(setLoadingModeState, reset: true);
-                },
-              ),
-              _isInitialPostLoading
-                  ? const SkeletonWrapper(child: PostSkeleton(items: 2))
-                  : Column(
-                children: List.generate(posts.length, (index) {
-                  if (posts[index].runtimeType == Moment) {
-                    return Helper.createMomentWidget(posts[index], user.id, onDeletePost);
-                  }
-                  if (posts[index].runtimeType == Recipe) {
-                    return Helper.createRecipeWidget(posts[index], user.id, onDeletePost);
-                  }
-                  return Container();
-                }),
-              )
-            ],
-          ))
-          : const SingleChildScrollView(
-          child: SkeletonProfile(
-            items: 2,
-          ))
+                _isInitialPostLoading
+                    ? const SkeletonWrapper(child: PostSkeleton(items: 2))
+                    : Column(
+                  children: List.generate(posts.length, (index) {
+                    if (posts[index].runtimeType == Moment) {
+                      return Helper.createMomentWidget(posts[index], user.id, onDeletePost);
+                    }
+                    if (posts[index].runtimeType == Recipe) {
+                      return Helper.createRecipeWidget(posts[index], user.id, onDeletePost);
+                    }
+                    return Container();
+                  }),
+                )
+              ],
+            )),
+        negative: const SingleChildScrollView(
+            child: SkeletonProfile(
+              items: 2,
+            ))
+      )
     );
   }
 }

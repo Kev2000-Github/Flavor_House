@@ -1,6 +1,7 @@
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/screens/favorite/skeleton_favorite.dart';
 import 'package:flavor_house/utils/helpers.dart';
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flavor_house/widgets/post_skeleton.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,7 +45,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   }
 
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
-    if (user == null) return;
+    if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List> result =
@@ -85,41 +86,45 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return user != null
-        ? Padding(
-            padding: const EdgeInsets.only(top: 10, right: 10),
-            child: ListViewInfiniteLoader(
-              setLoadingModeState: setLoadingModeState,
-              getMoreItems: getPosts,
-              loadingState: _loadingMore,
-              children:  [
-                Sort(
-                  selectedValue: selectedSort,
-                  onChange: (val) {
-                    setState(() {
-                      selectedSort = val;
-                    });
-                    getPosts(setInitialPostLoadingState, reset: true);
-                  },
-                ),
-                _isInitialPostLoading
-                    ? const SkeletonWrapper(child: PostSkeleton(items: 2))
-                    : Column(
-                  children: List.generate(posts.length, (index) {
-                    if (posts[index].runtimeType == Moment) {
-                      return Helper.createMomentWidget(posts[index], user.id, onDeletePost);
-                    }
-                    if (posts[index].runtimeType == Recipe) {
-                      return Helper.createRecipeWidget(posts[index], user.id, onDeletePost);
-                    }
-                    return Container();
-                  }),
-                )
-              ],
-            ))
-        : const SingleChildScrollView(
-            child: SkeletonFavorite(
+    return Conditional(
+      condition: !user.isInitial(),
+      positive: Padding(
+          padding: const EdgeInsets.only(top: 10, right: 10),
+          child: ListViewInfiniteLoader(
+            setLoadingModeState: setLoadingModeState,
+            getMoreItems: getPosts,
+            loadingState: _loadingMore,
+            children:  [
+              Sort(
+                selectedValue: selectedSort,
+                onChange: (val) {
+                  setState(() {
+                    selectedSort = val;
+                  });
+                  getPosts(setInitialPostLoadingState, reset: true);
+                },
+              ),
+              Conditional(
+                  condition: _isInitialPostLoading,
+                  positive: const SkeletonWrapper(child: PostSkeleton(items: 2)),
+                  negative: Column(
+                    children: List.generate(posts.length, (index) {
+                      if (posts[index].runtimeType == Moment) {
+                        return Helper.createMomentWidget(posts[index], user.id, onDeletePost);
+                      }
+                      if (posts[index].runtimeType == Recipe) {
+                        return Helper.createRecipeWidget(posts[index], user.id, onDeletePost);
+                      }
+                      return Container();
+                    }),
+                  )
+              ),
+            ],
+          )),
+      negative:const SingleChildScrollView(
+          child: SkeletonFavorite(
             items: 2,
-          ));
+          ))
+    );
   }
 }

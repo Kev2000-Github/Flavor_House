@@ -5,13 +5,6 @@ import 'package:flavor_house/screens/recipes/recipe.dart';
 import 'package:flavor_house/screens/search/search.dart';
 import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../common/popups/common.dart';
-import '../../models/user/user.dart';
-import '../../providers/helper.dart';
-import '../../providers/user_provider.dart';
-import '../../utils/cache.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
