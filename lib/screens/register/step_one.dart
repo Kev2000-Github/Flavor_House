@@ -23,6 +23,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final FocusNode _passwordFocus = FocusNode();
   final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _repeatPasswordFocus = FocusNode();
+  final TextEditingController _repeatPasswordController = TextEditingController();
   final FocusNode _fullNameFocus = FocusNode();
   final TextEditingController _fullNameController = TextEditingController();
   final FocusNode _usernameFocus = FocusNode();
@@ -36,6 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordFocus.dispose();
     _passwordController.dispose();
+    _repeatPasswordController.dispose();
     _fullNameFocus.dispose();
     _fullNameController.dispose();
     _usernameFocus.dispose();
@@ -101,13 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         textColor: whiteColor,
                         size: const Size(300, 50),
                       ),
-                      Container(
-                          padding: const EdgeInsets.only(top: 20, bottom: 50),
-                          child: const Text("¿Se te olvido la contraseña?",
-                              style: TextStyle(
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15))),
+                      const SizedBox(height: 90)
                     ],
                   )),
               Container(
@@ -139,7 +136,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       textEditingController: _passwordController,
                       isPass: true,
                     ),
-                    Flexible(child: Container(), flex: 2),
+                    const SizedBox(height: 24),
+                    TextFieldInput(
+                      hintText: "Repite Contraseña",
+                      textInputType: TextInputType.text,
+                      focusNode: _repeatPasswordFocus,
+                      textEditingController: _repeatPasswordController,
+                      isPass: true,
+                    ),
+                    Flexible(flex: 2, child: Container()),
                   ]))
             ],
           ),

@@ -5,8 +5,10 @@ import 'package:flavor_house/common/popups/forgot_password.dart';
 import 'package:flavor_house/services/auth/dummy_auth_service.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/user/user.dart';
+import '../../providers/user_provider.dart';
 import '../../services/auth/auth_service.dart';
 import '../../utils/colors.dart';
 import '../../widgets/button.dart';
@@ -21,6 +23,8 @@ class ForgotPasswordNewScreen extends StatefulWidget {
 class _ForgotPasswordNewScreenState extends State<ForgotPasswordNewScreen> {
   final FocusNode _newPasswordFocus = FocusNode();
   final TextEditingController _newPasswordController = TextEditingController();
+  final FocusNode _repeatNewPasswordFocus = FocusNode();
+  final TextEditingController _repeatNewPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -66,21 +70,26 @@ class _ForgotPasswordNewScreenState extends State<ForgotPasswordNewScreen> {
                 ),
                 const SizedBox(height: 32),
                 TextFieldInput(
-                    hintText: "New Password",
+                    hintText: "Nueva contraseña",
                     focusNode: _newPasswordFocus,
                     textInputType: TextInputType.text,
                     textEditingController: _newPasswordController),
                 const SizedBox(height: 24),
+                TextFieldInput(
+                    hintText: "Repite la contraseña",
+                    focusNode: _repeatNewPasswordFocus,
+                    textInputType: TextInputType.text,
+                    textEditingController: _repeatNewPasswordController),
                 Flexible(flex: 2, child: Container()),
                 // button login
                 Button(
                   text: "Continuar",
                   onPressed: () async {
-                    String Password = _newPasswordController.value.text;
+                    String password = _newPasswordController.value.text;
                     //TODO: Beware this is a dummy implementation!
                     Auth auth = DummyAuth();
                     dartz.Either<Failure, User> result =
-                        await auth.NewPassword(Password);
+                        await auth.NewPassword(password);
                     result.fold(
                         (failure) {
                           if(failure.runtimeType == PasswordEmpty){
@@ -88,8 +97,9 @@ class _ForgotPasswordNewScreenState extends State<ForgotPasswordNewScreen> {
                           }
                         },
                         (user) async {
-                          ForgotPasswordPopup.Passwordsucessful(context, () {
-                            Navigator.of(context).popUntil((route) => route.isFirst);
+                          ForgotPasswordPopup.Passwordsucessful(context, () async {
+                            await Provider.of<UserProvider>(context, listen: false).login(user);
+                            Navigator.of(context).pushNamed(routes.main_screen);
                           });
                         });
                   },

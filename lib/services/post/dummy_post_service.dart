@@ -202,17 +202,17 @@ class DummyPost implements PostService {
   @override
   Future<Either<Failure, List<Comment>>> getComments(String postId) async {
     List<Comment> comments = [
-      Comment("María López", "marialopez94LAVELADA3FUEUNROBOOOOO", "¡Qué divertido momento de cumpleaños! 🎉🎂", DateTime.now().subtract(const Duration(minutes: 15)), null),
-      Comment("Alejandro García", "alegarcia17", "Jajaja, eso es tener amigos de verdad. 😄", DateTime.now().subtract(const Duration(hours: 1)), null),
-      Comment("Ana Torres", "anatorres22", "¡Aplastando el pastel con estilo! 🍰💥", DateTime.now().subtract(const Duration(hours: 12)), null),
-      Comment("Carlos Ramírez", "cramirez87", "¡Nada como un poco de diversión en tu día especial! 😅", DateTime.now().subtract(const Duration(days: 1)), null),
-      Comment("Sofía Medina", "sofiamedina15", "¡El mejor pastelazo de cumpleaños! 🎉🎂", DateTime.now().subtract(const Duration(days: 2)), null),
-      Comment("Juan Morales", "juanmora78", "Momentos inolvidables con amigos traviesos. 😂", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("Laura Vargas", "lauravargas91", "¡Ese pastel quedó hecho añicos! 💥😄", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("José Hernández", "josehdez34", "Jajaja, ¡te vengarás en su cumpleaños! 😉", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("Valentina Silva", "valentinasilva19", "¡Qué manera tan divertida de celebrar! 🎉🍰", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("Eduardo Ríos", "erios55", "Esa foto captura la esencia de la amistad. ❤️", DateTime.now().subtract(const Duration(days: 15)), null),
-      Comment("Andrea Castro", "andreacastro82", "¡Feliz cumpleaños lleno de risas y buenos recuerdos! 🎉😂", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("id", "userId", "María López", "marialopez94LAVELADA3FUEUNROBOOOOO", "¡Qué divertido momento de cumpleaños! 🎉🎂", DateTime.now().subtract(const Duration(minutes: 15)), null),
+      Comment("id", "userId", "Alejandro García", "alegarcia17", "Jajaja, eso es tener amigos de verdad. 😄", DateTime.now().subtract(const Duration(hours: 1)), null),
+      Comment("id", "userId", "Ana Torres", "anatorres22", "¡Aplastando el pastel con estilo! 🍰💥", DateTime.now().subtract(const Duration(hours: 12)), null),
+      Comment("id", "userId", "Carlos Ramírez", "cramirez87", "¡Nada como un poco de diversión en tu día especial! 😅", DateTime.now().subtract(const Duration(days: 1)), null),
+      Comment("id", "userId", "Sofía Medina", "sofiamedina15", "¡El mejor pastelazo de cumpleaños! 🎉🎂", DateTime.now().subtract(const Duration(days: 2)), null),
+      Comment("id", "userId", "Juan Morales", "juanmora78", "Momentos inolvidables con amigos traviesos. 😂", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("id", "userId", "Laura Vargas", "lauravargas91", "¡Ese pastel quedó hecho añicos! 💥😄", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("id", "userId", "José Hernández", "josehdez34", "Jajaja, ¡te vengarás en su cumpleaños! 😉", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("id", "userId", "Valentina Silva", "valentinasilva19", "¡Qué manera tan divertida de celebrar! 🎉🍰", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("id", "userId", "Eduardo Ríos", "erios55", "Esa foto captura la esencia de la amistad. ❤️", DateTime.now().subtract(const Duration(days: 15)), null),
+      Comment("id", "userId", "Andrea Castro", "andreacastro82", "¡Feliz cumpleaños lleno de risas y buenos recuerdos! 🎉😂", DateTime.now().subtract(const Duration(days: 15)), null),
     ];
     return Right(comments);
   }
@@ -220,13 +220,13 @@ class DummyPost implements PostService {
   @override
   Future<Either<Failure, List<Review>>> getReviews(String postId) async {
     List<Review> reviews = [
-      Review("Juan Toledo", "definitivamente uno de los mejores", DateTime.now(), 5),
-      Review("Maduro", "hace falta un poco mas de azucar", DateTime.now().subtract(const Duration(minutes: 15)), 3),
-      Review("Andrea Sammy", "ESTAN MATANDO ANIMALES!!!", DateTime.now().subtract(const Duration(minutes: 120)), 0),
-      Review("Athena Gomez", "me encanta, lo probe ayer y fue increible", DateTime.now().subtract(const Duration(hours: 15)), 5),
-      Review("Carlos Rodriguez", "la neta, esta de maravilla", DateTime.now().subtract(const Duration(days: 1)), 5),
-      Review("Maria Castillo", "hace falta mas chocolate y azucar", DateTime.now().subtract(const Duration(days: 1)), 4),
-      Review("Juana de Arco", "le falta sabor, pero se ve saludable", DateTime.now().subtract(const Duration(days: 2)), 4),
+      Review("id", "userId", "Juan Toledo", "definitivamente uno de los mejores", DateTime.now(), 5),
+      Review("id", "userId", "Maduro", "hace falta un poco mas de azucar", DateTime.now().subtract(const Duration(minutes: 15)), 3),
+      Review("id", "userId", "Andrea Sammy", "ESTAN MATANDO ANIMALES!!!", DateTime.now().subtract(const Duration(minutes: 120)), 0),
+      Review("id", "userId", "Athena Gomez", "me encanta, lo probe ayer y fue increible", DateTime.now().subtract(const Duration(hours: 15)), 5),
+      Review("id", "userId", "Carlos Rodriguez", "la neta, esta de maravilla", DateTime.now().subtract(const Duration(days: 1)), 5),
+      Review("id", "userId", "Maria Castillo", "hace falta mas chocolate y azucar", DateTime.now().subtract(const Duration(days: 1)), 4),
+      Review("id", "userId", "Juana de Arco", "le falta sabor, pero se ve saludable", DateTime.now().subtract(const Duration(days: 2)), 4),
     ];
     return Right(reviews);
   }

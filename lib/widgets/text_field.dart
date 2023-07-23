@@ -8,6 +8,7 @@ class TextFieldInput extends StatelessWidget {
   final FocusNode? focusNode;
   final Color? bgColor;
   final Widget? prefixICon;
+  final Widget? suffixIcon;
   final Function(String)? onSubmitted;
   final bool autofocus;
   final int? minLine;
@@ -21,6 +22,7 @@ class TextFieldInput extends StatelessWidget {
       required this.textEditingController,
       this.bgColor,
       this.prefixICon,
+      this.suffixIcon,
       this.focusNode,
       this.onSubmitted,
       this.autofocus = false,
@@ -45,6 +47,7 @@ class TextFieldInput extends StatelessWidget {
         filled: true,
         contentPadding: const EdgeInsets.all(8),
         prefixIcon: prefixICon,
+        suffixIcon: suffixIcon,
         fillColor: bgColor,
       ),
       keyboardType: textInputType,

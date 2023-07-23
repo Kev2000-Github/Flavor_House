@@ -64,6 +64,14 @@ class _StepInterestsState extends State<StepInterests> {
               color: gray04Color, fontSize: 20, fontWeight: FontWeight.w500),
         ),
         const SizedBox(
+          height: 5,
+        ),
+        const Text(
+          "Escoge por lo menos 3 intereses",
+          style: TextStyle(
+              color: gray04Color, fontSize: 16, fontWeight: FontWeight.w400),
+        ),
+        const SizedBox(
           height: 20,
         ),
         SizedBox(

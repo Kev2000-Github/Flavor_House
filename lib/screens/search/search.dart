@@ -4,6 +4,7 @@ import 'package:flavor_house/screens/search/search_skeleton.dart';
 import 'package:flavor_house/services/user_info/dummy_user_info_service.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/utils/text_themes.dart';
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +34,26 @@ class _SearchScreenState extends State<SearchScreen> {
   SearchType selectedSearch = SearchType.moment;
   List results = [];
   final TextEditingController _searchController = TextEditingController();
+  bool _isSearchFilled = false;
   bool _isInitialResultLoading = false;
   bool _loadingMore = false;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      _searchController.addListener(onChangeSearchTextField);
+      setState(() {
+        user = Provider.of<UserProvider>(context, listen: false).user;
+      });
+    }
+  }
 
   void setInitialResultLoadingState(bool state) {
     setState(() {
@@ -78,7 +97,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }, (newItems) {
       if (mounted) {
         setState(() {
-          if(reset) results = [];
+          if (reset) results = [];
           results.addAll(newItems);
         });
         setLoadingState(false);
@@ -86,20 +105,10 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      setState(() {
-        user = Provider.of<UserProvider>(context, listen: false).user;
-      });
-    }
+  void onChangeSearchTextField() {
+    setState(() {
+      _isSearchFilled = _searchController.value.text != "";
+    });
   }
 
   void onChangeSearch(SearchType type) {
@@ -110,7 +119,7 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  void onDeletePost(String postId){
+  void onDeletePost(String postId) {
     //TODO: Beware dummy implementation!
     setState(() {
       results.removeWhere((element) => element.id == postId);
@@ -190,33 +199,46 @@ class _SearchScreenState extends State<SearchScreen> {
                     getResults(setInitialResultLoadingState, reset: true);
                   },
                   prefixICon: const Icon(Icons.search, color: blackColor),
+                  suffixIcon: _isSearchFilled ? IconButton(
+                    icon: const Icon(Icons.close, color: blackColor),
+                    onPressed: () {
+                      setState(() {
+                        _searchController.value = TextEditingValue.empty;
+                      });
+                    },
+                  ): null,
                   textInputType: TextInputType.text,
                   textEditingController: _searchController),
             ),
-            _isInitialResultLoading
-                ? SkeletonSearch(
-                    items: 2,
-                    type: selectedSearch,
-                  )
-                : Expanded(
-              child: results.isNotEmpty ? ListViewInfiniteLoader(
-                setLoadingModeState: setLoadingModeState,
-                getMoreItems: getResults,
-                loadingState: _loadingMore,
-                children: List.generate(results.length, (index) {
-                  if (results[index].runtimeType == Moment) {
-                    return Helper.createMomentWidget(results[index], user.id, onDeletePost);
-                  }
-                  if (results[index].runtimeType == Recipe) {
-                    return Helper.createRecipeWidget(results[index], user.id, onDeletePost);
-                  }
-                  if (results[index].runtimeType == UserItem) {
-                    return Helper.createUserItemWidget(results[index]);
-                  }
-                  return Container();
-                }),
-              ) : Container()
-            )
+            Conditional(
+                condition: _isInitialResultLoading,
+                positive: SkeletonSearch(
+                  items: 2,
+                  type: selectedSearch,
+                ),
+                negative: Expanded(
+                    child: Conditional(
+                        condition: results.isNotEmpty,
+                        positive: ListViewInfiniteLoader(
+                          setLoadingModeState: setLoadingModeState,
+                          getMoreItems: getResults,
+                          loadingState: _loadingMore,
+                          children: List.generate(results.length, (index) {
+                            if (results[index].runtimeType == Moment) {
+                              return Helper.createMomentWidget(
+                                  results[index], user.id, onDeletePost);
+                            }
+                            if (results[index].runtimeType == Recipe) {
+                              return Helper.createRecipeWidget(
+                                  results[index], user.id, onDeletePost);
+                            }
+                            if (results[index].runtimeType == UserItem) {
+                              return Helper.createUserItemWidget(
+                                  results[index]);
+                            }
+                            return Container();
+                          }),
+                        )))),
           ],
         ));
   }

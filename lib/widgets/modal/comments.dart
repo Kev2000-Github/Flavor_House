@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/models/post/comment.dart';
 import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/services/post/dummy_post_service.dart';
@@ -60,8 +61,9 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
         context: context,
         builder: (context) =>
             TextInputModalContent(onSend: (String comment) {
+              //TODO: Beware Dummy Implementation!!
               setState(() {
-                Comment newComment = Comment(user!.username, user!.fullName, comment, DateTime.now(), user?.pictureURL);
+                Comment newComment = Comment("1", user!.id, user!.username, user!.fullName, comment, DateTime.now(), user?.pictureURL);
                 comments.add(newComment);
               });
             }));
@@ -134,10 +136,16 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                                     crossAxisAlignment: WrapCrossAlignment.end,
                                     spacing: 10,
                                     children: [
-                                      Text(
-                                        comments[index].fullName,
-                                        style: DesignTextTheme.get(
-                                            type: TextThemeEnum.darkSemiMedium),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pushNamed(routes.other_user_profile,
+                                              arguments: comments[index].userId);
+                                        },
+                                        child: Text(
+                                          comments[index].fullName,
+                                          style: DesignTextTheme.get(
+                                              type: TextThemeEnum.darkSemiMedium),
+                                        )
                                       ),
                                       Text(formatTimeAgo(comments[index].createdAt),
                                           style: const TextStyle(

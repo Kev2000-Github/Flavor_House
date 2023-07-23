@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import '../../../common/error/failures.dart';
 import '../../../models/post/review.dart';
 import '../../../services/post/dummy_post_service.dart';
@@ -116,10 +117,16 @@ class _ReviewsState extends State<Reviews> {
                               crossAxisAlignment: WrapCrossAlignment.end,
                               spacing: 10,
                               children: [
-                                Text(
-                                  reviews[index].fullName,
-                                  style: DesignTextTheme.get(
-                                      type: TextThemeEnum.darkSemiMedium),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(routes.other_user_profile,
+                                        arguments: reviews[index].userId);
+                                  },
+                                  child: Text(
+                                    reviews[index].fullName,
+                                    style: DesignTextTheme.get(
+                                        type: TextThemeEnum.darkSemiMedium),
+                                  )
                                 ),
                                 Text(formatTimeAgo(reviews[index].createdAt),
                                     style: const TextStyle(
