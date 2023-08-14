@@ -1,16 +1,18 @@
+import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/models/config/post_type_config.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/screens/favorite/skeleton_favorite.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
+import 'package:flavor_house/widgets/modal/favorite_filtering.dart';
 import 'package:flavor_house/widgets/post_skeleton.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:dartz/dartz.dart' as dartz;
 import 'package:provider/provider.dart';
 
 import '../../common/error/failures.dart';
+import '../../models/config/sort_config.dart';
 import '../../models/post/recipe.dart';
-import '../../models/sort/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/dummy_post_service.dart';
@@ -29,6 +31,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   User user = User.initial();
   List posts = [];
   SortConfig selectedSort = SortConfig.latest();
+  PostTypeConfig selectedPostType = PostTypeConfig.All();
   bool _isInitialPostLoading = false;
   bool _loadingMore = false;
 
@@ -49,7 +52,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
     dartz.Either<Failure, List> result =
-    await postClient.getAll(sort: selectedSort);
+    await postClient.getAll(sort: selectedSort, postFilter: selectedPostType);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
     }, (newPosts) {
@@ -84,6 +87,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     getPosts(setInitialPostLoadingState, reset: true);
   }
 
+  void onChange(sort, postType) {
+    setState(() {
+      selectedSort = sort;
+      selectedPostType = postType;
+    });
+    getPosts(setInitialPostLoadingState, reset: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Conditional(
@@ -96,13 +107,16 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             loadingState: _loadingMore,
             children:  [
               Sort(
-                selectedValue: selectedSort,
-                onChange: (val) {
-                  setState(() {
-                    selectedSort = val;
-                  });
-                  getPosts(setInitialPostLoadingState, reset: true);
-                },
+                builder: (context) => FavoriteModalContent(
+                  selectedPostType: selectedPostType,
+                  selectedValue: selectedSort,
+                  onApply: (selectedConfig, selectedPostType) {
+                    onChange(selectedConfig, selectedPostType);
+                  },
+                  onCancel: () {
+                    onChange(SortConfig.latest(), PostTypeConfig.All());
+                  },
+                ),
               ),
               Conditional(
                   condition: _isInitialPostLoading,

@@ -1,5 +1,5 @@
-
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../common/error/failures.dart';
@@ -27,7 +27,7 @@ class _PreparationState extends State<Preparation> {
   void getPreparationSteps() async {
     PostService postService = DummyPost();
     dartz.Either<Failure, List<RecipePreparationStep>> result =
-    await postService.getRecipePreparation("recipeId");
+        await postService.getRecipePreparation("recipeId");
     result.fold((l) => null, (List<RecipePreparationStep> steps) {
       setState(() {
         this.steps = steps;
@@ -41,10 +41,13 @@ class _PreparationState extends State<Preparation> {
       padding: const EdgeInsets.all(10),
       child: SingleChildScrollView(
           child: Column(
-            children: List.generate(
-                steps.length,
-                    (index) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+        children: List.generate(
+            steps.length,
+            (index) => Container(
+                  decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: gray03Color))),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  margin: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -71,7 +74,7 @@ class _PreparationState extends State<Preparation> {
                     ],
                   ),
                 )),
-          )),
+      )),
     );
   }
 }

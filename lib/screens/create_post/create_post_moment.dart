@@ -97,30 +97,37 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
                     obscureText: false,
                   ),
                   const SizedBox(height: 25),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Conditional(
-                          condition: image != null,
-                          positive: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: image),
-                        ),
-                        IconButton(
-                            iconSize: 70,
-                            onPressed: () async {
-                              final ImagePicker picker = ImagePicker();
-                              XFile? pickedFile = await picker.pickImage(
-                                  source: ImageSource.gallery);
-                              image = Image.file(File(pickedFile?.path ?? ""));
-                              setState(() {});
-                            },
-                            icon: const Icon(
-                              Icons.image,
-                              size: 70,
-                              color: gray03Color,
-                            )),
-                      ]),
+                  Conditional(
+                    condition: image != null,
+                    positive: Container(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: image)
+                    ),
+                  ),
+                  const Divider(height: 1, thickness: 1.5, color: gray02Color),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      IconButton(
+                          iconSize: 40,
+                          splashRadius: 25,
+                          onPressed: () async {
+                            final ImagePicker picker = ImagePicker();
+                            XFile? pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
+                            if(pickedFile == null) return;
+                            image = Image.file(File(pickedFile.path));
+                            setState(() {});
+                          },
+                          icon: const Icon(
+                            Icons.photo_outlined,
+                            color: gray03Color,
+                          ))
+                    ]
+                  ),
                   Button(
                       text: "Publicar",
                       onPressed: () async {

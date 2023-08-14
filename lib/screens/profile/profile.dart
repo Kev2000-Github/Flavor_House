@@ -14,7 +14,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import '../../common/error/failures.dart';
 import '../../models/post/moment.dart';
 import '../../models/post/recipe.dart';
-import '../../models/sort/sort_config.dart';
+import '../../models/config/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/dummy_post_service.dart';
@@ -24,6 +24,7 @@ import '../../utils/helpers.dart';
 import '../../utils/skeleton_wrapper.dart';
 import '../../utils/text_themes.dart';
 import '../../widgets/button.dart';
+import '../../widgets/modal/sort.dart';
 import '../../widgets/post_skeleton.dart';
 import '../../widgets/sort.dart';
 
@@ -128,6 +129,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       });
     }
+  }
+
+  void onChange(val) {
+    setState(() {
+      selectedSort = val;
+    });
+    getPosts(setInitialPostLoadingState, reset: true);
   }
 
   @override
@@ -271,13 +279,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 Sort(
-                  selectedValue: selectedSort,
-                  onChange: (val) {
-                    setState(() {
-                      selectedSort = val;
-                    });
-                    getPosts(setLoadingModeState, reset: true);
-                  },
+                  builder: (context) => SortModalContent(
+                    selectedValue: selectedSort,
+                    onApply: (selectedConfig) {
+                      onChange(selectedConfig);
+                    },
+                    onCancel: () {
+                      onChange(SortConfig.latest());
+                    },
+                  ),
                 ),
                 _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))

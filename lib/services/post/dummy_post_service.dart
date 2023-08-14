@@ -1,11 +1,12 @@
 import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
+import 'package:flavor_house/models/config/post_type_config.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/models/post/tag.dart';
 import 'package:flavor_house/models/post/recipe_preparation.dart';
-import 'package:flavor_house/models/sort/sort_config.dart';
+import 'package:flavor_house/models/config/sort_config.dart';
 import 'package:flavor_house/utils/colors.dart';
 
 import '../../models/post/comment.dart';
@@ -53,7 +54,7 @@ class DummyPost implements PostService {
   }
 
   @override
-  Future<Either<Failure, List<Recipe>>> getRecipes({SortConfig? sort, String? search}) async {
+  Future<Either<Failure, List<Recipe>>> getRecipes({SortConfig? sort, String? search, List<String>? tags}) async {
     List<Recipe> posts = [
       Recipe(
           "1",
@@ -100,7 +101,7 @@ class DummyPost implements PostService {
   }
 
   @override
-  Future<Either<Failure, List>> getAll({SortConfig? sort}) async {
+  Future<Either<Failure, List>> getAll({SortConfig? sort, PostTypeConfig? postFilter}) async {
     List posts = [
       Moment(
           "1",

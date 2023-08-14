@@ -21,6 +21,6 @@ class RecipePreparationStep {
         return Image.file(File(imageURL!));
       }
     }
-    return Image.asset("assets/images/gray.png");
+    return Image.asset("assets/images/recipe_preview.png");
   }
 }

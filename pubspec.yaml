@@ -128,5 +128,6 @@ flutter:
     - assets/images/logo.png
     - assets/images/icon.png
     - assets/images/gray-add.png
+    - assets/images/recipe_preview.png
 
 

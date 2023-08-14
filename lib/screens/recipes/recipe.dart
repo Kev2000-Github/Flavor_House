@@ -9,13 +9,14 @@ import 'package:provider/provider.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
-import '../../models/sort/sort_config.dart';
+import '../../models/config/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
 import '../../utils/skeleton_wrapper.dart';
 import '../../widgets/input_post.dart';
+import '../../widgets/modal/sort.dart';
 import '../../widgets/post_skeleton.dart';
 import '../../widgets/sort.dart';
 
@@ -85,6 +86,13 @@ class _RecipeScreenState extends State<RecipeScreen> {
     getPosts(setInitialPostLoadingState, reset: true);
   }
 
+  void onChange(val) {
+    setState(() {
+      selectedSort = val;
+    });
+    getPosts(setInitialPostLoadingState, reset: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return !user.isInitial()
@@ -106,13 +114,15 @@ class _RecipeScreenState extends State<RecipeScreen> {
                   height: 20,
                 ),
                 Sort(
-                  selectedValue: selectedSort,
-                  onChange: (val) {
-                    setState(() {
-                      selectedSort = val;
-                    });
-                    getPosts(setInitialPostLoadingState, reset: true);
-                  },
+                  builder: (context) => SortModalContent(
+                    selectedValue: selectedSort,
+                    onApply: (selectedConfig) {
+                      onChange(selectedConfig);
+                    },
+                    onCancel: () {
+                      onChange(SortConfig.latest());
+                    },
+                  ),
                 ),
                 _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))

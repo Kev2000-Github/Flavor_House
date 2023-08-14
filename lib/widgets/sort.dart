@@ -1,14 +1,11 @@
-import 'package:flavor_house/models/sort/sort_config.dart';
-import 'package:flavor_house/widgets/button.dart';
-import 'package:flavor_house/widgets/modal/sort.dart';
 import 'package:flutter/material.dart';
+
 import '../utils/colors.dart';
 
 class Sort extends StatelessWidget {
-  final SortConfig selectedValue;
-  final Function(SortConfig) onChange;
+  final Widget Function(BuildContext) builder;
 
-  const Sort({super.key, required this.selectedValue, required this.onChange});
+  const Sort({super.key, required this.builder});
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +32,7 @@ class Sort extends StatelessWidget {
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20)
                         )),
-                    builder: (context) => SortModalContent(
-                          selectedValue: selectedValue,
-                          onApply: (selectedConfig) {
-                            onChange(selectedConfig);
-                          },
-                          onCancel: () {
-                            onChange(SortConfig.latest());
-                          },
-                        ));
+                    builder: builder);
               },
             )
           ],

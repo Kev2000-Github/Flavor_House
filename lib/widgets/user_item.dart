@@ -15,7 +15,7 @@ class UserItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed(routes.other_user_profile, arguments: user);
+        Navigator.of(context).pushNamed(routes.other_user_profile, arguments: user.id);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),

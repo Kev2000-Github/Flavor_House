@@ -1,5 +1,4 @@
-
-
+import 'package:flavor_house/models/config/post_type_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,27 +7,32 @@ import '../../utils/colors.dart';
 import '../../utils/text_themes.dart';
 import '../button.dart';
 
-class SortModalContent extends StatefulWidget {
+class FavoriteModalContent extends StatefulWidget {
   final SortConfig selectedValue;
-  final Function(SortConfig)? onApply;
+  final PostTypeConfig selectedPostType;
+  final Function(SortConfig, PostTypeConfig)? onApply;
   final VoidCallback? onCancel;
 
-  const SortModalContent(
+  const FavoriteModalContent(
       {super.key,
         required this.selectedValue,
+        required this.selectedPostType,
         this.onApply, this.onCancel});
 
   @override
-  State<SortModalContent> createState() => _SortModalContentState();
+  State<FavoriteModalContent> createState() => _FavoriteModalContentState();
 }
 
-class _SortModalContentState extends State<SortModalContent> {
+class _FavoriteModalContentState extends State<FavoriteModalContent> {
   SortConfig selectedConfig = SortConfig.latest();
   final List<SortConfig> sortOptions = [SortConfig.latest(), SortConfig.oldest()];
+  final List<PostTypeConfig> postTypeOptions = [PostTypeConfig.Moment(), PostTypeConfig.Recipe(), PostTypeConfig.All()];
+  PostTypeConfig selectedPostType = PostTypeConfig.All();
 
   @override
   void initState() {
     selectedConfig = widget.selectedValue;
+    selectedPostType = widget.selectedPostType;
     super.initState();
   }
 
@@ -98,6 +102,45 @@ class _SortModalContentState extends State<SortModalContent> {
                   ],
                 )),
             Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Posts",
+                      style: DesignTextTheme.get(type: TextThemeEnum.darkMedium),
+                    ),
+                    const Spacer(),
+                    DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                            alignedDropdown: true,
+                            child: DropdownButton<String>(
+                                isDense: false,
+                                hint: const Text("tipo de post"),
+                                value: selectedPostType.value,
+                                items: List.generate(
+                                    postTypeOptions.length,
+                                        (index) {
+                                      return DropdownMenuItem(
+                                          value: postTypeOptions[index]
+                                              .value,
+                                          child: Container(
+                                              margin:
+                                              const EdgeInsets
+                                                  .all(8),
+                                              child: Text(
+                                                  postTypeOptions[index]
+                                                      .name)));
+                                    }),
+                                onChanged: (val) {
+                                  if (val == null) return;
+                                  setState(() {
+                                    selectedPostType = postTypeOptions.firstWhere((config) => config.value == val);
+                                  });
+                                })))
+                  ],
+                )),
+            Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(
                     crossAxisAlignment:
@@ -108,7 +151,7 @@ class _SortModalContentState extends State<SortModalContent> {
                           child: Button(
                             onPressed: () {
                               if(widget.onApply == null) return;
-                              widget.onApply!(selectedConfig);
+                              widget.onApply!(selectedConfig, selectedPostType);
                               Navigator.pop(context);
                             },
                             text: "Listo",

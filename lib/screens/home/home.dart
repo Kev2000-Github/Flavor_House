@@ -14,10 +14,11 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
 import '../../models/post/moment.dart';
-import '../../models/sort/sort_config.dart';
+import '../../models/config/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../services/post/dummy_post_service.dart';
 import '../../widgets/conditional.dart';
+import '../../widgets/modal/sort.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -85,6 +86,13 @@ class _HomeScreenState extends State<HomeScreen> {
     getPosts(setInitialPostLoadingState, reset: true);
   }
 
+  void onChange(val) {
+    setState(() {
+      selectedSort = val;
+    });
+    getPosts(setInitialPostLoadingState, reset: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Conditional(
@@ -106,13 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 20,
                 ),
                 Sort(
-                  selectedValue: selectedSort,
-                  onChange: (val) {
-                    setState(() {
-                      selectedSort = val;
-                    });
-                    getPosts(setInitialPostLoadingState, reset: true);
-                  },
+                  builder: (context) => SortModalContent(
+                    selectedValue: selectedSort,
+                    onApply: (selectedConfig) {
+                      onChange(selectedConfig);
+                    },
+                    onCancel: () {
+                      onChange(SortConfig.latest());
+                    },
+                  ),
                 ),
                 Conditional(
                   condition: _isInitialPostLoading,
