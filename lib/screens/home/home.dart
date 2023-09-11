@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/screens/home/skeleton_home.dart';
+import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/utils/skeleton_wrapper.dart';
@@ -29,7 +30,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   User user = User.initial();
-  List<Moment> posts = [];
+  Paginated<Moment> posts = Paginated.initial();
   SortConfig selectedSort = SortConfig.latest();
   bool _isInitialPostLoading = false;
   bool _loadingMore = false;
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List<Moment>> result =
+    dartz.Either<Failure, Paginated<Moment>> result =
         await postClient.getMoments(sort: selectedSort);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
@@ -60,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts);
+            posts.addAll(newPosts.getData());
           }
         });
         setLoadingState(false);
@@ -100,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
         positive: Container(
             padding: const EdgeInsets.only(top: 10, right: 10),
             child: ListViewInfiniteLoader(
+              canLoadMore: posts.page < posts.totalPages,
               loadingState: _loadingMore,
               getMoreItems: getPosts,
               setLoadingModeState: setLoadingModeState,
@@ -129,9 +131,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   positive: const SkeletonWrapper(child: PostSkeleton(items: 2)),
                   negative: Column(
                     children: List.generate(
-                        posts.length,
+                        posts.getData().length,
                             (index) => Helper.createMomentWidget(
-                            posts[index], user.id, onDeletePost)),
+                            posts.getData()[index], user.id, onDeletePost)),
                   )
                 )
               ],

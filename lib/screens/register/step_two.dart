@@ -1,14 +1,15 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/screens/register/step_two_country.dart';
 import 'package:flavor_house/screens/register/step_two_gender.dart';
 import 'package:flavor_house/screens/register/step_two_interests.dart';
-import 'package:flavor_house/services/register/dummy_register_step_two_service.dart';
+import 'package:flavor_house/services/register/http_register_step_two_service.dart';
 import 'package:flavor_house/services/register/register_step_two_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
+import '../../common/popups/common.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../utils/colors.dart';
@@ -21,11 +22,22 @@ class RegisterTwoScreen extends StatefulWidget {
 }
 
 class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
+  User user = User.initial();
   int _currentStep = 0;
   late String? _gender;
   late String _country;
   final List<String> _interests = [];
   bool isFinished = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      setState(() {
+        user = Provider.of<UserProvider>(context, listen: false).user;
+      });
+    }
+  }
 
   void onGenderStepContinue(String? value) {
     _gender = value;
@@ -38,14 +50,15 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
   }
 
   void onInterestsUpdate(String id) {
-    if (_interests.contains(id))
+    if (_interests.contains(id)) {
       _interests.remove(id);
-    else
+    } else {
       _interests.add(id);
+    }
   }
 
-  void onFinish(bool _isFinished) {
-    isFinished = _isFinished;
+  void onFinish(bool finish) {
+    isFinished = finish;
     setState(() {});
   }
 
@@ -105,11 +118,12 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
                 ),
                 leading: IconButton(
                     onPressed: () {
-                      if (_currentStep == 0)
+                      if (_currentStep == 0) {
                         Navigator.of(context)
                             .popUntil((route) => route.isFirst);
-                      else
+                      } else {
                         onReturn();
+                      }
                     },
                     icon: Icon(
                       (() => _currentStep == 0
@@ -122,11 +136,21 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
                     ? [
                         IconButton(
                             onPressed: () async {
-                              RegisterStepTwo register = DummyRegisterStepTwo();
-                              dartz.Either<Failure, User> result = await register.registerAdditionalInfo(_country, _gender, _interests);
-                              result.fold((l) => null, (User user) async {
-                                await Provider.of<UserProvider>(context, listen: false).login(user);
-                                if(context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
+                              RegisterStepTwo register = HttpRegisterStepTwo();
+                              dartz.Either<Failure, User> result =
+                                  await register.registerAdditionalInfo(
+                                     user.id,  _country, _gender, _interests);
+                              result.fold(
+                                  (failure) =>
+                                      CommonPopup.alert(context, failure),
+                                  (User user) async {
+                                await Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .login(user);
+                                if (context.mounted) {
+                                  Navigator.of(context)
+                                      .pushNamed(routes.main_screen);
+                                }
                               });
                             },
                             icon: const Icon(Icons.arrow_forward_ios,

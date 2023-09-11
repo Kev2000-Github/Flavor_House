@@ -9,7 +9,7 @@ import '../../models/interest.dart';
 class DummyRegisterStepTwo implements RegisterStepTwo {
   @override
   Future<Either<Failure, User>> registerAdditionalInfo(
-      String countryId, String? genderId, List<String> interests) async {
+      String userId, String countryId, String? genderId, List<String> interests) async {
     try {
       User actualUser = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
           '4126451235', 'VEN', "assets/images/avatar.jpg", null);

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/models/config/post_type_config.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/screens/favorite/skeleton_favorite.dart';
+import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
@@ -29,7 +30,7 @@ class FavoriteScreen extends StatefulWidget {
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
   User user = User.initial();
-  List posts = [];
+  Paginated posts = Paginated.initial();
   SortConfig selectedSort = SortConfig.latest();
   PostTypeConfig selectedPostType = PostTypeConfig.All();
   bool _isInitialPostLoading = false;
@@ -51,7 +52,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List> result =
+    dartz.Either<Failure, Paginated> result =
     await postClient.getAll(sort: selectedSort, postFilter: selectedPostType);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
@@ -61,7 +62,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts);
+            posts.addAll(newPosts.getData());
           }
         });
         setLoadingState(false);
@@ -102,6 +103,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       positive: Padding(
           padding: const EdgeInsets.only(top: 10, right: 10),
           child: ListViewInfiniteLoader(
+            canLoadMore: posts.page < posts.totalPages,
             setLoadingModeState: setLoadingModeState,
             getMoreItems: getPosts,
             loadingState: _loadingMore,
@@ -122,12 +124,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   condition: _isInitialPostLoading,
                   positive: const SkeletonWrapper(child: PostSkeleton(items: 2)),
                   negative: Column(
-                    children: List.generate(posts.length, (index) {
-                      if (posts[index].runtimeType == Moment) {
-                        return Helper.createMomentWidget(posts[index], user.id, onDeletePost);
+                    children: List.generate(posts.getData().length, (index) {
+                      if (posts.getData()[index].runtimeType == Moment) {
+                        return Helper.createMomentWidget(posts.getData()[index], user.id, onDeletePost);
                       }
-                      if (posts[index].runtimeType == Recipe) {
-                        return Helper.createRecipeWidget(posts[index], user.id, onDeletePost);
+                      if (posts.getData()[index].runtimeType == Recipe) {
+                        return Helper.createRecipeWidget(posts.getData()[index], user.id, onDeletePost);
                       }
                       return Container();
                     }),

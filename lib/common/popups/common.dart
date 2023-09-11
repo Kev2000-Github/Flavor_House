@@ -2,7 +2,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../error/failures.dart';
+
 class CommonPopup {
+  static void alert(context, Failure failure){
+    showDialog(
+        context: context,
+        builder: (_) => CupertinoAlertDialog(
+          title: Text(failure.title),
+          content: Text(failure.message),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("ok"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ));
+  }
+
   static void alertUserNotLogged(context){
     showDialog(
         context: context,

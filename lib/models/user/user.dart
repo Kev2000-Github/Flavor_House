@@ -11,6 +11,7 @@ class User extends Equatable {
   final String? phoneNumber;
   final String? countryId;
   final String? pictureURL;
+  String? token;
   bool? isFollowed;
 
   User(this.id, this.username, this.fullName, this.email, this.gender,
@@ -34,8 +35,10 @@ class User extends Equatable {
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User(json['id'], json['username'], json['fullName'], json['email'],
+    User user = User(json['id'], json['username'], json['fullName'], json['email'],
         json['sex'], json['phoneNumber'], json['countryId'], json['pictureURL'], json['isFollowed']);
+    user.token = json['token'];
+    return user;
   }
 
   bool isInitial() {
@@ -58,7 +61,8 @@ class User extends Equatable {
       "gender": gender,
       "phoneNumber": phoneNumber,
       "countryId": countryId,
-      "pictureURL": pictureURL
+      "pictureURL": pictureURL,
+      "token": token
     };
     return map;
   }

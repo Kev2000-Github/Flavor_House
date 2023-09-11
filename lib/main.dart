@@ -1,12 +1,11 @@
 import 'package:flavor_house/common/routes/route_generator.dart';
 import 'package:flavor_house/providers/user_provider.dart';
-import 'package:flavor_house/screens/login/login.dart';
-import 'package:flavor_house/screens/welcome/welcome.dart';
-import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: '.env');
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => UserProvider())
@@ -16,7 +15,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

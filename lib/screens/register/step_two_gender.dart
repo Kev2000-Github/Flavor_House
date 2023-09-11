@@ -21,7 +21,7 @@ class StepGender extends StatelessWidget {
           ),
           const SizedBox(height: 28),
           Button(
-            onPressed: () => onGenderSelect("H"),
+            onPressed: () => onGenderSelect("MAN"),
             text: "Hombre",
             size: Size.fromHeight(50),
             borderSide: BorderSide.none,
@@ -30,7 +30,7 @@ class StepGender extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Button(
-            onPressed: () => onGenderSelect("M"),
+            onPressed: () => onGenderSelect("WOMAN"),
             text: "Mujer",
             size: Size.fromHeight(50),
             borderSide: BorderSide.none,
@@ -39,7 +39,7 @@ class StepGender extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Button(
-            onPressed: () => onGenderSelect(null),
+            onPressed: () => onGenderSelect("NONE"),
             text: "Prefiero no decirlo",
             size: Size.fromHeight(50),
             borderSide: BorderSide.none,

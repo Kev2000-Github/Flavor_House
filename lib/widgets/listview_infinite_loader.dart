@@ -1,3 +1,4 @@
+import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -7,15 +8,17 @@ class ListViewInfiniteLoader extends StatelessWidget {
   final Function(Function(bool)) getMoreItems;
   final List<Widget> children;
   final bool loadingState;
+  final bool canLoadMore;
   const ListViewInfiniteLoader(
       {super.key,
       required this.setLoadingModeState,
       required this.getMoreItems,
       required this.children,
-      required this.loadingState});
+      required this.loadingState,
+      required this.canLoadMore});
 
   void onLoaderVisible(VisibilityInfo info) {
-    if (info.visibleFraction > 0.1 && !loadingState) {
+    if (info.visibleFraction > 0.1 && !loadingState && canLoadMore) {
       getMoreItems(setLoadingModeState);
     }
   }
@@ -28,9 +31,13 @@ class ListViewInfiniteLoader extends StatelessWidget {
         VisibilityDetector(
             key: const Key("loader"),
             onVisibilityChanged: onLoaderVisible,
-            child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Center(child: CircularProgressIndicator())))
+            child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Conditional(
+                  condition: canLoadMore,
+                  positive: const Center(child: CircularProgressIndicator()),
+                  negative: null,
+                )))
       ],
     );
   }

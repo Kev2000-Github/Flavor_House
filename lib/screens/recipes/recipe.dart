@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/screens/recipes/skeleton_recipe.dart';
+import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
@@ -29,7 +30,7 @@ class RecipeScreen extends StatefulWidget {
 
 class _RecipeScreenState extends State<RecipeScreen> {
   User user = User.initial();
-  List<Recipe> posts = [];
+  Paginated<Recipe> posts = Paginated.initial();
   SortConfig selectedSort = SortConfig.latest();
   bool _isInitialPostLoading = false;
   bool _loadingMore = false;
@@ -50,7 +51,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List<Recipe>> result =
+    dartz.Either<Failure, Paginated<Recipe>> result =
     await postClient.getRecipes(sort: selectedSort);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
@@ -60,7 +61,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts);
+            posts.addAll(newPosts.getData());
           }
         });
         setLoadingState(false);
@@ -99,6 +100,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
         ? Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),
             child: ListViewInfiniteLoader(
+              canLoadMore: posts.page < posts.totalPages,
               loadingState: _loadingMore,
               getMoreItems: getPosts,
               setLoadingModeState: setLoadingModeState,
@@ -127,8 +129,8 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
-                    children: List.generate(posts.length,
-                            (index) => Helper.createRecipeWidget(posts[index], user.id, onDeletePost)))
+                    children: List.generate(posts.getData().length,
+                            (index) => Helper.createRecipeWidget(posts.getData()[index], user.id, onDeletePost)))
               ]
             ))
         : const SingleChildScrollView(child: SkeletonRecipe(items: 2));

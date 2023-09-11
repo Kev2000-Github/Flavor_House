@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../common/error/failures.dart';
 import '../../../models/post/recipe_preparation.dart';
+import '../../../services/paginated.dart';
 import '../../../services/post/dummy_post_service.dart';
 import '../../../services/post/post_service.dart';
 
@@ -26,11 +27,11 @@ class _PreparationState extends State<Preparation> {
 
   void getPreparationSteps() async {
     PostService postService = DummyPost();
-    dartz.Either<Failure, List<RecipePreparationStep>> result =
+    dartz.Either<Failure, Paginated<RecipePreparationStep>> result =
         await postService.getRecipePreparation("recipeId");
-    result.fold((l) => null, (List<RecipePreparationStep> steps) {
+    result.fold((l) => null, (Paginated<RecipePreparationStep> steps) {
       setState(() {
-        this.steps = steps;
+        this.steps = steps.getData();
       });
     });
   }

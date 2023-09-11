@@ -1,5 +1,6 @@
 
 
+import 'package:flavor_house/services/paginated.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -35,11 +36,11 @@ class _PreparationStepState extends State<PreparationStep> {
 
   void getPreparationSteps() async {
     PostService postService = DummyPost();
-    dartz.Either<Failure, List<RecipePreparationStep>> result =
+    dartz.Either<Failure, Paginated<RecipePreparationStep>> result =
     await postService.getRecipePreparation(widget.recipeId!);
-    result.fold((l) => null, (List<RecipePreparationStep> steps) {
+    result.fold((l) => null, (steps) {
       setState(() {
-        preparationSteps.addAll(steps);
+        preparationSteps.addAll(steps.getData());
       });
     });
   }

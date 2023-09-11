@@ -1,3 +1,5 @@
+import 'package:flavor_house/common/config.dart';
+import 'package:flavor_house/common/session.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../models/user/user.dart';
@@ -8,6 +10,8 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> login(User loggedUser) async {
     await setLocalUser(loggedUser);
+    Session session = Session();
+    session.token = loggedUser.token ?? '';
     user = loggedUser;
     notifyListeners();
   }

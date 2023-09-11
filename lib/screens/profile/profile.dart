@@ -1,20 +1,21 @@
-import 'package:flavor_house/models/user/user_item.dart';
+import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/models/user/user_publications_info.dart';
 import 'package:flavor_house/screens/profile/skeleton_profile.dart';
-import 'package:flavor_house/services/user_info/dummy_user_info_service.dart';
+import 'package:flavor_house/services/paginated.dart';
+import 'package:flavor_house/services/user_info/http_user_info_service.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dartz/dartz.dart' as dartz;
-import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
+import '../../common/popups/common.dart';
+import '../../models/config/sort_config.dart';
 import '../../models/post/moment.dart';
 import '../../models/post/recipe.dart';
-import '../../models/config/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/dummy_post_service.dart';
@@ -39,7 +40,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   User user = User.initial();
   UserPublicationsInfo? userInfo;
-  List posts = [];
+  Paginated posts = Paginated.initial();
   SortConfig selectedSort = SortConfig.latest();
   bool _isInitialPostLoading = false;
   bool _loadingMore = false;
@@ -60,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
     PostService postClient = DummyPost();
-    dartz.Either<Failure, List> result =
+    dartz.Either<Failure, Paginated> result =
     await postClient.getMyPosts(sort: selectedSort);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
@@ -70,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts);
+            posts.addAll(newPosts.getData());
           }
         });
         setLoadingState(false);
@@ -80,10 +81,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void getUserInfo() async {
     if (user.isInitial()) return;
-    UserInfoService userInfoService = DummyUserInfoService();
+    UserInfoService userInfoService = HttpUserInfoService();
     dartz.Either<Failure, UserPublicationsInfo> result =
-        await userInfoService.getInfo(user!.id);
-    result.fold((failure) => null, (newUserPublicationsInfo) {
+        await userInfoService.getInfo(user.id);
+    result.fold((failure) => CommonPopup.alert(context, failure), (newUserPublicationsInfo) {
       if (mounted) {
         setState(() {
           userInfo = newUserPublicationsInfo;
@@ -93,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void getUser() async {
-    UserInfoService userInfoService = DummyUserInfoService();
+    UserInfoService userInfoService = HttpUserInfoService();
     dartz.Either<Failure, User> result =
     await userInfoService.getUser(widget.userId!);
     result.fold((failure) => null, (newUser) {
@@ -170,6 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         positive: Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),
             child: ListViewInfiniteLoader(
+              canLoadMore: posts.page < posts.totalPages,
               loadingState: _loadingMore,
               getMoreItems: getPosts,
               setLoadingModeState: setLoadingModeState,
@@ -189,11 +191,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Avatar(
                                     pictureHeight: 60,
                                     borderSize: 2,
-                                    image: user?.picture),
+                                    image: user.picture),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 4),
                                   child: Text(
-                                    user!.fullName,
+                                    user.fullName,
                                     textAlign: TextAlign.center,
                                     style: DesignTextTheme.get(
                                         type: TextThemeEnum.darkSemiMedium),
@@ -241,6 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: widget.userId != null ? Button(
                     text: user?.isFollowed != null && user!.isFollowed == true ? "Dejar de seguir" : "Seguir",
                     onPressed: () {
+
                       setState(() {
                         user.isFollowed = !user.isFollowed!;
                       });
@@ -292,12 +295,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
-                  children: List.generate(posts.length, (index) {
-                    if (posts[index].runtimeType == Moment) {
-                      return Helper.createMomentWidget(posts[index], user.id, onDeletePost);
+                  children: List.generate(posts.getData().length, (index) {
+                    if (posts.getData()[index].runtimeType == Moment) {
+                      return Helper.createMomentWidget(posts.getData()[index], user.id, onDeletePost);
                     }
-                    if (posts[index].runtimeType == Recipe) {
-                      return Helper.createRecipeWidget(posts[index], user.id, onDeletePost);
+                    if (posts.getData()[index].runtimeType == Recipe) {
+                      return Helper.createRecipeWidget(posts.getData()[index], user.id, onDeletePost);
                     }
                     return Container();
                   }),

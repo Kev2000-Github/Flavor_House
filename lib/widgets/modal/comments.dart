@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../common/error/failures.dart';
 import '../../providers/user_provider.dart';
+import '../../services/paginated.dart';
 import '../../utils/colors.dart';
 import '../../utils/text_themes.dart';
 import '../text_field.dart';
@@ -46,11 +47,11 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
 
   void getComments() async {
     PostService commentService = DummyPost();
-    dartz.Either<Failure, List<Comment>> result =
+    dartz.Either<Failure, Paginated<Comment>> result =
         await commentService.getComments("postId");
-    result.fold((l) => null, (List<Comment> comments) {
+    result.fold((l) => null, (Paginated<Comment> comments) {
       setState(() {
-        this.comments = comments;
+        this.comments = comments.getData();
       });
     });
   }

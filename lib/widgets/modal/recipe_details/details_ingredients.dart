@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/error/failures.dart';
+import '../../../services/paginated.dart';
 import '../../../services/post/dummy_post_service.dart';
 import '../../../services/post/post_service.dart';
 import 'package:dartz/dartz.dart' as dartz;
@@ -24,10 +25,10 @@ class _IngredientsState extends State<Ingredients> {
 
   void getIngredients() async {
     PostService postService = DummyPost();
-    dartz.Either<Failure, List<String>> result = await postService.getIngredients(widget.recipeId);
-    result.fold((l) => null, (List<String> ingredients) {
+    dartz.Either<Failure, Paginated<String>> result = await postService.getIngredients(widget.recipeId);
+    result.fold((l) => null, (Paginated<String> ingredients) {
       setState(() {
-        this.ingredients = ingredients;
+        this.ingredients = ingredients.getData();
       });
     });
   }

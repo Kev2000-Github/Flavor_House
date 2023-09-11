@@ -1,10 +1,10 @@
-import 'package:flavor_house/services/register/dummy_register_step_two_service.dart';
-import 'package:flavor_house/services/register/register_step_two_service.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/services/register/http_register_step_two_service.dart';
+import 'package:flavor_house/services/register/register_step_two_service.dart';
+import 'package:flutter/material.dart';
 
 import '../../common/error/failures.dart';
+import '../../common/popups/common.dart';
 import '../../models/interest.dart';
 import '../../utils/colors.dart';
 
@@ -32,9 +32,10 @@ class _StepInterestsState extends State<StepInterests> {
   List<String> selectedInterests = [];
 
   void getInterests() async {
-    RegisterStepTwo registerService = DummyRegisterStepTwo();
-    dartz.Either<Failure, List<Interest>> result = await registerService.getInterests();
-    result.fold((l) => null, (interests) {
+    RegisterStepTwo registerService = HttpRegisterStepTwo();
+    dartz.Either<Failure, List<Interest>> result =
+        await registerService.getInterests();
+    result.fold((failure) => CommonPopup.alert(context, failure), (interests) {
       setState(() => this.interests = interests);
     });
   }
@@ -91,10 +92,11 @@ class _StepInterestsState extends State<StepInterests> {
                         } else {
                           selectedInterests.add(interests[index].id);
                         }
-                        if (selectedInterests.length >= 3)
+                        if (selectedInterests.length >= 3) {
                           widget.onFinish(true);
-                        else
+                        } else {
                           widget.onFinish(false);
+                        }
                         setState(() {});
                       },
                       interest: interests[index],
@@ -124,7 +126,8 @@ class InterestItem extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            image: DecorationImage(image: interest.picture.image, fit: BoxFit.cover)),
+            image: DecorationImage(
+                image: interest.picture.image, fit: BoxFit.cover)),
         child: Stack(children: [
           Positioned.fill(
               child: Opacity(

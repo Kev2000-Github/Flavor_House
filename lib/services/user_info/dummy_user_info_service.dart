@@ -8,6 +8,7 @@ import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user/user.dart';
+import '../paginated.dart';
 
 class DummyUserInfoService implements UserInfoService {
   @override
@@ -21,7 +22,7 @@ class DummyUserInfoService implements UserInfoService {
   }
 
   @override
-  Future<Either<Failure, List>> userSearch({String? searchTerm}) async {
+  Future<Either<Failure, Paginated>> userSearch({String? searchTerm}) async {
     try {
       List<UserItem> users = [
         UserItem("1", "ReyDeLaCocina", "Juan Toledo", "Venezuela", "assets/images/avatar.jpg", true),
@@ -33,7 +34,8 @@ class DummyUserInfoService implements UserInfoService {
         UserItem("7", "ReyDeLaCocina", "Juan Toledo", "Venezuela", "assets/images/avatar.jpg", true),
       ];
       await Future.delayed(const Duration(seconds: 1));
-      return Right(users);
+      final result = Paginated<UserItem>(users, users.length, 1, 1);
+      return Right(result);
     } catch (e) {
       return Left(ServerFailure());
     }
@@ -44,5 +46,10 @@ class DummyUserInfoService implements UserInfoService {
     User user = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
         '4126451235', 'VEN', "assets/images/avatar.jpg", false);
     return Right(user);
+  }
+
+  @override
+  Future<Either<Failure, bool>> updateFollow(String userId, bool follow) async {
+    return const Right(true);
   }
 }

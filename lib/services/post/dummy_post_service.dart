@@ -7,6 +7,7 @@ import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/models/post/tag.dart';
 import 'package:flavor_house/models/post/recipe_preparation.dart';
 import 'package:flavor_house/models/config/sort_config.dart';
+import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/utils/colors.dart';
 
 import '../../models/post/comment.dart';
@@ -17,7 +18,7 @@ import 'package:flutter/material.dart';
 
 class DummyPost implements PostService {
   @override
-  Future<Either<Failure, List<Moment>>> getMoments({SortConfig? sort, String? search}) async {
+  Future<Either<Failure, Paginated<Moment>>> getMoments({SortConfig? sort, String? search}) async {
     List<Moment> posts = [
       Moment(
         "1",
@@ -48,13 +49,15 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      return Right(posts.reversed.toList());
+      final result = Paginated<Moment>(posts.reversed.toList(), posts.length, 1, 1);
+      return Right(result);
     }
-    return Right(posts);
+    final result = Paginated<Moment>(posts, posts.length, 1, 2);
+    return Right(result);
   }
 
   @override
-  Future<Either<Failure, List<Recipe>>> getRecipes({SortConfig? sort, String? search, List<String>? tags}) async {
+  Future<Either<Failure, Paginated<Recipe>>> getRecipes({SortConfig? sort, String? search, List<String>? tags}) async {
     List<Recipe> posts = [
       Recipe(
           "1",
@@ -95,13 +98,15 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      return Right(posts.reversed.toList());
+      final result = Paginated<Recipe>(posts.reversed.toList(), posts.length, 1, 1);
+      return Right(result);
     }
-    return Right(posts);
+    final result = Paginated<Recipe>(posts, posts.length, 1, 1);
+    return Right(result);
   }
 
   @override
-  Future<Either<Failure, List>> getAll({SortConfig? sort, PostTypeConfig? postFilter}) async {
+  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter}) async {
     List posts = [
       Moment(
           "1",
@@ -137,13 +142,15 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      return Right(posts.reversed.toList());
+      final result = Paginated(posts.reversed.toList(), posts.length, 1, 1);
+      return Right(result);
     }
-    return Right(posts);
+    final result = Paginated(posts, posts.length, 1, 1);
+    return Right(result);
   }
 
   @override
-  Future<Either<Failure, List>> getMyPosts({SortConfig? sort}) async {
+  Future<Either<Failure, Paginated>> getMyPosts({SortConfig? sort}) async {
     List posts = [
       Moment(
           "2",
@@ -179,13 +186,15 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      return Right(posts.reversed.toList());
+      final result = Paginated(posts.reversed.toList(), posts.length, 1, 1);
+      return Right(result);
     }
-    return Right(posts);
+    final result = Paginated(posts, posts.length, 1, 1);
+    return Right(result);
   }
 
   @override
-  Future<Either<Failure, List<RecipePreparationStep>>> getRecipePreparation(String recipeId) async {
+  Future<Either<Failure, Paginated<RecipePreparationStep>>> getRecipePreparation(String recipeId) async {
     List<RecipePreparationStep> steps = [
       RecipePreparationStep("Precalentar el horno a 180°C.", null),
       RecipePreparationStep("En un tazón grande, mezclar la harina, azúcar, cacao en polvo, levadura en polvo, bicarbonato de sodio y sal.", null),
@@ -197,11 +206,12 @@ class DummyPost implements PostService {
       RecipePreparationStep("Una vez que el pastel esté completamente enfriado, cubrir con el glaseado de chocolate", null),
       RecipePreparationStep("Decorar el pastel según tu preferencia y ¡disfrutar!", "assets/images/cake.jpg"),
     ];
-    return Right(steps);
+    final result = Paginated(steps, steps.length, 1, 1);
+    return Right(result);
   }
 
   @override
-  Future<Either<Failure, List<Comment>>> getComments(String postId) async {
+  Future<Either<Failure, Paginated<Comment>>> getComments(String postId) async {
     List<Comment> comments = [
       Comment("id", "userId", "María López", "marialopez94LAVELADA3FUEUNROBOOOOO", "¡Qué divertido momento de cumpleaños! 🎉🎂", DateTime.now().subtract(const Duration(minutes: 15)), null),
       Comment("id", "userId", "Alejandro García", "alegarcia17", "Jajaja, eso es tener amigos de verdad. 😄", DateTime.now().subtract(const Duration(hours: 1)), null),
@@ -215,11 +225,12 @@ class DummyPost implements PostService {
       Comment("id", "userId", "Eduardo Ríos", "erios55", "Esa foto captura la esencia de la amistad. ❤️", DateTime.now().subtract(const Duration(days: 15)), null),
       Comment("id", "userId", "Andrea Castro", "andreacastro82", "¡Feliz cumpleaños lleno de risas y buenos recuerdos! 🎉😂", DateTime.now().subtract(const Duration(days: 15)), null),
     ];
-    return Right(comments);
+    final result = Paginated(comments, comments.length, 1, 1);
+    return Right(result);
   }
 
   @override
-  Future<Either<Failure, List<Review>>> getReviews(String postId) async {
+  Future<Either<Failure, Paginated<Review>>> getReviews(String postId) async {
     List<Review> reviews = [
       Review("id", "userId", "Juan Toledo", "definitivamente uno de los mejores", DateTime.now(), 5),
       Review("id", "userId", "Maduro", "hace falta un poco mas de azucar", DateTime.now().subtract(const Duration(minutes: 15)), 3),
@@ -229,11 +240,12 @@ class DummyPost implements PostService {
       Review("id", "userId", "Maria Castillo", "hace falta mas chocolate y azucar", DateTime.now().subtract(const Duration(days: 1)), 4),
       Review("id", "userId", "Juana de Arco", "le falta sabor, pero se ve saludable", DateTime.now().subtract(const Duration(days: 2)), 4),
     ];
-    return Right(reviews);
+    final result = Paginated(reviews, reviews.length, 1, 1);
+    return Right(result);
   }
 
   @override
-  Future<Either<Failure, List<String>>> getIngredients(String recipeId) async {
+  Future<Either<Failure, Paginated<String>>> getIngredients(String recipeId) async {
     List<String> ingredients = [
       "2 tazas de harina",
       "2 tazas de azúcar",
@@ -252,7 +264,8 @@ class DummyPost implements PostService {
       "1/4 taza de leche",
       "1 cucharadita de extracto de vainilla"
     ];
-    return Right(ingredients);
+    final result = Paginated(ingredients, ingredients.length, 1, 1);
+    return Right(result);
   }
 
   @override

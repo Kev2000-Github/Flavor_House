@@ -46,6 +46,8 @@ dependencies:
   image_picker: ^1.0.0
   timeago: ^3.4.0
   visibility_detector: ^0.4.0+2
+  http: ^1.1.0
+  flutter_dotenv: ^5.1.0
 
 flutter_icons:
   android: true
@@ -115,6 +117,7 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
+    - .env
     - assets/images/ic_instagram.svg
     - assets/images/logo.svg
     - assets/images/avatar.jpg

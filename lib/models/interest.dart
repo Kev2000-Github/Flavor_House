@@ -17,7 +17,7 @@ class Interest extends Equatable {
     return Interest(
         json['id'],
         json['name'],
-        json['picURL']
+        json['imageUrl']
     );
   }
 

@@ -1,5 +1,6 @@
 
 
+import 'package:flavor_house/services/paginated.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/error/failures.dart';
@@ -31,10 +32,10 @@ class _IngredientStepState extends State<IngredientStep> {
 
   void getIngredients() async {
     PostService postService = DummyPost();
-    dartz.Either<Failure, List<String>> result = await postService.getIngredients(widget.recipeId!);
-    result.fold((l) => null, (List<String> ingredients) {
+    dartz.Either<Failure, Paginated<String>> result = await postService.getIngredients(widget.recipeId!);
+    result.fold((l) => null, (ingredients) {
       setState(() {
-        this.ingredients.addAll(ingredients);
+        this.ingredients.addAll(ingredients.getData());
       });
     });
   }
