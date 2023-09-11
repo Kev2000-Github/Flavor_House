@@ -34,7 +34,7 @@ class DummyUserInfoService implements UserInfoService {
         UserItem("7", "ReyDeLaCocina", "Juan Toledo", "Venezuela", "assets/images/avatar.jpg", true),
       ];
       await Future.delayed(const Duration(seconds: 1));
-      final result = Paginated<UserItem>(users, users.length, 1, 1);
+      final result = Paginated<UserItem>(users, 1, 1);
       return Right(result);
     } catch (e) {
       return Left(ServerFailure());

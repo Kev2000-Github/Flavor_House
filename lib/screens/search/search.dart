@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/error/failures.dart';
+import '../../common/popups/common.dart';
 import '../../models/post/moment.dart';
 import '../../models/post/recipe.dart';
 import '../../models/user/user.dart';
@@ -93,6 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     result.fold((failure) {
+      CommonPopup.alert(context, failure);
       if (mounted) {
         setLoadingState(false);
       }
@@ -101,6 +103,7 @@ class _SearchScreenState extends State<SearchScreen> {
         setState(() {
           if (reset) results = Paginated.initial();
           results.addAll(newItems.getData());
+          print(results.getData());
         });
         setLoadingState(false);
       }
@@ -227,6 +230,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           getMoreItems: getResults,
                           loadingState: _loadingMore,
                           children: List.generate(results.items, (index) {
+                            print(results.getData());
                             if (results.getData()[index].runtimeType == Moment) {
                               return Helper.createMomentWidget(
                                   results.getData()[index], user.id, onDeletePost);

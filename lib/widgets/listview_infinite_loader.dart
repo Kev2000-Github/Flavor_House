@@ -36,7 +36,6 @@ class ListViewInfiniteLoader extends StatelessWidget {
                 child: Conditional(
                   condition: canLoadMore,
                   positive: const Center(child: CircularProgressIndicator()),
-                  negative: null,
                 )))
       ],
     );

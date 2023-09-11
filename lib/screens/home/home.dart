@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   positive: const SkeletonWrapper(child: PostSkeleton(items: 2)),
                   negative: Column(
                     children: List.generate(
-                        posts.getData().length,
+                        posts.items,
                             (index) => Helper.createMomentWidget(
                             posts.getData()[index], user.id, onDeletePost)),
                   )

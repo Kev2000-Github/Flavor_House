@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
+import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/services/auth/dummy_auth_service.dart';
+import 'package:flavor_house/services/auth/http_auth_service.dart';
 import 'package:flavor_house/utils/cache.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = _emailController.value.text;
     String password = _passwordController.value.text;
     //TODO: Beware this is a dummy implementation!
-    Auth auth = DummyAuth();
+    Auth auth = HttpAuth();
     dartz.Either<Failure, User> result = await auth.login(email, password);
     result.fold((failure) {
       if (failure.runtimeType == LoginFailure) {
@@ -49,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } else if (failure.runtimeType == LoginEmptyFailure) {
         LoginPopup.alertLoginEmptyFailure(context);
       }
+      else CommonPopup.alert(context, failure);
     }, (user) async {
       await Provider.of<UserProvider>(context, listen: false).login(user);
       if (context.mounted) Navigator.of(context).pushNamed(routes.main_screen);

@@ -2,13 +2,12 @@
 
 class Paginated<T> {
   final List<T> _data;
-  final int items;
   final int page;
   final int totalPages;
 
-  Paginated(this._data, this.items, this.page, this.totalPages);
+  Paginated(this._data, this.page, this.totalPages);
   factory Paginated.initial() {
-    return Paginated([], 0, 1, 1);
+    return Paginated([], 1, 1);
   }
 
   void push(T item) => _data.add(item);
@@ -21,5 +20,8 @@ class Paginated<T> {
   }
   bool get isNotEmpty {
     return _data.isNotEmpty;
+  }
+  int get items {
+    return _data.length;
   }
 }

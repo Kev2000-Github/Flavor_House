@@ -124,7 +124,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   condition: _isInitialPostLoading,
                   positive: const SkeletonWrapper(child: PostSkeleton(items: 2)),
                   negative: Column(
-                    children: List.generate(posts.getData().length, (index) {
+                    children: List.generate(posts.items, (index) {
                       if (posts.getData()[index].runtimeType == Moment) {
                         return Helper.createMomentWidget(posts.getData()[index], user.id, onDeletePost);
                       }

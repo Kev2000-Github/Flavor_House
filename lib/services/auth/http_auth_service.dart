@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:flavor_house/common/config.dart';
 import 'package:flavor_house/common/error/failures.dart';
@@ -7,23 +9,24 @@ import 'package:http/http.dart' as http;
 
 class HttpAuth implements Auth {
   @override
-  Future<Either<Failure, User>> login(String username, String password) async {
+  Future<Either<Failure, User>> login(String email, String password) async {
     try {
       String hostname = Config.backURL;
-      Uri url = Uri.parse('$hostname/v1/users');
-      var response = await http.post(url, body: {username, password});
-      User user = User(
-          'id',
-          'ReyDeLaCocina',
-          'Juan Toledo',
-          'pepe@gmail.com',
-          'Hombre',
-          '4126451235',
-          'VEN',
-          "assets/images/avatar.jpg",
-          null
-      );
-      return Right(user);
+      Uri url = Uri.parse('$hostname/v1/logins');
+      var body = json.encode({
+        'email': email,
+        'password': password,
+      });
+      var response = await http.post(url, body: body, headers: Config.headerInitial);
+      var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+      if (response.statusCode == 200) {
+        User user =  User.fromJson(decodedResponse['data']);
+        user.token = decodedResponse['token'];
+        return Right(user);
+      } else {
+        return Left(ServerFailure(
+            title: 'Login', message: decodedResponse['error']['message']));
+      }
     } catch (e) {
       return Left(ServerFailure());
     }

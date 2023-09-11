@@ -49,10 +49,10 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      final result = Paginated<Moment>(posts.reversed.toList(), posts.length, 1, 1);
+      final result = Paginated<Moment>(posts.reversed.toList(), 1, 1);
       return Right(result);
     }
-    final result = Paginated<Moment>(posts, posts.length, 1, 2);
+    final result = Paginated<Moment>(posts, 1, 2);
     return Right(result);
   }
 
@@ -98,10 +98,10 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      final result = Paginated<Recipe>(posts.reversed.toList(), posts.length, 1, 1);
+      final result = Paginated<Recipe>(posts.reversed.toList(), 1, 1);
       return Right(result);
     }
-    final result = Paginated<Recipe>(posts, posts.length, 1, 1);
+    final result = Paginated<Recipe>(posts, 1, 1);
     return Right(result);
   }
 
@@ -142,10 +142,10 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      final result = Paginated(posts.reversed.toList(), posts.length, 1, 1);
+      final result = Paginated(posts.reversed.toList(), 1, 1);
       return Right(result);
     }
-    final result = Paginated(posts, posts.length, 1, 1);
+    final result = Paginated(posts, 1, 1);
     return Right(result);
   }
 
@@ -186,10 +186,10 @@ class DummyPost implements PostService {
     ];
     await Future.delayed(const Duration(milliseconds: 500));
     if(sort != null && sort.value == SortConfig.oldest().value){
-      final result = Paginated(posts.reversed.toList(), posts.length, 1, 1);
+      final result = Paginated(posts.reversed.toList(), 1, 1);
       return Right(result);
     }
-    final result = Paginated(posts, posts.length, 1, 1);
+    final result = Paginated(posts, 1, 1);
     return Right(result);
   }
 
@@ -206,7 +206,7 @@ class DummyPost implements PostService {
       RecipePreparationStep("Una vez que el pastel esté completamente enfriado, cubrir con el glaseado de chocolate", null),
       RecipePreparationStep("Decorar el pastel según tu preferencia y ¡disfrutar!", "assets/images/cake.jpg"),
     ];
-    final result = Paginated(steps, steps.length, 1, 1);
+    final result = Paginated(steps, 1, 1);
     return Right(result);
   }
 
@@ -225,7 +225,7 @@ class DummyPost implements PostService {
       Comment("id", "userId", "Eduardo Ríos", "erios55", "Esa foto captura la esencia de la amistad. ❤️", DateTime.now().subtract(const Duration(days: 15)), null),
       Comment("id", "userId", "Andrea Castro", "andreacastro82", "¡Feliz cumpleaños lleno de risas y buenos recuerdos! 🎉😂", DateTime.now().subtract(const Duration(days: 15)), null),
     ];
-    final result = Paginated(comments, comments.length, 1, 1);
+    final result = Paginated(comments, 1, 1);
     return Right(result);
   }
 
@@ -240,7 +240,7 @@ class DummyPost implements PostService {
       Review("id", "userId", "Maria Castillo", "hace falta mas chocolate y azucar", DateTime.now().subtract(const Duration(days: 1)), 4),
       Review("id", "userId", "Juana de Arco", "le falta sabor, pero se ve saludable", DateTime.now().subtract(const Duration(days: 2)), 4),
     ];
-    final result = Paginated(reviews, reviews.length, 1, 1);
+    final result = Paginated(reviews, 1, 1);
     return Right(result);
   }
 
@@ -264,7 +264,7 @@ class DummyPost implements PostService {
       "1/4 taza de leche",
       "1 cucharadita de extracto de vainilla"
     ];
-    final result = Paginated(ingredients, ingredients.length, 1, 1);
+    final result = Paginated(ingredients, 1, 1);
     return Right(result);
   }
 

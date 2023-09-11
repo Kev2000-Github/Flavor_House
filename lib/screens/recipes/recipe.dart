@@ -129,7 +129,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
-                    children: List.generate(posts.getData().length,
+                    children: List.generate(posts.items,
                             (index) => Helper.createRecipeWidget(posts.getData()[index], user.id, onDeletePost)))
               ]
             ))

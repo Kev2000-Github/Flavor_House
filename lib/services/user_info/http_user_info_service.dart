@@ -47,14 +47,14 @@ class HttpUserInfoService implements UserInfoService {
       var response =
           await http.get(url, headers: Config.headerAuth(Session().token));
       var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+      print(decodedResponse);
       if (response.statusCode == 200) {
         List<dynamic> items = decodedResponse['data'];
-        print(decodedResponse['data']);
         List<UserItem> userItems = items.map((item) {
           UserItem user = UserItem.fromJson(item);
           return user;
         }).toList();
-        final result = Paginated<UserItem>(userItems, decodedResponse['items'],
+        final result = Paginated<UserItem>(userItems,
             decodedResponse['page'], decodedResponse['totalPages']);
         return Right(result);
       } else {
@@ -71,7 +71,6 @@ class HttpUserInfoService implements UserInfoService {
     String hostname = Config.backURL;
     Uri url = Uri.parse(
         '$hostname/v1/users/$userId?checkFollow=true&additionalInfo=true');
-    print(url);
     var response =
         await http.get(url, headers: Config.headerAuth(Session().token));
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;

@@ -295,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _isInitialPostLoading
                     ? const SkeletonWrapper(child: PostSkeleton(items: 2))
                     : Column(
-                  children: List.generate(posts.getData().length, (index) {
+                  children: List.generate(posts.items, (index) {
                     if (posts.getData()[index].runtimeType == Moment) {
                       return Helper.createMomentWidget(posts.getData()[index], user.id, onDeletePost);
                     }
