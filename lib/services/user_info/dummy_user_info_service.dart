@@ -7,6 +7,7 @@ import 'package:flavor_house/models/user/user_publications_info.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/country.dart';
 import '../../models/user/user.dart';
 import '../paginated.dart';
 
@@ -43,13 +44,27 @@ class DummyUserInfoService implements UserInfoService {
 
   @override
   Future<Either<Failure, User>> getUser(String userId) async {
+    Country country = Country('VEN', 'Venezuela');
     User user = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
-        '4126451235', 'VEN', "assets/images/avatar.jpg", false);
+        '4126451235', country, "assets/images/avatar.jpg", false);
     return Right(user);
   }
 
   @override
   Future<Either<Failure, bool>> updateFollow(String userId, bool follow) async {
     return const Right(true);
+  }
+
+  @override
+  Future<Either<Failure, User>> updateUser(User user) async {
+    Country country = Country('VEN', 'Venezuela');
+    User user = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
+        '4126451235', country, "assets/images/avatar.jpg", false);
+    return Right(user);
+  }
+
+  @override
+  Future<Either<Failure, bool>> updatePassword(String id, String pass) async {
+    return Right(true);
   }
 }

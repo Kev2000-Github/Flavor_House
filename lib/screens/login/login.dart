@@ -51,10 +51,19 @@ class _LoginScreenState extends State<LoginScreen> {
       } else if (failure.runtimeType == LoginEmptyFailure) {
         LoginPopup.alertLoginEmptyFailure(context);
       }
-      else CommonPopup.alert(context, failure);
+      else {
+        CommonPopup.alert(context, failure);
+      }
     }, (user) async {
       await Provider.of<UserProvider>(context, listen: false).login(user);
-      if (context.mounted) Navigator.of(context).pushNamed(routes.main_screen);
+      if (context.mounted){
+        if(user.step == 0){
+          Navigator.of(context).pushNamed(routes.register_two);
+        }
+        else{
+          Navigator.of(context).pushNamed(routes.main_screen);
+        }
+      }
     });
   }
 

@@ -1,11 +1,22 @@
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/common/error/failures.dart';
+import 'package:flavor_house/common/popups/common.dart';
+import 'package:flavor_house/models/country.dart';
 import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/screens/profile/skeleton_profile.dart';
+import 'package:flavor_house/services/register/http_register_step_two_service.dart';
+import 'package:flavor_house/services/register/register_step_two_service.dart';
+import 'package:flavor_house/services/user_info/http_user_info_service.dart';
+import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../models/gender.dart';
+import '../../utils/colors.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -16,13 +27,15 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   User user = User.initial();
+  List<Country> availableCountries = [];
+  List<Gender> genders = [Gender.man(), Gender.woman(), Gender.none()];
 
   final _formKey = GlobalKey<FormState>();
   late final _nameController = TextEditingController(text: user.fullName);
   late final _usernameController = TextEditingController(text: user.username);
   late final _phoneController = TextEditingController(text: user.phoneNumber);
-  late final _countryController = TextEditingController(text: user.countryId);
-  late final _genderController = TextEditingController(text: user.gender);
+  late Country country;
+  Gender selectedGender = Gender.none();
 
   @override
   void initState() {
@@ -30,8 +43,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (mounted) {
       setState(() {
         user = Provider.of<UserProvider>(context, listen: false).user;
+        getCountries();
+        selectedGender = Gender.fromString(user.gender ?? Gender.none().id);
+        country = user.country ?? Country.initial();
       });
     }
+  }
+
+  void getCountries() async {
+    RegisterStepTwo countryService = HttpRegisterStepTwo();
+    dartz.Either<Failure, List<Country>> result = await countryService.getCountries();
+    result.fold((failure) => null, (countries) => {
+      setState(() {
+        availableCountries.addAll(countries);
+      })
+    });
+  }
+
+  void editProfile() async {
+    User newUserProfile = User(
+      user.id,
+      _usernameController.text,
+      _nameController.text,
+      user.email,
+      selectedGender.id,
+      _phoneController.text,
+      country,
+      user.pictureURL,
+      user.isFollowed
+    );
+    UserInfoService userInfoService = HttpUserInfoService();
+    dartz.Either<Failure, User> result = await userInfoService.updateUser(newUserProfile);
+    result.fold((l) => CommonPopup.alert(context, l), (user) {
+      Provider.of<UserProvider>(context, listen: false).login(user);
+      Navigator.of(context).pop();
+    });
   }
 
   @override
@@ -57,10 +103,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               icon: const Icon(Icons.check, color: Colors.green),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  // Guardar la información de perfil
-                  // ...
-                  // Y luego navega de vuelta a la pantalla de perfil.
-                  // Navigator.pop(context);
+                  editProfile();
                 }
               },
             ),
@@ -108,53 +151,51 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 16.0),
-                  DropdownButtonFormField<String>(
-                    value: null,
+                  DropdownButtonFormField<Gender>(
+                    value: selectedGender,
                     decoration: const InputDecoration(
-                      labelText: 'País',
+                      labelText: 'Género',
                     ),
-                    items: <String>['Pais1', 'Pais2', 'Pais3']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
+                    items: List.generate(genders.length, (index) => DropdownMenuItem(
+                      value: genders[index],
+                      child: Text(genders[index].name),
+                    )),
+                    onChanged: (Gender? newValue) {
                       setState(() {
-                        _countryController.text = newValue!;
+                        selectedGender = newValue ?? Gender.none();
                       });
                     },
                   ),
                   const SizedBox(height: 16.0),
-                  DropdownButtonFormField<String>(
-                    value: null,
-                    decoration: const InputDecoration(
-                      labelText: 'Género',
-                    ),
-                    items: <String>['Hombre', 'Mujer', 'Otro']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _genderController.text = newValue!;
-                      });
-                    },
-                  ),
+                  SizedBox(
+                      width: double.infinity,
+                      child: ListTile(
+                        shape: const Border(
+                          bottom: BorderSide()
+                        ),
+                        title: Text(country.id == Country.initial().id ? "Pais" : country.name,
+                            style: const TextStyle(
+                                color: gray04Color,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500)),
+                        trailing: const Icon(Icons.keyboard_arrow_right, size: 20),
+                        onTap: () async {
+                          final selectedCountry = await Navigator.of(context).pushNamed(routes.select_country) as Country;
+                          setState(() {
+                            country = selectedCountry;
+                          });
+                        },
+                      )),
                   const SizedBox(height: 16.0),
                   ElevatedButton(
                     onPressed: () {
                       // Agregar lógica para navegar a la página de cambio de contraseña
                       Navigator.pushNamed(context, routes.change_password);
                     },
-                    child: const Text('Cambiar Contraseña'),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFEC5151), // Botón Rojo
+                      backgroundColor: const Color(0xFFEC5151), // Botón Rojo
                     ),
+                    child: const Text('Cambiar Contraseña'),
                   ),
                 ],
               ),

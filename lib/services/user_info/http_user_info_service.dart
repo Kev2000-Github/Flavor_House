@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 import '../../common/config.dart';
 import '../../common/session.dart';
+import '../../models/country.dart';
 import '../../models/user/user.dart';
 
 class HttpUserInfoService implements UserInfoService {
@@ -47,7 +48,6 @@ class HttpUserInfoService implements UserInfoService {
       var response =
           await http.get(url, headers: Config.headerAuth(Session().token));
       var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
-      print(decodedResponse);
       if (response.statusCode == 200) {
         List<dynamic> items = decodedResponse['data'];
         List<UserItem> userItems = items.map((item) {
@@ -93,6 +93,65 @@ class HttpUserInfoService implements UserInfoService {
       return Right(decodedResponse['data']['follow']);
     } else {
       return Left(ServerFailure(message: decodedResponse['error']['message']));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User>> updateUser(User user) async {
+    try {
+      String hostname = Config.backURL;
+      Uri url = Uri.parse('$hostname/v1/users/${user.id}');
+      Map<String, dynamic> body = {
+        'username': user.username,
+        'email': user.email,
+        'fullName': user.fullName,
+      };
+      if(user.gender != "") body['sex'] = user.gender;
+      if(user.country?.id != "") body['countryId'] = user.country?.id;
+      if(user.phoneNumber != "") body['phoneNumber'] = user.phoneNumber;
+      var encodedBody = json.encode(body);
+      var response = await http.put(
+          url,
+          headers: Config.headerAuth(Session().token),
+          body: encodedBody
+      );
+      var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+      if(response.statusCode == 200){
+        Session session = Session();
+        User user = User.fromJson(decodedResponse['data']);
+        user.token = session.token;
+        return Right(user);
+      }
+      else{
+        return Left(ServerFailure(title: 'Inicio Sesión', message: decodedResponse['error']['message']));
+      }
+    } catch (e) {
+      return const Left(TimeOutFailure(title: 'Inicio Sesión'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> updatePassword(String id, String pass) async {
+    try {
+      String hostname = Config.backURL;
+      Uri url = Uri.parse('$hostname/v1/users/$id');
+      var encodedBody = json.encode({
+        "password": pass
+      });
+      var response = await http.put(
+          url,
+          headers: Config.headerAuth(Session().token),
+          body: encodedBody
+      );
+      var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+      if(response.statusCode == 200){
+        return const Right(true);
+      }
+      else{
+        return Left(ServerFailure(title: 'Actualizar Usuario', message: decodedResponse['error']['message']));
+      }
+    } catch (e) {
+      return const Left(TimeOutFailure(title: 'Actualizar Usuario'));
     }
   }
 }

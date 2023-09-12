@@ -22,4 +22,6 @@ abstract class PostService {
   Future<Either<Failure, List<Tag>>> getTags();
   Future<Either<Failure, Paginated<RecipePreparationStep>>> getRecipePreparation(String recipeId);
   Future<Either<Failure, Paginated<String>>> getIngredients(String recipeId);
+  Future<Either<Failure, bool>> toggleLike(String id, bool isLiked);
+  Future<Either<Failure, bool>> toggleFavorite(String id, bool isFavorite);
 }

@@ -11,6 +11,10 @@ class Country extends Equatable {
   @override
   List<Object> get props => [id, name];
 
+  factory Country.initial() {
+    return Country('','');
+  }
+
   factory Country.fromJson(Map<String, dynamic> json){
     return Country(
         json['id'],

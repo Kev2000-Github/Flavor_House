@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flavor_house/models/country.dart';
 import 'package:flavor_house/models/user/user_item.dart';
 import 'package:flutter/material.dart';
 
@@ -9,13 +10,14 @@ class User extends Equatable {
   final String email;
   final String? gender;
   final String? phoneNumber;
-  final String? countryId;
+  final Country? country;
   final String? pictureURL;
   String? token;
   bool? isFollowed;
+  int? step;
 
   User(this.id, this.username, this.fullName, this.email, this.gender,
-      this.phoneNumber, this.countryId, this.pictureURL, this.isFollowed);
+      this.phoneNumber, this.country, this.pictureURL, this.isFollowed);
 
   @override
   List<Object> get props => [id, username, fullName, email];
@@ -35,9 +37,15 @@ class User extends Equatable {
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
+    var jsonCountry = json['Country'] ?? json['country'];
+    var country;
+    if(jsonCountry != null){
+      country = Country(jsonCountry['id'], jsonCountry['name']);
+    }
     User user = User(json['id'], json['username'], json['fullName'], json['email'],
-        json['sex'], json['phoneNumber'], json['countryId'], json['pictureURL'], json['isFollowed']);
-    user.token = json['token'];
+        json['sex'], json['phoneNumber'], country, json['pictureURL'], json['isFollowed']);
+    if(json['token'] != null) user.token = json['token'];
+    user.step = json['step'];
     return user;
   }
 
@@ -60,10 +68,16 @@ class User extends Equatable {
       "email": email,
       "gender": gender,
       "phoneNumber": phoneNumber,
-      "countryId": countryId,
       "pictureURL": pictureURL,
       "token": token
     };
+    final country = this.country;
+    if(country != null){
+      map['country'] = {
+        "id": country.id,
+        "name": country.name
+      };
+    }
     return map;
   }
 }

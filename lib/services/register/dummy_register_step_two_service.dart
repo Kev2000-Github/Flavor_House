@@ -11,8 +11,9 @@ class DummyRegisterStepTwo implements RegisterStepTwo {
   Future<Either<Failure, User>> registerAdditionalInfo(
       String userId, String countryId, String? genderId, List<String> interests) async {
     try {
+      Country country = Country('VEN', 'Venezuela');
       User actualUser = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
-          '4126451235', 'VEN', "assets/images/avatar.jpg", null);
+          '4126451235', country, "assets/images/avatar.jpg", null);
       return Right(actualUser);
     } catch (e) {
       return Left(ServerFailure());

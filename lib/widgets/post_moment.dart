@@ -1,6 +1,10 @@
+import 'package:dartz/dartz.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
+import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/models/post/moment.dart';
+import 'package:flavor_house/services/post/dummy_post_service.dart';
+import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/modal/comments.dart';
@@ -98,6 +102,16 @@ class PostMoment extends StatelessWidget {
                 LikeButton(
                     isLiked: post.isLiked,
                     size: 28,
+                    onTap: (isFavorite) async {
+                      PostService postService = DummyPost();
+                      Either<Failure, bool> result = await postService.toggleFavorite(post.id, isFavorite);
+                      return result.fold((failure) {
+                        CommonPopup.alert(context, failure);
+                        return isFavorite;
+                      }, (returnedFav) {
+                        return returnedFav;
+                      });
+                    },
                     likeBuilder: (isTapped) {
                       return Icon(
                           isTapped ? Icons.favorite : Icons.favorite_outline,
@@ -106,6 +120,16 @@ class PostMoment extends StatelessWidget {
                 LikeButton(
                   isLiked: post.isFavorite,
                   size: 28,
+                  onTap: (isLiked) async {
+                    PostService postService = DummyPost();
+                    Either<Failure, bool> result = await postService.toggleLike(post.id, isLiked);
+                    return result.fold((failure) {
+                    CommonPopup.alert(context, failure);
+                    return isLiked;
+                    }, (returnedLike) {
+                    return returnedLike;
+                    });
+                  },
                   likeBuilder: (isTapped) {
                     return Icon(
                         isTapped ? Icons.thumb_up : Icons.thumb_up_outlined,

@@ -38,7 +38,6 @@ class HttpRegisterStepTwo implements RegisterStepTwo {
         return Left(ServerFailure(title: 'Registro', message: decodedResponse['error']['message']));
       }
     } catch (e) {
-      print(e);
       return const Left(TimeOutFailure(title: 'Registro'));
     }
   }

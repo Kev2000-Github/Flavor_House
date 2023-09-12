@@ -17,7 +17,6 @@ class ProviderHelper {
       return userProvider.user;
     }
     User? loggedUser = await getLocalUser();
-    print(loggedUser?.token);
     if(loggedUser == null) return null;
     userProvider.update(loggedUser);
     session.token = loggedUser.token ?? '';

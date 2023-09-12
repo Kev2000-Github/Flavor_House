@@ -21,7 +21,8 @@ List<Interest> interests = [
 
 class StepInterests extends StatefulWidget {
   final Function onFinish;
-  const StepInterests({Key? key, required this.onFinish}) : super(key: key);
+  final Function(List<String>) onUpdateInterests;
+  const StepInterests({Key? key, required this.onFinish, required this.onUpdateInterests}) : super(key: key);
 
   @override
   State<StepInterests> createState() => _StepInterestsState();
@@ -93,6 +94,7 @@ class _StepInterestsState extends State<StepInterests> {
                           selectedInterests.add(interests[index].id);
                         }
                         if (selectedInterests.length >= 3) {
+                          widget.onUpdateInterests(selectedInterests);
                           widget.onFinish(true);
                         } else {
                           widget.onFinish(false);

@@ -26,7 +26,7 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
   int _currentStep = 0;
   late String? _gender;
   late String _country;
-  final List<String> _interests = [];
+  List<String> _interests = [];
   bool isFinished = false;
 
   @override
@@ -49,12 +49,8 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
     onContinue();
   }
 
-  void onInterestsUpdate(String id) {
-    if (_interests.contains(id)) {
-      _interests.remove(id);
-    } else {
-      _interests.add(id);
-    }
+  void onInterestsUpdate(List<String> selectedIds) {
+    _interests = selectedIds;
   }
 
   void onFinish(bool finish) {
@@ -92,6 +88,7 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
         Step(
             title: const Text("Intereses"),
             content: StepInterests(
+              onUpdateInterests: onInterestsUpdate,
               onFinish: onFinish,
             ),
             state: StepState.editing,

@@ -7,6 +7,8 @@ import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/services/auth/auth_service.dart';
 import 'package:http/http.dart' as http;
 
+import '../../models/country.dart';
+
 class HttpAuth implements Auth {
   @override
   Future<Either<Failure, User>> login(String email, String password) async {
@@ -36,6 +38,7 @@ class HttpAuth implements Auth {
     try {
       if (username == "") return Left(LoginEmptyFailure());
       if (username != "test") return Left(LoginFailure());
+      Country country = Country('VEN', 'Venezuela');
       User actualUser = User(
           'id',
           'test',
@@ -43,7 +46,7 @@ class HttpAuth implements Auth {
           'pepe@gmail.com',
           'Hombre',
           '4126451235',
-          'VEN',
+          country,
           'assets/images/avatar.jpg',
           null);
       return Right(actualUser);
@@ -56,6 +59,7 @@ class HttpAuth implements Auth {
     try {
       if (code == "") return Left(CodeEmptyFailure());
       if (code != "1234") return Left(CodeFailure());
+      Country country = Country('VEN', 'Venezuela');
       User actualUser = User(
           'id',
           'test',
@@ -63,7 +67,7 @@ class HttpAuth implements Auth {
           'pepe@gmail.com',
           'Hombre',
           '4126451235',
-          'VEN',
+          country,
           'assets/images/avatar.jpg', null);
       return Right(actualUser);
     } catch (e) {
@@ -74,6 +78,7 @@ class HttpAuth implements Auth {
   Future<Either<Failure, User>> NewPassword(String Password) async {
     try {
       if (Password == "") return Left(PasswordEmpty());
+      Country country = Country('VEN', 'Venezuela');
       User actualUser = User(
           'id',
           'test',
@@ -81,7 +86,7 @@ class HttpAuth implements Auth {
           'pepe@gmail.com',
           'Hombre',
           '4126451235',
-          'VEN',
+          country,
           'assets/images/avatar.jpg', null);
       return Right(actualUser);
     } catch (e) {

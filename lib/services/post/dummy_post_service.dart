@@ -282,4 +282,14 @@ class DummyPost implements PostService {
     ];
     return Right(interests);
   }
+
+  @override
+  Future<Either<Failure, bool>> toggleLike(String id, bool isLiked) async {
+    return Right(!isLiked);
+  }
+
+  @override
+  Future<Either<Failure, bool>> toggleFavorite(String id, bool isFavorite) async {
+    return Right(!isFavorite);
+  }
 }

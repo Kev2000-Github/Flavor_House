@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/models/country.dart';
 import 'package:flavor_house/services/register/dummy_register_step_two_service.dart';
+import 'package:flavor_house/services/register/http_register_step_two_service.dart';
 import 'package:flavor_house/services/register/register_step_two_service.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class _SelectCountryScreenState extends State<SelectCountryScreen> {
   List<Country> countries = [];
 
   void getCountries() async {
-    RegisterStepTwo registerService = DummyRegisterStepTwo();
+    RegisterStepTwo registerService = HttpRegisterStepTwo();
     dartz.Either<Failure, List<Country>> result =
         await registerService.getCountries();
     result.fold((failure) => CommonPopup.alert(context, failure),
@@ -69,7 +70,7 @@ class _SelectCountryScreenState extends State<SelectCountryScreen> {
               countries.length,
               (index) => InkWell(
                   onTap: () {
-                    Navigator.of(context).pop(countries[index].id);
+                    Navigator.of(context).pop(countries[index]);
                   },
                   child: Container(
                       padding: const EdgeInsets.symmetric(
