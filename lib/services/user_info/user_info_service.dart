@@ -1,7 +1,8 @@
 
 
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
-import 'package:flavor_house/models/user/user_item.dart';
 import 'package:flavor_house/models/user/user_publications_info.dart';
 import 'package:flavor_house/services/paginated.dart';
 
@@ -13,6 +14,6 @@ abstract class UserInfoService {
   Future<Either<Failure, Paginated>> userSearch({String? searchTerm});
   Future<Either<Failure, User>> getUser(String userId);
   Future<Either<Failure, bool>> updateFollow(String userId, bool follow);
-  Future<Either<Failure, User>> updateUser(User user);
+  Future<Either<Failure, User>> updateUser({required User user, File? imageFile});
   Future<Either<Failure, bool>> updatePassword(String id, String pass);
 }

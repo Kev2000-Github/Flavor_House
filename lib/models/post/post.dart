@@ -19,14 +19,13 @@ abstract class Post {
       this.isLiked, this.isFavorite, this.pictureURL, this.createdAt);
 
   Image get picture {
-    //TODO: change dummy implementation later
-    if(pictureURL != null) return Image.asset(pictureURL!);
+    if(pictureURL != null) return Image.network(pictureURL!);
     return Image.asset("assets/images/user_avatar.png");
   }
 
   Image get avatar {
     //TODO: change dummy implementation later
-    if(avatarURL != null) return Image.asset(avatarURL!);
+    if(avatarURL != null) return Image.network(avatarURL!);
     return Image.asset("assets/images/user_avatar.png");
   }
 }

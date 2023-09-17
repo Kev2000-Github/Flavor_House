@@ -17,7 +17,6 @@ import '../../models/config/sort_config.dart';
 import '../../models/post/recipe.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
-import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
 import '../../utils/skeleton_wrapper.dart';
 import '../../widgets/sort.dart';
@@ -54,7 +53,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     if (mounted) setLoadingState(true);
     PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated> result =
-    await postClient.getAll(sort: selectedSort, postFilter: selectedPostType);
+    await postClient.getAll(sort: selectedSort, postFilter: selectedPostType, isFavorite: true);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
     }, (newPosts) {

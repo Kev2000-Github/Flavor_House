@@ -38,12 +38,13 @@ class User extends Equatable {
 
   factory User.fromJson(Map<String, dynamic> json) {
     var jsonCountry = json['Country'] ?? json['country'];
+    var pictureURL = json['pictureURL'] ?? json['avatar'];
     var country;
     if(jsonCountry != null){
       country = Country(jsonCountry['id'], jsonCountry['name']);
     }
     User user = User(json['id'], json['username'], json['fullName'], json['email'],
-        json['sex'], json['phoneNumber'], country, json['pictureURL'], json['isFollowed']);
+        json['sex'], json['phoneNumber'], country, pictureURL, json['isFollowed']);
     if(json['token'] != null) user.token = json['token'];
     user.step = json['step'];
     return user;
@@ -54,8 +55,7 @@ class User extends Equatable {
   }
 
   Image get picture {
-    //TODO: change dummy implementation later
-    if(pictureURL != null) return Image.asset(pictureURL!);
+    if(pictureURL != null) return Image.network(pictureURL!);
     return Image.asset("assets/images/user_avatar.png");
   }
 

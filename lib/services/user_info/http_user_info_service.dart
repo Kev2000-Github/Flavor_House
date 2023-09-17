@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flavor_house/common/error/failures.dart';
@@ -7,7 +8,8 @@ import 'package:flavor_house/models/user/user_publications_info.dart';
 import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import '../../common/config.dart';
 import '../../common/session.dart';
 import '../../models/user/user.dart';
@@ -99,26 +101,38 @@ class HttpUserInfoService implements UserInfoService {
   }
 
   @override
-  Future<Either<Failure, User>> updateUser(User user) async {
+  Future<Either<Failure, User>> updateUser({required User user, File? imageFile}) async {
     try {
       String hostname = Config.backURL;
-      Uri url = Uri.parse('$hostname/v1/users/${user.id}');
+      String url = '$hostname/v1/users/${user.id}';
       Map<String, dynamic> body = {
         'username': user.username,
         'email': user.email,
         'fullName': user.fullName,
       };
-      if(user.gender != "") body['sex'] = user.gender;
-      if(user.country?.id != "") body['countryId'] = user.country?.id;
-      if(user.phoneNumber != "") body['phoneNumber'] = user.phoneNumber;
-      var response = await http.put(
-          url,
-          headers: Config.headerAuth(Session().token),
-          body: body
-      );
-      var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+      if(user.gender != "") body['sex'] = user.gender!;
+      if(user.country?.id != "") body['countryId'] = user.country!.id;
+      if(user.phoneNumber != "") body['phoneNumber'] = user.phoneNumber!;
+      if(imageFile != null) {
+          String fileName = imageFile.path.split('/').last;
+          String ext = fileName.split('.').last;
+          body['avatar'] = await MultipartFile.fromFile(
+          imageFile.path,
+          filename: 'avatar.$ext',
+            contentType: MediaType("image", ext)
+        );
+      }
+      FormData formData = FormData.fromMap(body);
+      var dio = Dio();
+      dio.options.headers['authorization'] = Session().token;
+      var response = await dio.put(url, data: formData);
+      var decodedResponse = response.data;
       if(response.statusCode == 200){
         Session session = Session();
+        var avatar = decodedResponse['data']['avatar'];
+        if(avatar != null){
+          decodedResponse['data']['avatar'] = Config.imgURL(avatar);
+        }
         User user = User.fromJson(decodedResponse['data']);
         user.token = session.token;
         return Right(user);
@@ -127,6 +141,7 @@ class HttpUserInfoService implements UserInfoService {
         return Left(ServerFailure(title: 'Inicio Sesión', message: decodedResponse['error']['message']));
       }
     } catch (e) {
+      print(e);
       return const Left(TimeOutFailure(title: 'Inicio Sesión'));
     }
   }

@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/models/user/user_item.dart';
@@ -56,7 +58,7 @@ class DummyUserInfoService implements UserInfoService {
   }
 
   @override
-  Future<Either<Failure, User>> updateUser(User user) async {
+  Future<Either<Failure, User>> updateUser({required User user, File? imageFile}) async {
     Country country = Country('VEN', 'Venezuela');
     User user = User('id', 'test', 'pepe', 'pepe@gmail.com', 'Hombre',
         '4126451235', country, "assets/images/avatar.jpg", false);

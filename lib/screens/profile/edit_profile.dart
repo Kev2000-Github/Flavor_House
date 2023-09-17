@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/error/failures.dart';
@@ -13,6 +14,7 @@ import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/gender.dart';
@@ -26,6 +28,8 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  Image? image;
+  File? imageFile;
   User user = User.initial();
   List<Country> availableCountries = [];
   List<Gender> genders = [Gender.man(), Gender.woman(), Gender.none()];
@@ -73,7 +77,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       user.isFollowed
     );
     UserInfoService userInfoService = HttpUserInfoService();
-    dartz.Either<Failure, User> result = await userInfoService.updateUser(newUserProfile);
+    dartz.Either<Failure, User> result = await userInfoService.updateUser(
+        user: newUserProfile,
+        imageFile: imageFile
+    );
     result.fold((l) => CommonPopup.alert(context, l), (user) {
       Provider.of<UserProvider>(context, listen: false).login(user);
       Navigator.of(context).pop();
@@ -119,10 +126,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Avatar(
                       pictureHeight: 80,
                       borderSize: 2,
-                      image: user.picture),
+                      image: image ?? user.picture),
                   TextButton(
-                    onPressed: () {
-                      // Agregar lógica para seleccionar un archivo
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+                      XFile? pickedFile = await picker.pickImage(
+                          source: ImageSource.gallery);
+                      if(pickedFile == null) return;
+                      imageFile = File(pickedFile.path);
+                      image = Image.file(File(pickedFile.path));
+                      setState(() {});
                     },
                     child: const Text(
                       'Editar Foto',

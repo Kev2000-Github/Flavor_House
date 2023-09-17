@@ -9,7 +9,6 @@ class RecipePreparationStep {
   RecipePreparationStep(this.description, this.imageURL);
 
   Image get picture {
-    //TODO: change dummy implementation later
     if(imageURL != null){
       if(RegExp("^assets\/images").hasMatch(imageURL!)){
         return Image.asset(imageURL!);

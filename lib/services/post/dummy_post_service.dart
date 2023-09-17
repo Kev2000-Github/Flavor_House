@@ -106,7 +106,7 @@ class DummyPost implements PostService {
   }
 
   @override
-  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter}) async {
+  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter, bool? isFavorite, bool? isMine}) async {
     List posts = [
       Moment(
           "1",

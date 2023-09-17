@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (mounted) setLoadingState(true);
     PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated> result =
-    await postClient.getMyPosts(sort: selectedSort);
+    await postClient.getAll(sort: selectedSort, isMine: true);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
     }, (newPosts) {

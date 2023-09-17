@@ -12,8 +12,7 @@ class Comment {
   Comment(this.id, this.userId, this.username, this.fullName, this.comment, this.createdAt, this.avatarURL);
 
   Image get picture{
-    //TODO: change dummy implementation later
-    if(avatarURL != null) return Image.asset(avatarURL!);
+    if(avatarURL != null) return Image.network(avatarURL!);
     return Image.asset("assets/images/user_avatar.png");
   }
 }
