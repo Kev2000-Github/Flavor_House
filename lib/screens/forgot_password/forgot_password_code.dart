@@ -3,6 +3,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/common/popups/forgot_password.dart';
 import 'package:flavor_house/services/auth/dummy_auth_service.dart';
+import 'package:flavor_house/services/auth/http_auth_service.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -78,7 +79,7 @@ class _ForgotPasswordCodeScreenState extends State<ForgotPasswordCodeScreen> {
                   onPressed: () async {
                     String code = _codeController.value.text;
                     //TODO: Beware this is a dummy implementation!
-                    Auth auth = DummyAuth();
+                    Auth auth = HttpAuth();
                     dartz.Either<Failure, User> result =
                         await auth.Code(code);
                     result.fold(

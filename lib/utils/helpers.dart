@@ -37,4 +37,14 @@ class Helper {
             style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
             children: [TextSpan(text: description)]));
   }
+
+  static toColor(String val) {
+    var hexColor = val.replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF$hexColor";
+    }
+    if (hexColor.length == 8) {
+      return Color(int.parse("0x$hexColor"));
+    }
+  }
 }

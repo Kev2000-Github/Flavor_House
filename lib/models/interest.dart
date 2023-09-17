@@ -23,7 +23,7 @@ class Interest extends Equatable {
 
   Image get picture{
     //TODO: change dummy implementation later
-    if(picURL != null) return Image.asset(picURL!);
+    if(picURL != null) return Image.network(picURL!);
     return Image.asset("assets/images/user_avatar.png");
   }
 }

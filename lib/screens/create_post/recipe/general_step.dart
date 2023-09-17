@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/services/post/dummy_post_service.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,7 +34,7 @@ class _GeneralStepState extends State<GeneralStep> {
   List<String> selectedTags = [];
 
   void getTags() async {
-    PostService service = DummyPost();
+    PostService service = HttpPost();
     dartz.Either<Failure, List<Tag>> result = await service.getTags();
     result.fold((l) => null, (List<Tag> interests) {
       setState(() {

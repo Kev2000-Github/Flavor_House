@@ -4,6 +4,7 @@ import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/services/post/dummy_post_service.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/conditional.dart';
@@ -91,9 +92,12 @@ class PostMoment extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: post.picture ?? Image.asset("assets/images/gray.png")),
+            Conditional(
+              condition: post.pictureURL != null,
+              positive: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: post.picture),
+            ),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Helper.createPostDescription(post.description)),
@@ -103,7 +107,7 @@ class PostMoment extends StatelessWidget {
                     isLiked: post.isLiked,
                     size: 28,
                     onTap: (isFavorite) async {
-                      PostService postService = DummyPost();
+                      PostService postService = HttpPost();
                       Either<Failure, bool> result = await postService.toggleFavorite(post.id, isFavorite);
                       return result.fold((failure) {
                         CommonPopup.alert(context, failure);
@@ -121,7 +125,7 @@ class PostMoment extends StatelessWidget {
                   isLiked: post.isFavorite,
                   size: 28,
                   onTap: (isLiked) async {
-                    PostService postService = DummyPost();
+                    PostService postService = HttpPost();
                     Either<Failure, bool> result = await postService.toggleLike(post.id, isLiked);
                     return result.fold((failure) {
                     CommonPopup.alert(context, failure);

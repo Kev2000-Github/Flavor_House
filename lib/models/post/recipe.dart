@@ -12,16 +12,16 @@ class Recipe extends Post {
       String userId,
       String username,
       String fullName,
-      Image? avatar,
+      String? avatarURL,
       String description,
       int likes,
       bool isLiked,
       bool isFavorite,
-      Image? picture,
+      String? pictureURL,
       DateTime createdAt,
       this.title,
       this.stars,
       this.tags)
-      : super(id, userId, username, fullName, avatar, description, likes, isLiked, isFavorite, picture, createdAt);
+      : super(id, userId, username, fullName, avatarURL, description, likes, isLiked, isFavorite, pictureURL, createdAt);
 
 }

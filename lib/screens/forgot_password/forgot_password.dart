@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/services/auth/dummy_auth_service.dart';
+import 'package:flavor_house/services/auth/http_auth_service.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                   onPressed: () async {
                     String email = _emailController.value.text;
                     //TODO: Beware this is a dummy implementation!
-                    Auth auth = DummyAuth();
+                    Auth auth = HttpAuth();
                     dartz.Either<Failure, User> result =
                         await auth.forgotpassword(email);
                     result.fold(

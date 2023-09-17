@@ -50,7 +50,11 @@ class HttpRegisterStepTwo implements RegisterStepTwo {
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
     if(response.statusCode == 200){
       List<dynamic> items = decodedResponse['data'];
-      List<Interest> interests = items.map((item) => Interest.fromJson(item)).toList();
+      List<Interest> interests = items.map((item) {
+        item['imageUrl'] = Config.imgURL(item['imageUrl']);
+        return Interest.fromJson(item);
+      }).toList();
+      print(interests[0].picURL);
       return Right(interests);
     }
     else{

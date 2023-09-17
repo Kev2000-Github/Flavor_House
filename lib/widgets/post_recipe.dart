@@ -79,8 +79,7 @@ class PostRecipe extends StatelessWidget {
                         icon: const Icon(
                           Icons.edit,
                           color: primaryColor,
-                        ))
-                ),
+                        ))),
                 Conditional(
                     condition: isSameUser && !hasOneDayPassed(post.createdAt),
                     positive: IconButton(
@@ -96,8 +95,7 @@ class PostRecipe extends StatelessWidget {
                         icon: const Icon(
                           Icons.delete,
                           color: redColor,
-                        ))
-                ),
+                        ))),
                 IconButton(
                     onPressed: () {
                       onOpenDetails(context);
@@ -108,6 +106,7 @@ class PostRecipe extends StatelessWidget {
                         color: secondaryColor))
               ],
             ),
+            const SizedBox(height: 10),
             Wrap(
                 spacing: 10,
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -123,9 +122,11 @@ class PostRecipe extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: post.picture ?? Image.asset("assets/images/gray.png")),
+            Conditional(
+              condition: post.pictureURL != null,
+              positive: ClipRRect(
+                  borderRadius: BorderRadius.circular(20), child: post.picture),
+            ),
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Helper.createPostDescription(post.description)),

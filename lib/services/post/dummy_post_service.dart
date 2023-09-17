@@ -30,7 +30,7 @@ class DummyPost implements PostService {
         90,
         true,
         true,
-        Image.asset("assets/images/tortazo.jpg"),
+        "assets/images/tortazo.jpg",
           DateTime.now()
       ),
       Moment(
@@ -38,12 +38,12 @@ class DummyPost implements PostService {
           "id",
         "ReyDeLaCocina",
         "Juan Toledo",
-        Image.asset("assets/images/avatar.jpg"),
+        "assets/images/avatar.jpg",
         "¡Descubriendo nuevos sabores! Hoy probé este exquisito plato y quedé fascinado. Cada bocado era una explosión de sabores y texturas. ¡No puedo esperar para compartir esta joya culinaria con ustedes! Si eres amante de la buena comida, no te lo puedes perder. ¿Alguien más se anima a probarlo? #DeliciasGastronómicas #SorprendentesSabores #ExperienciaCulinaria",
         45,
         false,
         false,
-        Image.asset("assets/images/sushi.jpg"),
+        "assets/images/sushi.jpg",
         DateTime.now().subtract(const Duration(hours: 5))
       )
     ];
@@ -64,12 +64,12 @@ class DummyPost implements PostService {
           "id",
           "ReyDeLaCocina",
           "Juan Toledo",
-          Image.asset("assets/images/avatar.jpg"),
+          "assets/images/avatar.jpg",
           "¡El postre perfecto! Sorprende a todos con este tentador pastel. Esponjoso, indulgente y decorado a la perfección. ¡Prepárate para deleitarte!",
           90,
           true,
           true,
-          Image.asset("assets/images/cake.jpg"),
+          "assets/images/cake.jpg",
           DateTime.now(),
           "Pastel de fresas y chocolate",
           4, [
@@ -82,12 +82,12 @@ class DummyPost implements PostService {
           "id",
           "ReyDeLaCocina",
           "Juan Toledo",
-          Image.asset("assets/images/avatar.jpg"),
+          "assets/images/avatar.jpg",
           "¡Dulzura irresistible! Prepara estas deliciosas galletas con chispas de chocolate. Crujientes por fuera, suaves por dentro. ¡El placer de cada mordisco!",
           45,
           true,
           true,
-          Image.asset("assets/images/cookies.jpg"),
+          "assets/images/cookies.jpg",
           DateTime.now().subtract(const Duration(hours: 24)),
           "Galletas de Chispas de Chocolate",
           4, [
@@ -118,7 +118,7 @@ class DummyPost implements PostService {
           90,
           true,
           true,
-          Image.asset("assets/images/tortazo.jpg"),
+          "assets/images/tortazo.jpg",
           DateTime.now()
       ),
       Recipe(
@@ -126,12 +126,12 @@ class DummyPost implements PostService {
           "id",
           "ReyDeLaCocina",
           "Juan Toledo",
-          Image.asset("assets/images/avatar.jpg"),
+          "assets/images/avatar.jpg",
           "¡El postre perfecto! Sorprende a todos con este tentador pastel. Esponjoso, indulgente y decorado a la perfección. ¡Prepárate para deleitarte!",
           90,
           true,
           true,
-          Image.asset("assets/images/cake.jpg"),
+          "assets/images/cake.jpg",
           DateTime.now(),
           "Pastel de fresas y chocolate",
           4, [
@@ -157,12 +157,12 @@ class DummyPost implements PostService {
           "id",
           "ReyDeLaCocina",
           "Juan Toledo",
-          Image.asset("assets/images/avatar.jpg"),
+          "assets/images/avatar.jpg",
           "¡Descubriendo nuevos sabores! Hoy probé este exquisito plato y quedé fascinado. Cada bocado era una explosión de sabores y texturas. ¡No puedo esperar para compartir esta joya culinaria con ustedes! Si eres amante de la buena comida, no te lo puedes perder. ¿Alguien más se anima a probarlo? #DeliciasGastronómicas #SorprendentesSabores #ExperienciaCulinaria",
           45,
           false,
           false,
-          Image.asset("assets/images/sushi.jpg"),
+          "assets/images/sushi.jpg",
           DateTime.now().subtract(const Duration(hours: 5))
       ),
       Recipe(
@@ -170,12 +170,12 @@ class DummyPost implements PostService {
           "id",
           "ReyDeLaCocina",
           "Juan Toledo",
-          Image.asset("assets/images/avatar.jpg"),
+          "assets/images/avatar.jpg",
           "¡El postre perfecto! Sorprende a todos con este tentador pastel. Esponjoso, indulgente y decorado a la perfección. ¡Prepárate para deleitarte!",
           90,
           true,
           true,
-          Image.asset("assets/images/cake.jpg"),
+          "assets/images/cake.jpg",
           DateTime.now(),
           "Pastel de fresas y chocolate",
           4, [

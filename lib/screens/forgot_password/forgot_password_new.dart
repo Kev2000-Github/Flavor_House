@@ -3,6 +3,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/common/popups/forgot_password.dart';
 import 'package:flavor_house/services/auth/dummy_auth_service.dart';
+import 'package:flavor_house/services/auth/http_auth_service.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -87,7 +88,7 @@ class _ForgotPasswordNewScreenState extends State<ForgotPasswordNewScreen> {
                   onPressed: () async {
                     String password = _newPasswordController.value.text;
                     //TODO: Beware this is a dummy implementation!
-                    Auth auth = DummyAuth();
+                    Auth auth = HttpAuth();
                     dartz.Either<Failure, User> result =
                         await auth.NewPassword(password);
                     result.fold(

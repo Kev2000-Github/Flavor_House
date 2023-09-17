@@ -1,5 +1,6 @@
 import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/services/paginated.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,7 @@ class _ReviewsState extends State<Reviews> {
   }
 
   void getReviews() async {
-    PostService reviewService = DummyPost();
+    PostService reviewService = HttpPost();
     dartz.Either<Failure, Paginated<Review>> result =
         await reviewService.getReviews("postId");
     result.fold((l) => null, (Paginated<Review> reviews) {

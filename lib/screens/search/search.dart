@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/models/user/user_item.dart';
 import 'package:flavor_house/screens/search/search_skeleton.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flavor_house/widgets/conditional.dart';
@@ -80,11 +81,11 @@ class _SearchScreenState extends State<SearchScreen> {
     dartz.Either<Failure, Paginated> result;
     switch (selectedSearch) {
       case SearchType.moment:
-        PostService postClient = DummyPost();
+        PostService postClient = HttpPost();
         result = await postClient.getMoments(search: searchValue);
         break;
       case SearchType.recipe:
-        PostService postClient = DummyPost();
+        PostService postClient = HttpPost();
         result = await postClient.getRecipes(search: searchValue);
         break;
       case SearchType.user:

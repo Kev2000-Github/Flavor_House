@@ -1,5 +1,6 @@
 
 
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +25,7 @@ class _IngredientsState extends State<Ingredients> {
   List<String> ingredients = [];
 
   void getIngredients() async {
-    PostService postService = DummyPost();
+    PostService postService = HttpPost();
     dartz.Either<Failure, Paginated<String>> result = await postService.getIngredients(widget.recipeId);
     result.fold((l) => null, (Paginated<String> ingredients) {
       setState(() {

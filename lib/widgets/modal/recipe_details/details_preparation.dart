@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -26,7 +27,7 @@ class _PreparationState extends State<Preparation> {
   }
 
   void getPreparationSteps() async {
-    PostService postService = DummyPost();
+    PostService postService = HttpPost();
     dartz.Either<Failure, Paginated<RecipePreparationStep>> result =
         await postService.getRecipePreparation("recipeId");
     result.fold((l) => null, (Paginated<RecipePreparationStep> steps) {

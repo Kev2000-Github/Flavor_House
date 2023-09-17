@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/screens/home/skeleton_home.dart';
 import 'package:flavor_house/services/paginated.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/utils/skeleton_wrapper.dart';
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
-    PostService postClient = DummyPost();
+    PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated<Moment>> result =
         await postClient.getMoments(sort: selectedSort);
     result.fold((failure) {

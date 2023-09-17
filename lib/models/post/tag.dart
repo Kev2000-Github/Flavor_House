@@ -8,4 +8,12 @@ class Tag {
   final Color color;
 
   Tag(this.id, this.name, this.color);
+
+  factory Tag.fromJson(Map<String, dynamic> json){
+    return Tag(
+        json['id'],
+        json['name'],
+        json['color']
+    );
+  }
 }

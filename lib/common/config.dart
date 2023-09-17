@@ -10,4 +10,8 @@ class Config {
       'authorization': token
     };
   }
+  static String? imgURL(String? key) {
+    if(key == null) return null;
+    return '$backURL/v1/picturers/display/$key';
+  }
 }

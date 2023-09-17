@@ -3,6 +3,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/models/user/user_publications_info.dart';
 import 'package:flavor_house/screens/profile/skeleton_profile.dart';
 import 'package:flavor_house/services/paginated.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/user_info/http_user_info_service.dart';
 import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
@@ -60,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
-    PostService postClient = DummyPost();
+    PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated> result =
     await postClient.getMyPosts(sort: selectedSort);
     result.fold((failure) {
@@ -241,11 +242,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: widget.userId != null ? Button(
-                    text: user?.isFollowed != null && user!.isFollowed == true ? "Dejar de seguir" : "Seguir",
-                    onPressed: () {
-
-                      setState(() {
-                        user.isFollowed = !user.isFollowed!;
+                    text: user.isFollowed != null && user.isFollowed == true ? "Dejar de seguir" : "Seguir",
+                    onPressed: () async {
+                      UserInfoService userInfoService = HttpUserInfoService();
+                      dartz.Either<Failure,bool> result = await userInfoService.updateFollow(user.id, !user.isFollowed!);
+                      result.fold((l) => CommonPopup.alert(context, l), (isFollow) {
+                        setState(() {
+                          user.isFollowed = isFollow;
+                        });
                       });
                     },
                     borderSide: const BorderSide(style: BorderStyle.none),

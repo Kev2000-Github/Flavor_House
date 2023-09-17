@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 
 import '../../common/config.dart';
 import '../../common/session.dart';
-import '../../models/country.dart';
 import '../../models/user/user.dart';
 
 class HttpUserInfoService implements UserInfoService {
@@ -86,8 +85,11 @@ class HttpUserInfoService implements UserInfoService {
   Future<Either<Failure, bool>> updateFollow(String userId, bool follow) async {
     String hostname = Config.backURL;
     Uri url = Uri.parse('$hostname/v1/users/follow/$userId');
+    var body = json.encode({
+      "follow": follow
+    });
     var response =
-        await http.get(url, headers: Config.headerAuth(Session().token));
+        await http.post(url, body: body, headers: Config.headerAuth(Session().token));
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {
       return Right(decodedResponse['data']['follow']);
@@ -109,11 +111,10 @@ class HttpUserInfoService implements UserInfoService {
       if(user.gender != "") body['sex'] = user.gender;
       if(user.country?.id != "") body['countryId'] = user.country?.id;
       if(user.phoneNumber != "") body['phoneNumber'] = user.phoneNumber;
-      var encodedBody = json.encode(body);
       var response = await http.put(
           url,
           headers: Config.headerAuth(Session().token),
-          body: encodedBody
+          body: body
       );
       var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
       if(response.statusCode == 200){
@@ -135,13 +136,12 @@ class HttpUserInfoService implements UserInfoService {
     try {
       String hostname = Config.backURL;
       Uri url = Uri.parse('$hostname/v1/users/$id');
-      var encodedBody = json.encode({
-        "password": pass
-      });
       var response = await http.put(
           url,
           headers: Config.headerAuth(Session().token),
-          body: encodedBody
+          body: {
+            "password": pass
+          }
       );
       var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
       if(response.statusCode == 200){

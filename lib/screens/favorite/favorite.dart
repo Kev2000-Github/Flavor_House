@@ -3,6 +3,7 @@ import 'package:flavor_house/models/config/post_type_config.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/screens/favorite/skeleton_favorite.dart';
 import 'package:flavor_house/services/paginated.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
@@ -51,7 +52,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   void getPosts(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user.isInitial()) return;
     if (mounted) setLoadingState(true);
-    PostService postClient = DummyPost();
+    PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated> result =
     await postClient.getAll(sort: selectedSort, postFilter: selectedPostType);
     result.fold((failure) {

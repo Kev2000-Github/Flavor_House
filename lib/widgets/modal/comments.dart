@@ -3,6 +3,7 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/models/post/comment.dart';
 import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/services/post/dummy_post_service.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/time.dart';
 import 'package:flavor_house/widgets/Avatar.dart';
@@ -46,7 +47,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
   }
 
   void getComments() async {
-    PostService commentService = DummyPost();
+    PostService commentService = HttpPost();
     dartz.Either<Failure, Paginated<Comment>> result =
         await commentService.getComments("postId");
     result.fold((l) => null, (Paginated<Comment> comments) {
