@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
+import '../../common/popups/common.dart';
 import '../../models/config/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
@@ -56,6 +57,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     await postClient.getRecipes(sort: selectedSort);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
+      CommonPopup.alert(context, failure);
     }, (newPosts) {
       if (mounted) {
         setState(() {
@@ -70,10 +72,13 @@ class _RecipeScreenState extends State<RecipeScreen> {
     });
   }
 
-  void onDeletePost(String postId){
-    //TODO: Beware dummy implementation!
-    setState(() {
-      posts.removeWhere((element) => element.id == postId);
+  void onDeletePost(String postId, String type) async {
+    PostService postService = HttpPost();
+    dartz.Either<Failure, bool> result = await postService.deletePost(postId, type);
+    result.fold((l) => CommonPopup.alert(context, l), (r) {
+      setState(() {
+        posts.removeWhere((element) => element.id == postId);
+      });
     });
   }
 

@@ -4,7 +4,7 @@ import '../utils/colors.dart';
 
 class StarsRating extends StatelessWidget {
   final Function? onRate;
-  final double rate;
+  final int rate;
   final double size;
   const StarsRating({Key? key, this.onRate, required this.rate, this.size = 28}) : super(key: key);
 

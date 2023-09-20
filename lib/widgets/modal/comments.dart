@@ -2,9 +2,7 @@ import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/models/post/comment.dart';
 import 'package:flavor_house/models/user/user.dart';
-import 'package:flavor_house/services/post/dummy_post_service.dart';
-import 'package:flavor_house/services/post/http_post_service.dart';
-import 'package:flavor_house/services/post/post_service.dart';
+import 'package:flavor_house/services/comments/comments_service.dart';
 import 'package:flavor_house/utils/time.dart';
 import 'package:flavor_house/widgets/Avatar.dart';
 import 'package:flavor_house/widgets/button.dart';
@@ -13,11 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/error/failures.dart';
+import '../../common/popups/common.dart';
 import '../../providers/user_provider.dart';
+import '../../services/comments/http_comments_service.dart';
 import '../../services/paginated.dart';
 import '../../utils/colors.dart';
 import '../../utils/text_themes.dart';
-import '../text_field.dart';
 
 class CommentsModalContent extends StatefulWidget {
   final String recipeId;
@@ -47,12 +46,22 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
   }
 
   void getComments() async {
-    PostService commentService = HttpPost();
+    CommentService commentService = HttpCommentService();
     dartz.Either<Failure, Paginated<Comment>> result =
-        await commentService.getComments("postId");
+        await commentService.getComments(widget.recipeId);
     result.fold((l) => null, (Paginated<Comment> comments) {
       setState(() {
         this.comments = comments.getData();
+      });
+    });
+  }
+
+  void createComment(String content) async {
+    CommentService commentService = HttpCommentService();
+    dartz.Either<Failure, Comment> result = await commentService.createComment(widget.recipeId, content);
+    result.fold((l) => CommonPopup.alert(context, l), (comment) {
+      setState(() {
+        comments.insert(0, comment);
       });
     });
   }
@@ -63,11 +72,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
         context: context,
         builder: (context) =>
             TextInputModalContent(onSend: (String comment) {
-              //TODO: Beware Dummy Implementation!!
-              setState(() {
-                Comment newComment = Comment("1", user!.id, user!.username, user!.fullName, comment, DateTime.now(), user?.pictureURL);
-                comments.add(newComment);
-              });
+              createComment(comment);
             }));
   }
 

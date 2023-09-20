@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/models/post/tag.dart';
@@ -8,7 +9,10 @@ import 'package:flavor_house/widgets/stars.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 
+import '../common/error/failures.dart';
 import '../common/popups/common.dart';
+import '../services/post/http_post_service.dart';
+import '../services/post/post_service.dart';
 import '../utils/colors.dart';
 import '../utils/helpers.dart';
 import '../utils/time.dart';
@@ -18,7 +22,7 @@ import 'modal/comments.dart';
 class PostRecipe extends StatelessWidget {
   final Recipe post;
   final bool isSameUser;
-  final Function(String)? deletePost;
+  final Function(String, String)? deletePost;
   const PostRecipe({
     Key? key,
     required this.post,
@@ -86,7 +90,7 @@ class PostRecipe extends StatelessWidget {
                         onPressed: () {
                           CommonPopup.deletePost(context, onConfirm: () {
                             if (deletePost != null) {
-                              deletePost!(post.id);
+                              deletePost!(post.id, 'Recipe');
                             }
                             Navigator.of(context).pop();
                           });
@@ -146,6 +150,16 @@ class PostRecipe extends StatelessWidget {
                 LikeButton(
                     isLiked: post.isLiked,
                     size: 28,
+                    onTap: (isFavorite) async {
+                      PostService postService = HttpPost();
+                      Either<Failure, bool> result = await postService.toggleFavorite(post.id, !isFavorite);
+                      return result.fold((failure) {
+                        CommonPopup.alert(context, failure);
+                        return isFavorite;
+                      }, (returnedFav) {
+                        return returnedFav;
+                      });
+                    },
                     likeBuilder: (isTapped) {
                       return Icon(
                           isTapped ? Icons.favorite : Icons.favorite_outline,
@@ -154,6 +168,16 @@ class PostRecipe extends StatelessWidget {
                 LikeButton(
                   isLiked: post.isFavorite,
                   size: 28,
+                  onTap: (isLiked) async {
+                    PostService postService = HttpPost();
+                    Either<Failure, bool> result = await postService.toggleLike(post.id, !isLiked);
+                    return result.fold((failure) {
+                      CommonPopup.alert(context, failure);
+                      return isLiked;
+                    }, (returnedLike) {
+                      return returnedLike;
+                    });
+                  },
                   likeBuilder: (isTapped) {
                     return Icon(
                         isTapped ? Icons.thumb_up : Icons.thumb_up_outlined,

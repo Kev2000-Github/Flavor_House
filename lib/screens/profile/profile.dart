@@ -66,6 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await postClient.getAll(sort: selectedSort, isMine: true);
     result.fold((failure) {
       if (mounted) setLoadingState(false);
+      CommonPopup.alert(context, failure);
     }, (newPosts) {
       if (mounted) {
         setState(() {
@@ -109,10 +110,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void onDeletePost(String postId){
-    //TODO: Beware dummy implementation!
-    setState(() {
-      posts.removeWhere((element) => element.id == postId);
+  void onDeletePost(String postId, String type) async {
+    PostService postService = HttpPost();
+    dartz.Either<Failure, bool> result = await postService.deletePost(postId, type);
+    result.fold((l) => CommonPopup.alert(context, l), (r) {
+      setState(() {
+        posts.removeWhere((element) => element.id == postId);
+      });
     });
   }
 

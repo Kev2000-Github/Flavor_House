@@ -11,6 +11,10 @@ class Comment {
 
   Comment(this.id, this.userId, this.username, this.fullName, this.comment, this.createdAt, this.avatarURL);
 
+  factory Comment.fromJson(Map<String, dynamic> json) {
+    return Comment(json['id'], json['User']['id'], json['User']['username'], json['User']['fullName'], json['content'], json['createdAt'], json['User']['avatar']);
+  }
+
   Image get picture{
     if(avatarURL != null) return Image.network(avatarURL!);
     return Image.asset("assets/images/user_avatar.png");

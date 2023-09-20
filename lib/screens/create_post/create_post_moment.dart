@@ -1,13 +1,17 @@
 import 'dart:io';
-
+import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/providers/user_provider.dart';
+import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/error/failures.dart';
 import '../../models/user/user.dart';
+import '../../services/post/post_service.dart';
 import '../../utils/colors.dart';
 import '../../widgets/Avatar.dart';
 import '../../widgets/button.dart';
@@ -22,6 +26,7 @@ class CreatePostMomentScreen extends StatefulWidget {
 
 class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
   Image? image;
+  File? imageFile;
   User? user;
   final FocusNode _textFocus = FocusNode();
   final TextEditingController _textController = TextEditingController();
@@ -40,6 +45,17 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
     super.dispose();
     _textFocus.dispose();
     _textController.dispose();
+  }
+
+  void createPost() async {
+    PostService postService = HttpPost();
+    dartz.Either<Failure, bool> result = await postService.createMoment(
+      description: _textController.text,
+      imageFile: imageFile
+    );
+    result.fold((l) => CommonPopup.alert(context, l), (r) {
+      Navigator.pop(context);
+    });
   }
 
   @override
@@ -119,6 +135,7 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
                             XFile? pickedFile = await picker.pickImage(
                                 source: ImageSource.gallery);
                             if(pickedFile == null) return;
+                            imageFile = File(pickedFile.path);
                             image = Image.file(File(pickedFile.path));
                             setState(() {});
                           },
@@ -130,9 +147,7 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
                   ),
                   Button(
                       text: "Publicar",
-                      onPressed: () async {
-                        Navigator.pop(context);
-                      },
+                      onPressed: () => createPost(),
                       borderSide: null,
                       backgroundColor: primaryColor,
                       textColor: whiteColor,

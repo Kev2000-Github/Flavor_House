@@ -4,6 +4,7 @@ import 'package:flavor_house/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../common/error/failures.dart';
+import '../../../common/popups/common.dart';
 import '../../../models/post/recipe_preparation.dart';
 import '../../../services/paginated.dart';
 import '../../../services/post/dummy_post_service.dart';
@@ -29,8 +30,8 @@ class _PreparationState extends State<Preparation> {
   void getPreparationSteps() async {
     PostService postService = HttpPost();
     dartz.Either<Failure, Paginated<RecipePreparationStep>> result =
-        await postService.getRecipePreparation("recipeId");
-    result.fold((l) => null, (Paginated<RecipePreparationStep> steps) {
+        await postService.getRecipePreparation(widget.recipeId);
+    result.fold((l) => CommonPopup.alert(context, l), (Paginated<RecipePreparationStep> steps) {
       setState(() {
         this.steps = steps.getData();
       });

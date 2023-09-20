@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
+import '../../common/popups/common.dart';
 import '../../models/post/moment.dart';
 import '../../models/config/sort_config.dart';
 import '../../models/user/user.dart';
@@ -70,10 +71,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void onDeletePost(String postId) {
-    //TODO: Beware dummy implementation!
-    setState(() {
-      posts.removeWhere((element) => element.id == postId);
+  void onDeletePost(String postId, String type) async {
+    PostService postService = HttpPost();
+    dartz.Either<Failure, bool> result = await postService.deletePost(postId, type);
+    result.fold((l) => CommonPopup.alert(context, l), (r) {
+      setState(() {
+        posts.removeWhere((element) => element.id == postId);
+      });
     });
   }
 

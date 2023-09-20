@@ -20,7 +20,7 @@ import '../utils/time.dart';
 class PostMoment extends StatelessWidget {
   final Moment post;
   final bool isSameUser;
-  final Function(String)? deletePost;
+  final Function(String, String)? deletePost;
   const PostMoment(
       {Key? key, required this.isSameUser, required this.post, this.deletePost})
       : super(key: key);
@@ -76,7 +76,7 @@ class PostMoment extends StatelessWidget {
                         onPressed: () {
                           CommonPopup.deletePost(context, onConfirm: () {
                             if (deletePost != null) {
-                              deletePost!(post.id);
+                              deletePost!(post.id, 'Moment');
                             }
                             Navigator.of(context).pop();
                           });
@@ -108,7 +108,7 @@ class PostMoment extends StatelessWidget {
                     size: 28,
                     onTap: (isFavorite) async {
                       PostService postService = HttpPost();
-                      Either<Failure, bool> result = await postService.toggleFavorite(post.id, isFavorite);
+                      Either<Failure, bool> result = await postService.toggleFavorite(post.id, !isFavorite);
                       return result.fold((failure) {
                         CommonPopup.alert(context, failure);
                         return isFavorite;
@@ -126,7 +126,7 @@ class PostMoment extends StatelessWidget {
                   size: 28,
                   onTap: (isLiked) async {
                     PostService postService = HttpPost();
-                    Either<Failure, bool> result = await postService.toggleLike(post.id, isLiked);
+                    Either<Failure, bool> result = await postService.toggleLike(post.id, !isLiked);
                     return result.fold((failure) {
                     CommonPopup.alert(context, failure);
                     return isLiked;

@@ -124,10 +124,13 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  void onDeletePost(String postId) {
-    //TODO: Beware dummy implementation!
-    setState(() {
-      results.removeWhere((element) => element.id == postId);
+  void onDeletePost(String postId, String type) async {
+    PostService postService = HttpPost();
+    dartz.Either<Failure, bool> result = await postService.deletePost(postId, type);
+    result.fold((l) => CommonPopup.alert(context, l), (r) {
+      setState(() {
+        results.removeWhere((element) => element.id == postId);
+      });
     });
   }
 

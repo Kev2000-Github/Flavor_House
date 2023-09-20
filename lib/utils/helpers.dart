@@ -8,7 +8,7 @@ import 'package:flavor_house/widgets/user_item.dart';
 import 'package:flutter/material.dart';
 
 class Helper {
-  static PostMoment createMomentWidget(Moment post, String userId, Function(String) onDelete) {
+  static PostMoment createMomentWidget(Moment post, String userId, Function(String, String) onDelete) {
     return PostMoment(
       isSameUser: post.userId == userId,
       post: post,
@@ -16,7 +16,7 @@ class Helper {
     );
   }
 
-  static PostRecipe createRecipeWidget(Recipe recipe, String userId, Function(String) onDelete) {
+  static PostRecipe createRecipeWidget(Recipe recipe, String userId, Function(String, String) onDelete) {
     return PostRecipe(
       isSameUser: recipe.userId == userId,
       post: recipe,

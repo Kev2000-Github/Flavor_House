@@ -141,7 +141,6 @@ class HttpUserInfoService implements UserInfoService {
         return Left(ServerFailure(title: 'Inicio Sesión', message: decodedResponse['error']['message']));
       }
     } catch (e) {
-      print(e);
       return const Left(TimeOutFailure(title: 'Inicio Sesión'));
     }
   }

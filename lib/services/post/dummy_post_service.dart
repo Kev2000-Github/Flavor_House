@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
@@ -291,5 +292,26 @@ class DummyPost implements PostService {
   @override
   Future<Either<Failure, bool>> toggleFavorite(String id, bool isFavorite) async {
     return Right(!isFavorite);
+  }
+
+  @override
+  Future<Either<Failure, bool>> createMoment({required String description, File? imageFile}) async {
+    return const Right(true);
+  }
+
+  @override
+  Future<Either<Failure, bool>> createRecipe({
+    required String title,
+    required String description,
+    required List<String> ingredients,
+    required List<StepContent> stepsContent,
+    File? imageFile
+  }) async {
+    return const Right(true);
+  }
+
+  @override
+  Future<Either<Failure, bool>> deletePost(String id, String type) async {
+    return const Right(true);
   }
 }

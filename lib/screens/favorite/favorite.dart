@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/models/config/post_type_config.dart';
 import 'package:flavor_house/models/post/moment.dart';
 import 'package:flavor_house/screens/favorite/skeleton_favorite.dart';
@@ -70,10 +71,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     });
   }
 
-  void onDeletePost(String postId){
-    //TODO: Beware dummy implementation!
-    setState(() {
-      posts.removeWhere((element) => element.id == postId);
+  void onDeletePost(String postId, String type) async {
+    PostService postService = HttpPost();
+    dartz.Either<Failure, bool> result = await postService.deletePost(postId, type);
+    result.fold((l) => CommonPopup.alert(context, l), (r) {
+      setState(() {
+        posts.removeWhere((element) => element.id == postId);
+      });
     });
   }
 

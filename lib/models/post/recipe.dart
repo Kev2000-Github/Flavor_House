@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class Recipe extends Post {
   final String title;
-  final double stars;
+  final int stars;
   final List<Tag> tags;
 
   Recipe(
