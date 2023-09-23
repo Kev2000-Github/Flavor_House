@@ -9,6 +9,7 @@ import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/widgets/avatar.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
+import 'package:flavor_house/widgets/post_recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,14 +20,13 @@ import '../../models/post/moment.dart';
 import '../../models/post/recipe.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
-import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
 import '../../utils/colors.dart';
-import '../../utils/helpers.dart';
 import '../../utils/skeleton_wrapper.dart';
 import '../../utils/text_themes.dart';
 import '../../widgets/button.dart';
 import '../../widgets/modal/sort.dart';
+import '../../widgets/post_moment.dart';
 import '../../widgets/post_skeleton.dart';
 import '../../widgets/sort.dart';
 
@@ -63,7 +63,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (mounted) setLoadingState(true);
     PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated> result =
-    await postClient.getAll(sort: selectedSort, isMine: true);
+    await postClient.getAll(
+        sort: selectedSort,
+        isMine: true,
+        page: posts.isNotEmpty && !reset ? posts.page + 1 : 1
+    );
     result.fold((failure) {
       if (mounted) setLoadingState(false);
       CommonPopup.alert(context, failure);
@@ -73,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts.getData());
+            posts.addPage(newPosts);
           }
         });
         setLoadingState(false);
@@ -305,10 +309,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     : Column(
                   children: List.generate(posts.items, (index) {
                     if (posts.getData()[index].runtimeType == Moment) {
-                      return Helper.createMomentWidget(posts.getData()[index], user.id, onDeletePost);
+                      return PostMoment(
+                        isSameUser: posts.getItem(index).userId == user.id,
+                        post: posts.getItem(index),
+                        deletePost: onDeletePost,
+                      );
                     }
                     if (posts.getData()[index].runtimeType == Recipe) {
-                      return Helper.createRecipeWidget(posts.getData()[index], user.id, onDeletePost);
+                      return PostRecipe(
+                        isSameUser: posts.getItem(index).userId == user.id,
+                        post: posts.getItem(index),
+                        deletePost: onDeletePost,
+                      );
                     }
                     return Container();
                   }),

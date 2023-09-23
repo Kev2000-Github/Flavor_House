@@ -62,9 +62,13 @@ class HttpCommentService implements CommentService {
   }
 
   @override
-  Future<Either<Failure, Paginated<Comment>>> getComments(String postId) async {
+  Future<Either<Failure, Paginated<Comment>>> getComments(String postId, int? page) async {
     String hostname = Config.backURL;
-    Uri url = Uri.parse('$hostname/v1/comments/$postId');
+    String? pageFormatted = page != null ? 'page=$page' : null;
+    List<String?> possibleQueryURLs = [pageFormatted];
+    List<String?> applicableQueryURLs = possibleQueryURLs.where((el) => el != null).toList();
+    String queryURL = applicableQueryURLs.isNotEmpty ? '?${applicableQueryURLs.join('&')}' : '';
+    Uri url = Uri.parse('$hostname/v1/comments/$postId$queryURL');
     var response = await http.get(url, headers: Config.headerAuth(Session().token));
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
     if(response.statusCode == 200){
@@ -82,7 +86,7 @@ class HttpCommentService implements CommentService {
             item['User']['avatar']
         );
       }).toList();
-      final result = Paginated(comments, 1, 1);
+      final result = Paginated(comments, decodedResponse['page'], decodedResponse['totalPages']);
       return Right(result);
     }
     else{

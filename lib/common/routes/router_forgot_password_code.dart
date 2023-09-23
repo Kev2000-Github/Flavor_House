@@ -10,7 +10,8 @@ class ForgotPasswordCodeRoute implements IRoute{
 
   @override
   Route getRoute(Object? args) {
-    return MaterialPageRoute(builder: (_) => const ForgotPasswordCodeScreen());
+    String email = args as String;
+    return MaterialPageRoute(builder: (_) => ForgotPasswordCodeScreen(email: email));
   }
 
   @override

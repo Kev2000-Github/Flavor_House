@@ -15,29 +15,32 @@ import '../../models/post/moment.dart';
 import '../../models/post/review.dart';
 
 abstract class PostService {
-  Future<Either<Failure, Paginated<Moment>>> getMoments({SortConfig? sort, String? search});
-  Future<Either<Failure, Paginated<Recipe>>> getRecipes({SortConfig? sort, String? search, List<String>? tags});
-  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter, bool? isFavorite, bool? isMine});
+  Future<Either<Failure, Paginated<Moment>>> getMoments({SortConfig? sort, String? search, int? page});
+  Future<Either<Failure, Paginated<Recipe>>> getRecipes({SortConfig? sort, String? search, List<String>? tags, int? page});
+  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter, bool? isFavorite, bool? isMine, int? page});
   Future<Either<Failure, List<Tag>>> getTags();
   Future<Either<Failure, Paginated<RecipePreparationStep>>> getRecipePreparation(String recipeId);
   Future<Either<Failure, Paginated<String>>> getIngredients(String recipeId);
   Future<Either<Failure, bool>> toggleLike(String id, bool isLiked);
   Future<Either<Failure, bool>> toggleFavorite(String id, bool isFavorite);
-  Future<Either<Failure, bool>> createMoment({required String description, File? imageFile});
-  Future<Either<Failure, bool>> createRecipe({
+  Future<Either<Failure, Moment>> createMoment({required String description, String? imageURI});
+  Future<Either<Failure, Moment>> updateMoment({required String id, String? description, String? imageURI});
+  Future<Either<Failure, Recipe>> createRecipe({
       required String title,
       required String description,
       required List<String> ingredients,
-      required List<StepContent> stepsContent,
-      File? imageFile
+      required List<RecipePreparationStep> stepsContent,
+      required List<String> tags,
+      String? imageURI
+  });
+  Future<Either<Failure, Recipe>> updateRecipe({
+    required String recipeId,
+    required String title,
+    required String description,
+    required List<String> ingredients,
+    required List<RecipePreparationStep> stepsContent,
+    required List<String> tags,
+    String? imageURI
   });
   Future<Either<Failure, bool>> deletePost(String id, String type);
-}
-
-class StepContent {
-  final String id;
-  final String description;
-  final File? imageFile;
-
-  StepContent(this.id, this.description, this.imageFile);
 }

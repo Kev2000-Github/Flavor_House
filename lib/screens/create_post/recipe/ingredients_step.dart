@@ -1,44 +1,26 @@
 
 
-import 'package:flavor_house/services/paginated.dart';
-import 'package:flavor_house/services/post/http_post_service.dart';
+import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flutter/material.dart';
 
-import '../../../common/error/failures.dart';
-import '../../../services/post/dummy_post_service.dart';
-import '../../../services/post/post_service.dart';
 import '../../../utils/colors.dart';
 import '../../../widgets/elevated_container.dart';
 import '../../../widgets/modal/text_input.dart';
-import 'package:dartz/dartz.dart' as dartz;
 
 class IngredientStep extends StatefulWidget {
-  final String? recipeId;
-  const IngredientStep({super.key, this.recipeId});
+  final List<String> ingredients;
+  final Function(List<String> updatedIngredients) onChangeIngredients;
+  const IngredientStep({super.key, required this.ingredients, required this.onChangeIngredients});
 
   @override
   State<IngredientStep> createState() => _IngredientStepState();
-} 
+}
 
 class _IngredientStepState extends State<IngredientStep> {
-  List<String> ingredients = [];
-  
+
   @override
   void initState() {
     super.initState();
-    if(widget.recipeId != null){
-      getIngredients();
-    }
-  }
-
-  void getIngredients() async {
-    PostService postService = HttpPost();
-    dartz.Either<Failure, Paginated<String>> result = await postService.getIngredients(widget.recipeId!);
-    result.fold((l) => null, (ingredients) {
-      setState(() {
-        this.ingredients.addAll(ingredients.getData());
-      });
-    });
   }
 
   void onOpenTextInput(BuildContext context) {
@@ -47,9 +29,7 @@ class _IngredientStepState extends State<IngredientStep> {
         context: context,
         builder: (context) =>
             TextInputModalContent(onSend: (String ingredient) {
-              setState(() {
-                ingredients.add(ingredient);
-              });
+              widget.onChangeIngredients([...widget.ingredients, ingredient]);
             }));
   }
 
@@ -57,19 +37,21 @@ class _IngredientStepState extends State<IngredientStep> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Text('Ingrese por lo menos 1 ingrediente', style: DesignTextTheme.get(type: TextThemeEnum.darkMedium)),
+        const SizedBox(height: 30),
         ...List.generate(
-            ingredients.length,
+            widget.ingredients.length,
                 (index) => Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Flexible(
                     child: ElevatedContainer(
-                        content: ingredients[index])),
+                        content: widget.ingredients[index])),
                 ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      ingredients.remove(ingredients[index]);
-                    });
+                    List<String> ingredients = [...widget.ingredients];
+                    ingredients.removeAt(index);
+                    widget.onChangeIngredients(ingredients);
                   },
                   style: ElevatedButton.styleFrom(
                       shape: const CircleBorder(),

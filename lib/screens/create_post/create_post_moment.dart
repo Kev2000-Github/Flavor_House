@@ -26,8 +26,9 @@ class CreatePostMomentScreen extends StatefulWidget {
 
 class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
   Image? image;
-  File? imageFile;
+  String? imageURI;
   User? user;
+  final _formKey = GlobalKey<FormState>();
   final FocusNode _textFocus = FocusNode();
   final TextEditingController _textController = TextEditingController();
 
@@ -36,7 +37,8 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
     super.initState();
     _textController.value =
         TextEditingValue(text: widget.post?.description ?? "");
-    image = widget.post?.picture;
+    image = widget.post?.pictureURL != null ? widget.post?.picture : null;
+    imageURI = widget.post?.pictureURL;
     setState(() {});
   }
 
@@ -49,12 +51,24 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
 
   void createPost() async {
     PostService postService = HttpPost();
-    dartz.Either<Failure, bool> result = await postService.createMoment(
+    dartz.Either<Failure, Moment> result = await postService.createMoment(
       description: _textController.text,
-      imageFile: imageFile
+      imageURI: imageURI
     );
-    result.fold((l) => CommonPopup.alert(context, l), (r) {
-      Navigator.pop(context);
+    result.fold((l) => CommonPopup.alert(context, l), (moment) {
+      Navigator.pop(context, moment);
+    });
+  }
+
+  void updatePost() async {
+    PostService postService = HttpPost();
+    dartz.Either<Failure, Moment> result = await postService.updateMoment(
+        id: widget.post!.id,
+        description: _textController.text,
+        imageURI: imageURI,
+    );
+    result.fold((l) => CommonPopup.alert(context, l), (moment) {
+      Navigator.pop(context, moment);
     });
   }
 
@@ -91,68 +105,84 @@ class _CreatePostMomentScreenState extends State<CreatePostMomentScreen> {
             )),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Avatar(
-                      pictureHeight: 90, borderSize: 2, image: user?.picture),
-                  const SizedBox(height: 25),
-                  TextField(
-                    controller: _textController,
-                    decoration: InputDecoration(
-                      hintText: "Dime, que quieres compartir?",
-                      border: inputBorder,
-                      focusedBorder: inputBorder,
-                      enabledBorder: inputBorder,
-                      filled: true,
-                      contentPadding: const EdgeInsets.all(8),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Avatar(
+                        pictureHeight: 90, borderSize: 2, image: user?.picture),
+                    const SizedBox(height: 25),
+                    TextFormField(
+                      controller: _textController,
+                      validator: (val) {
+                        if(val == null || val.isEmpty) return 'Descripcion vacia';
+                        if(val.length < 10) return 'La descripcion debe tener como minimo 10 caracteres';
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Dime, que quieres compartir?",
+                        border: inputBorder,
+                        focusedBorder: inputBorder,
+                        enabledBorder: inputBorder,
+                        filled: true,
+                        contentPadding: const EdgeInsets.all(8),
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 5,
+                      obscureText: false,
                     ),
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    minLines: 5,
-                    obscureText: false,
-                  ),
-                  const SizedBox(height: 25),
-                  Conditional(
-                    condition: image != null,
-                    positive: Container(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: image)
+                    const SizedBox(height: 25),
+                    Conditional(
+                      condition: image != null,
+                      positive: Container(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: image)
+                      ),
                     ),
-                  ),
-                  const Divider(height: 1, thickness: 1.5, color: gray02Color),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                          iconSize: 40,
-                          splashRadius: 25,
-                          onPressed: () async {
-                            final ImagePicker picker = ImagePicker();
-                            XFile? pickedFile = await picker.pickImage(
-                                source: ImageSource.gallery);
-                            if(pickedFile == null) return;
-                            imageFile = File(pickedFile.path);
-                            image = Image.file(File(pickedFile.path));
-                            setState(() {});
-                          },
-                          icon: const Icon(
-                            Icons.photo_outlined,
-                            color: gray03Color,
-                          ))
-                    ]
-                  ),
-                  Button(
-                      text: "Publicar",
-                      onPressed: () => createPost(),
-                      borderSide: null,
-                      backgroundColor: primaryColor,
-                      textColor: whiteColor,
-                      size: const Size.fromHeight(50)),
-                  const SizedBox(height: 25),
-                ])));
+                    const Divider(height: 1, thickness: 1.5, color: gray02Color),
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IconButton(
+                              iconSize: 40,
+                              splashRadius: 25,
+                              onPressed: () async {
+                                final ImagePicker picker = ImagePicker();
+                                XFile? pickedFile = await picker.pickImage(
+                                    source: ImageSource.gallery);
+                                if(pickedFile == null) return;
+                                imageURI = pickedFile.path;
+                                image = Image.file(File(pickedFile.path));
+                                setState(() {});
+                              },
+                              icon: const Icon(
+                                Icons.photo_outlined,
+                                color: gray03Color,
+                              ))
+                        ]
+                    ),
+                    Button(
+                        text: widget.post != null ? "Editar" : "Publicar",
+                        onPressed: () {
+                          if(_formKey.currentState!.validate()){
+                            if(widget.post != null) {
+                              updatePost();
+                            } else {
+                              createPost();
+                            }
+                          }
+                        },
+                        borderSide: null,
+                        backgroundColor: primaryColor,
+                        textColor: whiteColor,
+                        size: const Size.fromHeight(50)),
+                    const SizedBox(height: 25),
+                  ])
+            )));
   }
 }

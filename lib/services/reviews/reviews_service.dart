@@ -9,5 +9,5 @@ import '../paginated.dart';
 abstract class ReviewService {
   Future<Either<Failure, Review>> createReview(String postId, String content, int stars);
   Future<Either<Failure, Review>> deleteReview(String id);
-  Future<Either<Failure, Paginated<Review>>> getReviews(String postId);
+  Future<Either<Failure, Paginated<Review>>> getReviews(String postId, int? page);
 }

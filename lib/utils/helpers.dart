@@ -1,32 +1,26 @@
-import 'package:flavor_house/models/post/moment.dart';
-import 'package:flavor_house/models/post/recipe.dart';
-import 'package:flavor_house/models/user/user_item.dart';
+import 'package:dio/dio.dart';
 import 'package:flavor_house/utils/text_themes.dart';
-import 'package:flavor_house/widgets/post_moment.dart';
-import 'package:flavor_house/widgets/post_recipe.dart';
-import 'package:flavor_house/widgets/user_item.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class Helper {
-  static PostMoment createMomentWidget(Moment post, String userId, Function(String, String) onDelete) {
-    return PostMoment(
-      isSameUser: post.userId == userId,
-      post: post,
-      deletePost: onDelete,
-    );
-  }
-
-  static PostRecipe createRecipeWidget(Recipe recipe, String userId, Function(String, String) onDelete) {
-    return PostRecipe(
-      isSameUser: recipe.userId == userId,
-      post: recipe,
-      deletePost: onDelete,
-    );
-  }
-
-  static UserItemWidget createUserItemWidget(UserItem userInfo) {
-    return UserItemWidget(
-      user: userInfo,
+  static Future<MultipartFile> getMultiPartFile(String imagePath, { String? filename, MediaType? contentType}) async {
+    String fullFileName = imagePath.split('/').last;
+    String ext = fullFileName.split('.').last;
+    RegExp isHTTPPath = RegExp(r'^(http|https)');
+    if(isHTTPPath.hasMatch(imagePath)){
+      var image = await http.get(Uri.parse(imagePath));
+      return MultipartFile.fromBytes(
+          image.bodyBytes,
+          filename: filename ?? fullFileName,
+          contentType: contentType ?? MediaType("image", ext)
+      );
+    }
+    return MultipartFile.fromFile(
+        imagePath,
+        filename: filename ?? fullFileName,
+        contentType: contentType ?? MediaType("image", ext)
     );
   }
 

@@ -1,25 +1,24 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/models/post/recipe.dart';
 import 'package:flavor_house/screens/recipes/skeleton_recipe.dart';
 import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/services/post/http_post_service.dart';
-import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
 import '../../common/popups/common.dart';
 import '../../models/config/sort_config.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
-import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
 import '../../utils/skeleton_wrapper.dart';
 import '../../widgets/input_post.dart';
 import '../../widgets/modal/sort.dart';
+import '../../widgets/post_recipe.dart';
 import '../../widgets/post_skeleton.dart';
 import '../../widgets/sort.dart';
 
@@ -54,7 +53,10 @@ class _RecipeScreenState extends State<RecipeScreen> {
     if (mounted) setLoadingState(true);
     PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated<Recipe>> result =
-    await postClient.getRecipes(sort: selectedSort);
+        await postClient.getRecipes(
+            sort: selectedSort,
+            page: posts.isNotEmpty && !reset ? posts.page + 1 : 1
+        );
     result.fold((failure) {
       if (mounted) setLoadingState(false);
       CommonPopup.alert(context, failure);
@@ -64,7 +66,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts.getData());
+            posts.addPage(newPosts);
           }
         });
         setLoadingState(false);
@@ -74,12 +76,21 @@ class _RecipeScreenState extends State<RecipeScreen> {
 
   void onDeletePost(String postId, String type) async {
     PostService postService = HttpPost();
-    dartz.Either<Failure, bool> result = await postService.deletePost(postId, type);
+    dartz.Either<Failure, bool> result =
+        await postService.deletePost(postId, type);
     result.fold((l) => CommonPopup.alert(context, l), (r) {
       setState(() {
         posts.removeWhere((element) => element.id == postId);
       });
     });
+  }
+
+  void onEditPost(String postId, String type) async {
+    var post = await Navigator.of(context).pushNamed(routes.create_recipe,
+        arguments: posts.findItem((post) => post.id == postId));
+    if(post != null){
+      getPosts(setInitialPostLoadingState, reset: true);
+    }
   }
 
   @override
@@ -106,39 +117,51 @@ class _RecipeScreenState extends State<RecipeScreen> {
         ? Padding(
             padding: const EdgeInsets.only(top: 10, right: 10),
             child: ListViewInfiniteLoader(
-              canLoadMore: posts.page < posts.totalPages,
-              loadingState: _loadingMore,
-              getMoreItems: getPosts,
-              setLoadingModeState: setLoadingModeState,
-              children: [
-                Conditional(
-                  condition: !user.isInitial(),
-                  positive: InputPost(avatar: user.picture, onPressed: () {
-                    Navigator.of(context).pushNamed(routes.create_recipe);
-                  },),
-                  negative: Container(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Sort(
-                  builder: (context) => SortModalContent(
-                    selectedValue: selectedSort,
-                    onApply: (selectedConfig) {
-                      onChange(selectedConfig);
-                    },
-                    onCancel: () {
-                      onChange(SortConfig.latest());
-                    },
+                canLoadMore: posts.page < posts.totalPages,
+                loadingState: _loadingMore,
+                getMoreItems: getPosts,
+                setLoadingModeState: setLoadingModeState,
+                children: [
+                  Conditional(
+                    condition: !user.isInitial(),
+                    positive: InputPost(
+                      avatar: user.picture,
+                      onPressed: () async {
+                        var newPost = await Navigator.of(context).pushNamed(routes.create_recipe);
+                        if (newPost != null) {
+                          getPosts(setInitialPostLoadingState, reset: true);
+                        }
+                      },
+                    ),
+                    negative: Container(),
                   ),
-                ),
-                _isInitialPostLoading
-                    ? const SkeletonWrapper(child: PostSkeleton(items: 2))
-                    : Column(
-                    children: List.generate(posts.items,
-                            (index) => Helper.createRecipeWidget(posts.getData()[index], user.id, onDeletePost)))
-              ]
-            ))
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Sort(
+                    builder: (context) => SortModalContent(
+                      selectedValue: selectedSort,
+                      onApply: (selectedConfig) {
+                        onChange(selectedConfig);
+                      },
+                      onCancel: () {
+                        onChange(SortConfig.latest());
+                      },
+                    ),
+                  ),
+                  _isInitialPostLoading
+                      ? const SkeletonWrapper(child: PostSkeleton(items: 2))
+                      : Column(
+                          children: List.generate(
+                              posts.items,
+                              (index) => PostRecipe(
+                                    isSameUser:
+                                        posts.getItem(index).userId == user.id,
+                                    post: posts.getItem(index),
+                                    deletePost: onDeletePost,
+                                    editPost: onEditPost,
+                                  )))
+                ]))
         : const SingleChildScrollView(child: SkeletonRecipe(items: 2));
   }
 }

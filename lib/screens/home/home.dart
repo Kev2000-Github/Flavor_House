@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/providers/user_provider.dart';
 import 'package:flavor_house/screens/home/skeleton_home.dart';
 import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';
-import 'package:flavor_house/utils/helpers.dart';
 import 'package:flavor_house/utils/skeleton_wrapper.dart';
 import 'package:flavor_house/widgets/input_post.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
@@ -12,16 +12,15 @@ import 'package:flavor_house/widgets/post_skeleton.dart';
 import 'package:flavor_house/widgets/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
 import '../../common/popups/common.dart';
-import '../../models/post/moment.dart';
 import '../../models/config/sort_config.dart';
+import '../../models/post/moment.dart';
 import '../../models/user/user.dart';
-import '../../services/post/dummy_post_service.dart';
 import '../../widgets/conditional.dart';
 import '../../widgets/modal/sort.dart';
+import '../../widgets/post_moment.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -54,7 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) setLoadingState(true);
     PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated<Moment>> result =
-        await postClient.getMoments(sort: selectedSort);
+        await postClient.getMoments(
+            sort: selectedSort,
+            page: posts.isNotEmpty && !reset ? posts.page + 1 : 1
+        );
     result.fold((failure) {
       if (mounted) setLoadingState(false);
     }, (newPosts) {
@@ -63,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts.getData());
+            posts.addPage(newPosts);
           }
         });
         setLoadingState(false);
@@ -73,12 +75,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void onDeletePost(String postId, String type) async {
     PostService postService = HttpPost();
-    dartz.Either<Failure, bool> result = await postService.deletePost(postId, type);
+    dartz.Either<Failure, bool> result =
+        await postService.deletePost(postId, type);
     result.fold((l) => CommonPopup.alert(context, l), (r) {
       setState(() {
         posts.removeWhere((element) => element.id == postId);
       });
     });
+  }
+
+  void onEditPost(String postId, String type) async {
+    var post = await Navigator.of(context).pushNamed(routes.createpost,
+        arguments: posts.findItem((post) => post.id == postId));
+    if(post != null){
+      getPosts(setInitialPostLoadingState, reset: true);
+    }
   }
 
   @override
@@ -113,8 +124,12 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 InputPost(
                   avatar: user.picture,
-                  onPressed: () {
-                    Navigator.pushNamed(context, routes.createpost);
+                  onPressed: () async {
+                    var newPost =
+                        await Navigator.pushNamed(context, routes.createpost);
+                    if (newPost != null) {
+                      getPosts(setInitialPostLoadingState, reset: true);
+                    }
                   },
                 ),
                 const SizedBox(
@@ -132,15 +147,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Conditional(
-                  condition: _isInitialPostLoading,
-                  positive: const SkeletonWrapper(child: PostSkeleton(items: 2)),
-                  negative: Column(
-                    children: List.generate(
-                        posts.items,
-                            (index) => Helper.createMomentWidget(
-                            posts.getData()[index], user.id, onDeletePost)),
-                  )
-                )
+                    condition: _isInitialPostLoading,
+                    positive:
+                        const SkeletonWrapper(child: PostSkeleton(items: 2)),
+                    negative: Column(
+                      children: List.generate(
+                          posts.items,
+                          (index) => PostMoment(
+                                isSameUser:
+                                    posts.getItem(index).userId == user.id,
+                                post: posts.getItem(index),
+                                deletePost: onDeletePost,
+                                editPost: onEditPost,
+                              )),
+                    ))
               ],
             )),
         negative: const SingleChildScrollView(

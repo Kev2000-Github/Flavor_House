@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flavor_house/common/config.dart';
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/models/user/user.dart';
 import 'package:flavor_house/services/auth/auth_service.dart';
 import 'package:http/http.dart' as http;
 
+import '../../common/session.dart';
 import '../../models/country.dart';
 
 class HttpAuth implements Auth {
@@ -34,61 +36,47 @@ class HttpAuth implements Auth {
     }
   }
 
-  Future<Either<Failure, User>> forgotpassword(String username) async {
+  @override
+  Future<Either<Failure, bool>> forgotPassword(String email) async {
     try {
-      if (username == "") return Left(LoginEmptyFailure());
-      if (username != "test") return Left(LoginFailure());
-      Country country = Country('VEN', 'Venezuela');
-      User actualUser = User(
-          'id',
-          'test',
-          'pepe',
-          'pepe@gmail.com',
-          'Hombre',
-          '4126451235',
-          country,
-          'assets/images/avatar.jpg',
-          null);
-      return Right(actualUser);
+      String hostname = Config.backURL;
+      Uri url = Uri.parse('$hostname/v1/users/OTP/$email');
+      await http.get(url, headers: Config.headerInitial);
+      return const Right(true);
     } catch (e) {
       return Left(ServerFailure());
     }
   }
 
-  Future<Either<Failure, User>> Code(String code) async {
+  @override
+  Future<Either<Failure, User>> code(String email, String code) async {
     try {
-      if (code == "") return Left(CodeEmptyFailure());
-      if (code != "1234") return Left(CodeFailure());
-      Country country = Country('VEN', 'Venezuela');
-      User actualUser = User(
-          'id',
-          'test',
-          'pepe',
-          'pepe@gmail.com',
-          'Hombre',
-          '4126451235',
-          country,
-          'assets/images/avatar.jpg', null);
-      return Right(actualUser);
+      String hostname = Config.backURL;
+      Uri url = Uri.parse('$hostname/v1/users/OTP');
+      var body = json.encode({
+        'email': email,
+        'code': code,
+      });
+      var response = await http.post(url, body: body, headers: Config.headerInitial);
+      var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
+      User user =  User.fromJson(decodedResponse['data']);
+      user.token = decodedResponse['token'];
+      return Right(user);
     } catch (e) {
       return Left(ServerFailure());
     }
   }
 
-  Future<Either<Failure, User>> NewPassword(String Password) async {
+  @override
+  Future<Either<Failure, bool>> newPassword(String password) async {
     try {
-      if (Password == "") return Left(PasswordEmpty());
-      Country country = Country('VEN', 'Venezuela');
-      User actualUser = User(
-          'id',
-          'test',
-          'pepe',
-          'pepe@gmail.com',
-          'Hombre',
-          '4126451235',
-          country,
-          'assets/images/avatar.jpg', null);
-      return Right(actualUser);
+      String hostname = Config.backURL;
+      Uri url = Uri.parse('$hostname/v1/users/OTP');
+      var body = json.encode({
+        'password': password,
+      });
+      await http.put(url, body: body, headers: Config.headerInitial);
+      return const Right(true);
     } catch (e) {
       return Left(ServerFailure());
     }

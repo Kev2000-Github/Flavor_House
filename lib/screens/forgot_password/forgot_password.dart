@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/error/failures.dart';
-import 'package:flavor_house/services/auth/dummy_auth_service.dart';
+import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/services/auth/http_auth_service.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../models/user/user.dart';
 import '../../services/auth/auth_service.dart';
@@ -79,28 +79,13 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                   text: "Enviar correo",
                   onPressed: () async {
                     String email = _emailController.value.text;
-                    //TODO: Beware this is a dummy implementation!
                     Auth auth = HttpAuth();
-                    dartz.Either<Failure, User> result =
-                        await auth.forgotpassword(email);
+                    dartz.Either<Failure, bool> result =
+                        await auth.forgotPassword(email);
                     result.fold(
-                        (failure) => showDialog(
-                            context: context,
-                            builder: (_) => CupertinoAlertDialog(
-                                  title: const Text("Perdon!"),
-                                  content: const Text(
-                                      "Tu correo electronico está incorrecto, por favor ingreselo de nuevo"),
-                                  actions: [
-                                    CupertinoDialogAction(
-                                      child: Text("ok"),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
-                                )),
-                        (user) => Navigator.of(context)
-                            .pushNamed(routes.forgot_password_code));
+                        (failure) => CommonPopup.alert(context, failure),
+                        (val) => Navigator.of(context)
+                            .pushNamed(routes.forgot_password_code, arguments: email));
                   },
                   borderSide: null,
                   backgroundColor: primaryColor,

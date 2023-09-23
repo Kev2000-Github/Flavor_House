@@ -24,7 +24,7 @@ class Reviews extends StatefulWidget {
 }
 
 class _ReviewsState extends State<Reviews> {
-  List<Review> reviews = [];
+  Paginated<Review> reviews = Paginated.initial();
   ValueNotifier<int> starsValueNotifier = ValueNotifier<int>(0);
 
   @override
@@ -42,10 +42,13 @@ class _ReviewsState extends State<Reviews> {
   void getReviews() async {
     ReviewService reviewService = HttpReviewService();
     dartz.Either<Failure, Paginated<Review>> result =
-        await reviewService.getReviews(widget.recipeId);
+        await reviewService.getReviews(
+            widget.recipeId,
+            reviews.isNotEmpty ? reviews.page + 1 : 1
+        );
     result.fold((l) => null, (Paginated<Review> reviews) {
       setState(() {
-        this.reviews = reviews.getData();
+        this.reviews = reviews;
       });
     });
   }
@@ -55,7 +58,7 @@ class _ReviewsState extends State<Reviews> {
     dartz.Either<Failure, Review> result = await reviewService.createReview(widget.recipeId, content, stars);
     result.fold((l) => CommonPopup.alert(context, l), (review) {
       setState(() {
-        reviews.insert(0, review);
+        reviews.insertFirst(review);
       });
     });
   }
@@ -114,7 +117,7 @@ class _ReviewsState extends State<Reviews> {
               child: SingleChildScrollView(
                   child: Column(
             children: List.generate(
-                reviews.length,
+                reviews.items,
                 (index) => Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -133,15 +136,15 @@ class _ReviewsState extends State<Reviews> {
                                     GestureDetector(
                                         onTap: () {
                                           Navigator.of(context).pushNamed(routes.other_user_profile,
-                                              arguments: reviews[index].userId);
+                                              arguments: reviews.getItem(index).userId);
                                         },
                                         child: Text(
-                                          reviews[index].fullName,
+                                          reviews.getItem(index).fullName,
                                           style: DesignTextTheme.get(
                                               type: TextThemeEnum.darkSemiMedium),
                                         )
                                     ),
-                                    Text(formatTimeAgo(reviews[index].createdAt),
+                                    Text(formatTimeAgo(reviews.getItem(index).createdAt),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w400,
                                             color: gray04Color,
@@ -151,10 +154,10 @@ class _ReviewsState extends State<Reviews> {
                                 Padding(
                                   padding:
                                   const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text(reviews[index].review),
+                                  child: Text(reviews.getItem(index).review),
                                 ),
                                 StarsRating(
-                                    rate: reviews[index].stars, size: 20)
+                                    rate: reviews.getItem(index).stars, size: 20)
                               ],
                             )
                           )

@@ -1,11 +1,6 @@
 import 'dart:io';
 
-import 'package:dartz/dartz.dart' as dartz;
-import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/models/post/recipe.dart';
-import 'package:flavor_house/services/post/dummy_post_service.dart';
-import 'package:flavor_house/services/post/http_post_service.dart';
-import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -17,45 +12,36 @@ import '../../../widgets/conditional.dart';
 import '../../../widgets/text_field.dart';
 
 class GeneralStep extends StatefulWidget {
-  final Recipe? recipe;
   final User user;
-  const GeneralStep({super.key, required this.user, required this.recipe});
+  final TextEditingController titleController;
+  final TextEditingController descriptionController;
+  final List<Tag> tags;
+  final String? postImage;
+  final List<String> selectedTags;
+  final Function(List<String> tags) onSelectTags;
+  final Function(String image) onSelectImage;
+
+  const GeneralStep({super.key, required this.user, required this.titleController, required this.descriptionController, required this.onSelectTags, required this.tags, required this.selectedTags, required this.onSelectImage, this.postImage});
 
   @override
   State<GeneralStep> createState() => _GeneralStepState();
 }
 
 class _GeneralStepState extends State<GeneralStep> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
   Image? image;
-  bool isSelected = false;
-  List<Tag> tags = [];
-  List<String> selectedTags = [];
-
-  void getTags() async {
-    PostService service = HttpPost();
-    dartz.Either<Failure, List<Tag>> result = await service.getTags();
-    result.fold((l) => null, (List<Tag> interests) {
-      setState(() {
-        tags = interests;
-        Iterable<String> recipeTagNames = (widget.recipe?.tags ?? []).map((Tag e) => e.id);
-        selectedTags.addAll(recipeTagNames);
-      });
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _titleController.text = widget.recipe?.title ?? "";
-    _descriptionController.text = widget.recipe?.description ?? "";
-    image = widget.recipe?.picture;
-    getTags();
+    if(widget.postImage != null){
+      image = Image.network(widget.postImage!);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final inputBorder =
+    OutlineInputBorder(borderSide: Divider.createBorderSide(context));
     return Column(
       children: [
         Row(
@@ -66,12 +52,22 @@ class _GeneralStepState extends State<GeneralStep> {
               width: 10,
             ),
             Expanded(
-                child: TextFieldInput(
-              hintText: "Nombre de la receta",
-              onSubmitted: (String value) {},
-              textInputType: TextInputType.text,
-              textEditingController: _titleController,
-            )),
+                child: TextFormField(
+                  controller: widget.titleController,
+                  validator: (val) {
+                    if(val == null || val.isEmpty) return 'Titulo vacio';
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Nombre de la receta",
+                    border: inputBorder,
+                    focusedBorder: inputBorder,
+                    enabledBorder: inputBorder,
+                    filled: true,
+                    contentPadding: const EdgeInsets.all(8),
+                  ),
+                  keyboardType: TextInputType.text,
+                )),
           ],
         ),
         SingleChildScrollView(
@@ -79,13 +75,25 @@ class _GeneralStepState extends State<GeneralStep> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TextFieldInput(
-                    hintText: "Agregue una breve descripcion",
-                    onSubmitted: (String value) {},
-                    textInputType: TextInputType.multiline,
-                    textEditingController: _descriptionController,
-                    minLine: 6,
-                    maxLine: null,
+                  TextFormField(
+                    controller: widget.descriptionController,
+                    validator: (val) {
+                      if(val == null || val.isEmpty) return 'Descripcion vacia';
+                      if(val.length < 10) return 'La descripcion debe tener como minimo 10 caracteres';
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Agregue una breve descripcion",
+                      border: inputBorder,
+                      focusedBorder: inputBorder,
+                      enabledBorder: inputBorder,
+                      filled: true,
+                      contentPadding: const EdgeInsets.all(8),
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 6,
+                    obscureText: false,
                   ),
                   const SizedBox(height: 10),
                   Column(
@@ -114,6 +122,7 @@ class _GeneralStepState extends State<GeneralStep> {
                                         source: ImageSource.gallery);
                                     if(pickedFile == null) return;
                                     image = Image.file(File(pickedFile.path));
+                                    widget.onSelectImage(pickedFile.path);
                                     setState(() {});
                                   },
                                   icon: const Icon(
@@ -125,35 +134,35 @@ class _GeneralStepState extends State<GeneralStep> {
                         Wrap(
                           spacing: 10,
                           children: List.generate(
-                              tags.length,
+                              widget.tags.length,
                               (index) => ChoiceChip(
-                                    label: Text(tags[index].name),
+                                    label: Text(widget.tags[index].name),
                                     avatar: Padding(
                                       padding: const EdgeInsets.only(left: 5),
                                       child: Icon(
-                                        selectedTags.contains(tags[index].id)
+                                        widget.selectedTags.contains(widget.tags[index].id)
                                             ? Icons.done
                                             : Icons.circle_outlined,
-                                        color: selectedTags
-                                                .contains(tags[index].id)
+                                        color: widget.selectedTags
+                                                .contains(widget.tags[index].id)
                                             ? secondaryColor
                                             : gray03Color,
                                       ),
                                     ),
                                     selected:
-                                        selectedTags.contains(tags[index].id),
+                                        widget.selectedTags.contains(widget.tags[index].id),
                                     selectedShadowColor: primaryColor,
                                     selectedColor: primaryColor.withAlpha(90),
                                     shadowColor: primaryColor,
                                     onSelected: (bool value) {
-                                      setState(() {
-                                        if (selectedTags
-                                            .contains(tags[index].id)) {
-                                          selectedTags.remove(tags[index].id);
-                                        } else {
-                                          selectedTags.add(tags[index].id);
-                                        }
-                                      });
+                                      String tagId = widget.tags[index].id;
+                                      List<String> newTags = [];
+                                      if (widget.selectedTags.contains(tagId)) {
+                                        newTags = widget.selectedTags.where((id) => id != tagId).toList();
+                                      } else {
+                                        newTags = [...widget.selectedTags, tagId];
+                                      }
+                                      widget.onSelectTags(newTags);
                                     },
                                   )),
                         )

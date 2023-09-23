@@ -58,7 +58,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
-                const Avatar(pictureHeight: 80, borderSize: 2, image: null),
+                Avatar(pictureHeight: 80, borderSize: 2, image: user.picture),
                 const SizedBox(height: 16.0),
                 const Text(
                   "La contraseña debe tener al menos seis caracteres e incluir una combinación de números, letras y caracteres especiales (!@%).",

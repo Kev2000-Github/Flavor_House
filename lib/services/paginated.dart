@@ -2,7 +2,7 @@
 
 class Paginated<T> {
   final List<T> _data;
-  final int page;
+  int page;
   final int totalPages;
 
   Paginated(this._data, this.page, this.totalPages);
@@ -11,9 +11,16 @@ class Paginated<T> {
   }
 
   void push(T item) => _data.add(item);
+  void insertFirst(T item) => _data.insert(0, item);
+  T getItem(int index) => _data[index];
+  T findItem(bool Function(T) test) => _data.firstWhere(test);
   T pop() => _data.removeLast();
   void clear() => _data.clear();
   void addAll(Iterable<T> iterable) => _data.addAll(iterable);
+  void addPage(Paginated<T> newPage) {
+    _data.addAll(newPage.getData());
+    page = newPage.page;
+  }
   List<T> getData() => _data;
   void removeWhere(bool Function(T) test) {
     _data.removeWhere(test);

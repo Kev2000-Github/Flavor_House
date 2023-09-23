@@ -6,6 +6,7 @@ import 'package:flavor_house/services/user_info/user_info_service.dart';
 import 'package:flavor_house/utils/text_themes.dart';
 import 'package:flavor_house/widgets/conditional.dart';
 import 'package:flavor_house/widgets/listview_infinite_loader.dart';
+import 'package:flavor_house/widgets/post_recipe.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,12 +18,11 @@ import '../../models/post/recipe.dart';
 import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/paginated.dart';
-import '../../services/post/dummy_post_service.dart';
 import '../../services/post/post_service.dart';
-import '../../services/user_info/dummy_user_info_service.dart';
 import '../../services/user_info/http_user_info_service.dart';
 import '../../utils/colors.dart';
-import '../../utils/helpers.dart';
+import '../../widgets/post_moment.dart';
+import '../../widgets/user_item.dart';
 
 enum SearchType { moment, recipe, user }
 
@@ -82,15 +82,23 @@ class _SearchScreenState extends State<SearchScreen> {
     switch (selectedSearch) {
       case SearchType.moment:
         PostService postClient = HttpPost();
-        result = await postClient.getMoments(search: searchValue);
+        result = await postClient.getMoments(
+            search: searchValue,
+            page: results.isNotEmpty && !reset ? results.page + 1 : 1
+        );
         break;
       case SearchType.recipe:
         PostService postClient = HttpPost();
-        result = await postClient.getRecipes(search: searchValue);
+        result = await postClient.getRecipes(
+            search: searchValue,
+            page: results.isNotEmpty && !reset ? results.page + 1 : 1
+        );
         break;
       case SearchType.user:
         UserInfoService userInfoService = HttpUserInfoService();
-        result = await userInfoService.userSearch(searchTerm: searchValue);
+        result = await userInfoService.userSearch(
+            searchTerm: searchValue,
+        );
         break;
     }
 
@@ -234,16 +242,23 @@ class _SearchScreenState extends State<SearchScreen> {
                           loadingState: _loadingMore,
                           children: List.generate(results.items, (index) {
                             if (results.getData()[index].runtimeType == Moment) {
-                              return Helper.createMomentWidget(
-                                  results.getData()[index], user.id, onDeletePost);
+                              return PostMoment(
+                                isSameUser: results.getItem(index).userId == user.id,
+                                post: results.getData()[index],
+                                deletePost: onDeletePost,
+                              );
                             }
                             if (results.getData()[index].runtimeType == Recipe) {
-                              return Helper.createRecipeWidget(
-                                  results.getData()[index], user.id, onDeletePost);
+                              return PostRecipe(
+                                isSameUser: results.getItem(index).userId == user.id,
+                                post: results.getItem(index),
+                                deletePost: onDeletePost,
+                              );
                             }
                             if (results.getData()[index].runtimeType == UserItem) {
-                              return Helper.createUserItemWidget(
-                                  results.getData()[index]);
+                              return UserItemWidget(
+                                user: results.getItem(index),
+                              );
                             }
                             return Container();
                           }),

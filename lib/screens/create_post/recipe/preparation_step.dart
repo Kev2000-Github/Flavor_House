@@ -1,50 +1,25 @@
 
 
-import 'package:flavor_house/services/paginated.dart';
-import 'package:flavor_house/services/post/http_post_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../common/error/failures.dart';
 import '../../../models/post/recipe_preparation.dart';
-import '../../../services/post/dummy_post_service.dart';
-import '../../../services/post/post_service.dart';
 import '../../../utils/colors.dart';
+import '../../../utils/text_themes.dart';
 import '../../../widgets/button.dart';
 import '../../../widgets/elevated_container.dart';
 import '../../../widgets/modal/text_input.dart';
-import 'package:dartz/dartz.dart' as dartz;
 
 class PreparationStep extends StatefulWidget {
-  final String? recipeId;
-  const PreparationStep({super.key, this.recipeId});
+  final List<RecipePreparationStep> preparationSteps;
+  final Function(List<RecipePreparationStep> newSteps) updatePreparationSteps;
+  const PreparationStep({super.key, required this.preparationSteps, required this.updatePreparationSteps});
 
   @override
   State<PreparationStep> createState() => _PreparationStepState();
 }
 
 class _PreparationStepState extends State<PreparationStep> {
-  List<RecipePreparationStep> preparationSteps = [];
-
-  @override
-  void initState() {
-    super.initState();
-    if(widget.recipeId != null){
-      getPreparationSteps();
-    }
-  }
-
-  void getPreparationSteps() async {
-    PostService postService = HttpPost();
-    dartz.Either<Failure, Paginated<RecipePreparationStep>> result =
-    await postService.getRecipePreparation(widget.recipeId!);
-    result.fold((l) => null, (steps) {
-      setState(() {
-        preparationSteps.addAll(steps.getData());
-      });
-    });
-  }
 
   void onOpenTextInput(BuildContext context) {
     showModalBottomSheet(
@@ -52,11 +27,8 @@ class _PreparationStepState extends State<PreparationStep> {
         context: context,
         builder: (context) =>
             TextInputModalContent(onSend: (String description) {
-              setState(() {
-                RecipePreparationStep step =
-                RecipePreparationStep(description, null);
-                preparationSteps.add(step);
-              });
+              RecipePreparationStep step = RecipePreparationStep(description, null);
+              widget.updatePreparationSteps([...widget.preparationSteps, step]);
             }));
   }
 
@@ -64,8 +36,10 @@ class _PreparationStepState extends State<PreparationStep> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Text('Ingrese por lo menos 1 paso', style: DesignTextTheme.get(type: TextThemeEnum.darkMedium)),
+        const SizedBox(height: 30),
         ...List.generate(
-            preparationSteps.length,
+            widget.preparationSteps.length,
                 (index) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: Row(
@@ -76,10 +50,10 @@ class _PreparationStepState extends State<PreparationStep> {
                       child: GestureDetector(
                         onTap: () async {
                           final ImagePicker picker = ImagePicker();
-                          XFile? pickedFile =
-                          await picker.pickImage(source: ImageSource.gallery);
-                          preparationSteps[index].imageURL = pickedFile?.path;
-                          setState((){});
+                          XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                          List<RecipePreparationStep> newSteps = [...widget.preparationSteps];
+                          newSteps[index].imageURL = pickedFile?.path;
+                          widget.updatePreparationSteps(newSteps);
                         },
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
@@ -89,7 +63,7 @@ class _PreparationStepState extends State<PreparationStep> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   image: DecorationImage(
-                                      image: preparationSteps[index].imageURL != null ? preparationSteps[index].picture.image : const AssetImage("assets/images/gray-add.png"),
+                                      image: widget.preparationSteps[index].imageURL != null ? widget.preparationSteps[index].picture.image : const AssetImage("assets/images/gray-add.png"),
                                       fit: BoxFit.cover)),
                             ))
                       )),
@@ -97,12 +71,12 @@ class _PreparationStepState extends State<PreparationStep> {
                   Flexible(
                       flex: 7,
                       child: ElevatedContainer(
-                          content: preparationSteps[index].description)),
+                          content: widget.preparationSteps[index].description)),
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        preparationSteps.remove(preparationSteps[index]);
-                      });
+                      List<RecipePreparationStep> steps = [...widget.preparationSteps];
+                      steps.removeAt(index);
+                      widget.updatePreparationSteps(steps);
                     },
                     style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),

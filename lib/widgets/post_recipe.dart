@@ -23,11 +23,12 @@ class PostRecipe extends StatelessWidget {
   final Recipe post;
   final bool isSameUser;
   final Function(String, String)? deletePost;
+  final Function(String, String)? editPost;
   const PostRecipe({
     Key? key,
     required this.post,
     required this.isSameUser,
-    this.deletePost,
+    this.deletePost, this.editPost,
   }) : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -76,8 +77,13 @@ class PostRecipe extends StatelessWidget {
                     condition: isSameUser && !hasOneDayPassed(post.createdAt),
                     positive: IconButton(
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(routes.create_recipe, arguments: post);
+                          if(editPost != null){
+                            editPost!(post.id, 'Recipe');
+                          }
+                          else{
+                            Navigator.of(context)
+                                .pushNamed(routes.create_recipe, arguments: post);
+                          }
                         },
                         splashRadius: 20,
                         icon: const Icon(

@@ -1,14 +1,12 @@
 import 'package:dartz/dartz.dart' as dartz;
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/common/popups/common.dart';
+import 'package:flavor_house/common/popups/login.dart';
 import 'package:flavor_house/providers/user_provider.dart';
-import 'package:flavor_house/services/auth/dummy_auth_service.dart';
 import 'package:flavor_house/services/auth/http_auth_service.dart';
-import 'package:flavor_house/utils/cache.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flavor_house/common/constants/routes.dart' as routes;
-import 'package:flavor_house/common/popups/login.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user/user.dart';
@@ -42,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void onLogin() async {
     String email = _emailController.value.text;
     String password = _passwordController.value.text;
-    //TODO: Beware this is a dummy implementation!
     Auth auth = HttpAuth();
     dartz.Either<Failure, User> result = await auth.login(email, password);
     result.fold((failure) {

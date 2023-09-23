@@ -63,9 +63,13 @@ class HttpReviewService implements ReviewService {
   }
 
   @override
-  Future<Either<Failure, Paginated<Review>>> getReviews(String postId) async {
+  Future<Either<Failure, Paginated<Review>>> getReviews(String postId, int? page) async {
     String hostname = Config.backURL;
-    Uri url = Uri.parse('$hostname/v1/reviews/$postId');
+    String? pageFormatted = page != null ? 'page=$page' : null;
+    List<String?> possibleQueryURLs = [pageFormatted];
+    List<String?> applicableQueryURLs = possibleQueryURLs.where((el) => el != null).toList();
+    String queryURL = applicableQueryURLs.isNotEmpty ? '?${applicableQueryURLs.join('&')}' : '';
+    Uri url = Uri.parse('$hostname/v1/reviews/$postId$queryURL');
     var response = await http.get(url, headers: Config.headerAuth(Session().token));
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
     if(response.statusCode == 200){
@@ -76,7 +80,7 @@ class HttpReviewService implements ReviewService {
         if(avatar != null) item['User']['avatar'] = Config.imgURL(avatar);
         return Review.fromJson(item);
       }).toList();
-      final result = Paginated(reviews, 1, 1);
+      final result = Paginated(reviews, decodedResponse['page'], decodedResponse['totalPages']);
       return Right(result);
     }
     else{

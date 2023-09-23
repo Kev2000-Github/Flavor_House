@@ -1,19 +1,22 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/error/failures.dart';
+import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/common/popups/forgot_password.dart';
-import 'package:flavor_house/services/auth/dummy_auth_service.dart';
 import 'package:flavor_house/services/auth/http_auth_service.dart';
 import 'package:flavor_house/widgets/text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/user/user.dart';
+import '../../providers/user_provider.dart';
 import '../../services/auth/auth_service.dart';
 import '../../utils/colors.dart';
 import '../../widgets/button.dart';
 
 class ForgotPasswordCodeScreen extends StatefulWidget {
-  const ForgotPasswordCodeScreen ({Key? key}) : super(key: key);
+  final String email;
+  const ForgotPasswordCodeScreen ({Key? key, required this.email}) : super(key: key);
 
   @override
   State<ForgotPasswordCodeScreen> createState() => _ForgotPasswordCodeScreenState();
@@ -22,6 +25,13 @@ class ForgotPasswordCodeScreen extends StatefulWidget {
 class _ForgotPasswordCodeScreenState extends State<ForgotPasswordCodeScreen> {
   final FocusNode _codeFocus = FocusNode();
   final TextEditingController _codeController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.email);
+  }
 
   @override
   void dispose() {
@@ -78,20 +88,13 @@ class _ForgotPasswordCodeScreenState extends State<ForgotPasswordCodeScreen> {
                   text: "Continuar",
                   onPressed: () async {
                     String code = _codeController.value.text;
-                    //TODO: Beware this is a dummy implementation!
                     Auth auth = HttpAuth();
                     dartz.Either<Failure, User> result =
-                        await auth.Code(code);
+                        await auth.code(widget.email!, code);
                     result.fold(
-                        (failure) {
-                          if(failure.runtimeType == CodeFailure){
-                            ForgotPasswordPopup.alertCodeFailure(context);
-                          }
-                          else if(failure.runtimeType == CodeEmptyFailure){
-                            ForgotPasswordPopup.alertCodeEmptyFailure(context);
-                          }
-                        },
+                        (failure) => CommonPopup.alert(context, failure),
                         (user) async {
+                          await Provider.of<UserProvider>(context, listen: false).login(user);
                           if(context.mounted) Navigator.of(context).pushNamed(routes.forgot_password_new);
                         });
                   },

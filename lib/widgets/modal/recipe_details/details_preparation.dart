@@ -7,7 +7,6 @@ import '../../../common/error/failures.dart';
 import '../../../common/popups/common.dart';
 import '../../../models/post/recipe_preparation.dart';
 import '../../../services/paginated.dart';
-import '../../../services/post/dummy_post_service.dart';
 import '../../../services/post/post_service.dart';
 
 class Preparation extends StatefulWidget {

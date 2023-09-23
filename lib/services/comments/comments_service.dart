@@ -9,5 +9,5 @@ import '../paginated.dart';
 abstract class CommentService {
   Future<Either<Failure, Comment>> createComment(String postId, String content);
   Future<Either<Failure, Comment>> deleteComment(String id);
-  Future<Either<Failure, Paginated<Comment>>> getComments(String postId);
+  Future<Either<Failure, Paginated<Comment>>> getComments(String postId, int? page);
 }

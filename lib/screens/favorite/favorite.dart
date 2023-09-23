@@ -12,6 +12,7 @@ import 'package:flavor_house/widgets/modal/favorite_filtering.dart';
 import 'package:flavor_house/widgets/post_skeleton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:flavor_house/common/constants/routes.dart' as routes;
 
 import '../../common/error/failures.dart';
 import '../../models/config/sort_config.dart';
@@ -20,6 +21,8 @@ import '../../models/user/user.dart';
 import '../../providers/user_provider.dart';
 import '../../services/post/post_service.dart';
 import '../../utils/skeleton_wrapper.dart';
+import '../../widgets/post_moment.dart';
+import '../../widgets/post_recipe.dart';
 import '../../widgets/sort.dart';
 
 class FavoriteScreen extends StatefulWidget {
@@ -54,7 +57,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     if (mounted) setLoadingState(true);
     PostService postClient = HttpPost();
     dartz.Either<Failure, Paginated> result =
-    await postClient.getAll(sort: selectedSort, postFilter: selectedPostType, isFavorite: true);
+    await postClient.getAll(
+        sort: selectedSort,
+        postFilter: selectedPostType,
+        isFavorite: true,
+        page: posts.isNotEmpty && !reset ? posts.page + 1 : 1
+    );
     result.fold((failure) {
       if (mounted) setLoadingState(false);
     }, (newPosts) {
@@ -63,7 +71,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           if (reset) {
             posts = newPosts;
           } else {
-            posts.addAll(newPosts.getData());
+            posts.addPage(newPosts);
           }
         });
         setLoadingState(false);
@@ -79,6 +87,15 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         posts.removeWhere((element) => element.id == postId);
       });
     });
+  }
+
+  void onEditPost(String postId, String type) async {
+    String route = type == 'Moment' ? routes.createpost : routes.create_recipe;
+    var post = await Navigator.of(context).pushNamed(route,
+        arguments: posts.findItem((post) => post.id == postId));
+    if(post != null){
+      getPosts(setInitialPostLoadingState, reset: true);
+    }
   }
 
   @override
@@ -130,10 +147,20 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   negative: Column(
                     children: List.generate(posts.items, (index) {
                       if (posts.getData()[index].runtimeType == Moment) {
-                        return Helper.createMomentWidget(posts.getData()[index], user.id, onDeletePost);
+                        return PostMoment(
+                          isSameUser: posts.getItem(index).userId == user.id,
+                          post: posts.getData()[index],
+                          deletePost: onDeletePost,
+                          editPost: onEditPost,
+                        );
                       }
                       if (posts.getData()[index].runtimeType == Recipe) {
-                        return Helper.createRecipeWidget(posts.getData()[index], user.id, onDeletePost);
+                        return PostRecipe(
+                          isSameUser: posts.getItem(index).userId == user.id,
+                          post: posts.getItem(index),
+                          deletePost: onDeletePost,
+                          editPost: onEditPost,
+                        );
                       }
                       return Container();
                     }),

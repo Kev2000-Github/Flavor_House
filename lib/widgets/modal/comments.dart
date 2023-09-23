@@ -32,7 +32,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
   final double avatarHeight = 55;
   final TextEditingController _commentController = TextEditingController();
   User? user;
-  List<Comment> comments = [];
+  Paginated<Comment> comments = Paginated.initial();
 
   @override
   void initState() {
@@ -48,10 +48,13 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
   void getComments() async {
     CommentService commentService = HttpCommentService();
     dartz.Either<Failure, Paginated<Comment>> result =
-        await commentService.getComments(widget.recipeId);
+        await commentService.getComments(
+          widget.recipeId,
+          comments.isNotEmpty ? comments.page + 1 : 1
+        );
     result.fold((l) => null, (Paginated<Comment> comments) {
       setState(() {
-        this.comments = comments.getData();
+        this.comments = comments;
       });
     });
   }
@@ -61,7 +64,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
     dartz.Either<Failure, Comment> result = await commentService.createComment(widget.recipeId, content);
     result.fold((l) => CommonPopup.alert(context, l), (comment) {
       setState(() {
-        comments.insert(0, comment);
+        comments.insertFirst(comment);
       });
     });
   }
@@ -124,7 +127,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                 ),
                 Expanded(
                   child: ListView(
-                      children: List.generate(comments.length, (index) {
+                      children: List.generate(comments.items, (index) {
                     return Container(
                         padding: const EdgeInsets.all(8),
                         child: Row(
@@ -133,7 +136,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                             Avatar(
                                 pictureHeight: avatarHeight,
                                 borderSize: 2,
-                                image: comments[index].picture),
+                                image: comments.getItem(index).picture),
                             const SizedBox(width: 5),
                             Expanded(
                               child: Column(
@@ -146,15 +149,15 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                                       GestureDetector(
                                         onTap: () {
                                           Navigator.of(context).pushNamed(routes.other_user_profile,
-                                              arguments: comments[index].userId);
+                                              arguments: comments.getItem(index).userId);
                                         },
                                         child: Text(
-                                          comments[index].fullName,
+                                          comments.getItem(index).fullName,
                                           style: DesignTextTheme.get(
                                               type: TextThemeEnum.darkSemiMedium),
                                         )
                                       ),
-                                      Text(formatTimeAgo(comments[index].createdAt),
+                                      Text(formatTimeAgo(comments.getItem(index).createdAt),
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w400,
                                               color: gray04Color,
@@ -162,7 +165,7 @@ class _CommentsModalContentState extends State<CommentsModalContent> {
                                     ],
                                   ),
                                   const SizedBox(height: 10),
-                                  Text(comments[index].comment, overflow: TextOverflow.clip,)
+                                  Text(comments.getItem(index).comment, overflow: TextOverflow.clip,)
                                 ],
                               )
                             )

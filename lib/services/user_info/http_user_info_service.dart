@@ -41,13 +41,17 @@ class HttpUserInfoService implements UserInfoService {
 
   @override
   Future<Either<Failure, Paginated>> userSearch(
-      {String? searchTerm}) async {
+      {String? searchTerm, int? page}) async {
     try {
       String hostname = Config.backURL;
-      Uri url =
-          Uri.parse('$hostname/v1/users?search=$searchTerm&checkFollow=true');
-      var response =
-          await http.get(url, headers: Config.headerAuth(Session().token));
+      String? pageFormatted = page != null ? 'page=$page' : null;
+      String checkFollow = 'checkFollow=true';
+      String search = 'search=$searchTerm';
+      List<String?> possibleQueryURLs = [search, pageFormatted, checkFollow];
+      List<String?> applicableQueryURLs = possibleQueryURLs.where((el) => el != null).toList();
+      String queryURL = applicableQueryURLs.isNotEmpty ? '?${applicableQueryURLs.join('&')}' : '';
+      Uri url = Uri.parse('$hostname/v1/users$queryURL');
+      var response = await http.get(url, headers: Config.headerAuth(Session().token));
       var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
       if (response.statusCode == 200) {
         List<dynamic> items = decodedResponse['data'];
@@ -76,6 +80,7 @@ class HttpUserInfoService implements UserInfoService {
         await http.get(url, headers: Config.headerAuth(Session().token));
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
     if (response.statusCode == 200) {
+      decodedResponse['data']['avatar'] = Config.imgURL(decodedResponse['data']['avatar']);
       User user = User.fromJson(decodedResponse['data']);
       return Right(user);
     } else {

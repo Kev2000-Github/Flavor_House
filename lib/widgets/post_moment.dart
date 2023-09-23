@@ -3,7 +3,6 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/models/post/moment.dart';
-import 'package:flavor_house/services/post/dummy_post_service.dart';
 import 'package:flavor_house/services/post/http_post_service.dart';
 import 'package:flavor_house/services/post/post_service.dart';
 import 'package:flavor_house/utils/helpers.dart';
@@ -21,8 +20,9 @@ class PostMoment extends StatelessWidget {
   final Moment post;
   final bool isSameUser;
   final Function(String, String)? deletePost;
+  final Function(String, String)? editPost;
   const PostMoment(
-      {Key? key, required this.isSameUser, required this.post, this.deletePost})
+      {Key? key, required this.isSameUser, required this.post, this.deletePost, this.editPost})
       : super(key: key);
 
   void onOpenComments(BuildContext context) {
@@ -61,8 +61,13 @@ class PostMoment extends StatelessWidget {
                   condition: isSameUser && !hasOneDayPassed(post.createdAt),
                   positive: IconButton(
                       onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(routes.createpost, arguments: post);
+                        if(editPost != null){
+                          editPost!(post.id, 'Moment');
+                        }
+                        else{
+                          Navigator.of(context)
+                              .pushNamed(routes.createpost, arguments: post);
+                        }
                       },
                       splashRadius: 20,
                       icon: const Icon(
