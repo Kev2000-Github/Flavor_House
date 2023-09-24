@@ -46,7 +46,7 @@ class HttpRegisterStepTwo implements RegisterStepTwo {
   @override
   Future<Either<Failure, Paginated<Interest>>> getInterests() async {
     String hostname = Config.backURL;
-    Uri url = Uri.parse('$hostname/v1/interests');
+    Uri url = Uri.parse('$hostname/v1/interests?limit=50');
     var response = await http.get(url, headers: Config.headerAuth(Session().token));
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
     if(response.statusCode == 200){
@@ -66,7 +66,7 @@ class HttpRegisterStepTwo implements RegisterStepTwo {
   @override
   Future<Either<Failure, Paginated<Country>>> getCountries({required int page}) async {
     String hostname = Config.backURL;
-    Uri url = Uri.parse('$hostname/v1/countries?page=$page');
+    Uri url = Uri.parse('$hostname/v1/countries?page=$page&limit=100');
     var response = await http.get(url, headers: Config.headerAuth(Session().token));
     var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
     if(response.statusCode == 200){
