@@ -31,7 +31,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Image? image;
   File? imageFile;
   User user = User.initial();
-  List<Country> availableCountries = [];
   List<Gender> genders = [Gender.man(), Gender.woman(), Gender.none()];
 
   final _formKey = GlobalKey<FormState>();
@@ -47,21 +46,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (mounted) {
       setState(() {
         user = Provider.of<UserProvider>(context, listen: false).user;
-        getCountries();
         selectedGender = Gender.fromString(user.gender ?? Gender.none().id);
         country = user.country ?? Country.initial();
       });
     }
-  }
-
-  void getCountries() async {
-    RegisterStepTwo countryService = HttpRegisterStepTwo();
-    dartz.Either<Failure, List<Country>> result = await countryService.getCountries();
-    result.fold((failure) => null, (countries) => {
-      setState(() {
-        availableCountries.addAll(countries);
-      })
-    });
   }
 
   void editProfile() async {
@@ -83,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
     result.fold((l) => CommonPopup.alert(context, l), (user) {
       Provider.of<UserProvider>(context, listen: false).login(user);
-      Navigator.of(context).pop();
+      Navigator.pop(context, user.id);
     });
   }
 
@@ -193,10 +181,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 fontWeight: FontWeight.w500)),
                         trailing: const Icon(Icons.keyboard_arrow_right, size: 20),
                         onTap: () async {
-                          final selectedCountry = await Navigator.of(context).pushNamed(routes.select_country) as Country;
-                          setState(() {
-                            country = selectedCountry;
-                          });
+                          final selectedCountry = await Navigator.of(context).pushNamed(routes.select_country);
+                          if(selectedCountry != null){
+                            setState(() {
+                              country = selectedCountry as Country;
+                            });
+                          }
                         },
                       )),
                   const SizedBox(height: 16.0),

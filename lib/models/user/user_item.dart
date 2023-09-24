@@ -12,7 +12,7 @@ class UserItem {
       this.isFollowed);
 
   factory UserItem.fromJson(Map<String, dynamic> json) {
-    return UserItem(json['id'], json['username'], json['fullName'], "Venezuela", "assets/images/avatar.jpg", true);
+    return UserItem(json['id'], json['username'], json['fullName'], json['Country']['name'], json['avatar'], true);
   }
 
   Image get avatar {

@@ -5,12 +5,19 @@ enum TextThemeEnum {
   darkMedium,
   darkSemiMedium,
   darkLight,
-  grayLight
+  grayLight,
+  hashtag
 }
 
 class DesignTextTheme {
   static TextStyle get({TextThemeEnum? type}) {
     switch (type) {
+      case TextThemeEnum.hashtag:
+        return const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: primaryColor,
+        );
       case TextThemeEnum.darkMedium:
         return const TextStyle(
           fontSize: 19,

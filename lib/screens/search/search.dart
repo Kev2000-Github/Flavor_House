@@ -71,6 +71,19 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  String getSearchHint() {
+    switch(selectedSearch){
+      case SearchType.moment:
+        return 'Buscar por hastag';
+      case SearchType.recipe:
+        return 'Buscar por etiquetas';
+      case SearchType.user:
+        return 'Buscar por nombre de usuario';
+      default:
+        return 'Buscar';
+    }
+  }
+
   void getResults(Function(bool) setLoadingState, {bool reset = false}) async {
     if (user.isInitial()) return;
     String searchValue = _searchController.value.text;
@@ -89,8 +102,9 @@ class _SearchScreenState extends State<SearchScreen> {
         break;
       case SearchType.recipe:
         PostService postClient = HttpPost();
+        List<String> searchTags = searchValue.split(' ');
         result = await postClient.getRecipes(
-            search: searchValue,
+            tags: searchTags,
             page: results.isNotEmpty && !reset ? results.page + 1 : 1
         );
         break;
@@ -98,6 +112,7 @@ class _SearchScreenState extends State<SearchScreen> {
         UserInfoService userInfoService = HttpUserInfoService();
         result = await userInfoService.userSearch(
             searchTerm: searchValue,
+            exclude: [user.id]
         );
         break;
     }
@@ -210,7 +225,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Container(
               margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
               child: TextFieldInput(
-                  hintText: "Buscar",
+                  hintText: getSearchHint(),
                   onSubmitted: (String value) {
                     getResults(setInitialResultLoadingState, reset: true);
                   },

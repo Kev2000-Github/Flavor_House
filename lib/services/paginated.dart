@@ -3,7 +3,7 @@
 class Paginated<T> {
   final List<T> _data;
   int page;
-  final int totalPages;
+  int totalPages;
 
   Paginated(this._data, this.page, this.totalPages);
   factory Paginated.initial() {
@@ -20,6 +20,7 @@ class Paginated<T> {
   void addPage(Paginated<T> newPage) {
     _data.addAll(newPage.getData());
     page = newPage.page;
+    totalPages = newPage.totalPages;
   }
   List<T> getData() => _data;
   void removeWhere(bool Function(T) test) {

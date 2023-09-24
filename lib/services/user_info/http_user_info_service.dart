@@ -41,13 +41,14 @@ class HttpUserInfoService implements UserInfoService {
 
   @override
   Future<Either<Failure, Paginated>> userSearch(
-      {String? searchTerm, int? page}) async {
+      {String? searchTerm, List<String>? exclude, int? page}) async {
     try {
       String hostname = Config.backURL;
       String? pageFormatted = page != null ? 'page=$page' : null;
       String checkFollow = 'checkFollow=true';
       String search = 'search=$searchTerm';
-      List<String?> possibleQueryURLs = [search, pageFormatted, checkFollow];
+      String? excludeIds = exclude != null ? 'exclude=${exclude.join(',')}' : null;
+      List<String?> possibleQueryURLs = [search, pageFormatted, checkFollow, excludeIds];
       List<String?> applicableQueryURLs = possibleQueryURLs.where((el) => el != null).toList();
       String queryURL = applicableQueryURLs.isNotEmpty ? '?${applicableQueryURLs.join('&')}' : '';
       Uri url = Uri.parse('$hostname/v1/users$queryURL');
@@ -56,6 +57,7 @@ class HttpUserInfoService implements UserInfoService {
       if (response.statusCode == 200) {
         List<dynamic> items = decodedResponse['data'];
         List<UserItem> userItems = items.map((item) {
+          item['avatar'] = Config.imgURL(item['avatar']);
           UserItem user = UserItem.fromJson(item);
           return user;
         }).toList();

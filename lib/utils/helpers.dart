@@ -25,11 +25,23 @@ class Helper {
   }
 
   static RichText createPostDescription(String description) {
-    List<String> splitDescription = description.split("#");
+    RegExp isHashtag = RegExp(r'^#(\w|\d)+');
+    List<String> splitDescription = description.split(" ");
+    List<TextSpan> segments = splitDescription.map((segment) {
+      if(isHashtag.hasMatch(segment)){
+        return TextSpan(
+            text: '$segment ',
+            style: DesignTextTheme.get(type: TextThemeEnum.hashtag)
+        );
+      }
+      return TextSpan(
+          text: '$segment ',
+          style: DesignTextTheme.get(type: TextThemeEnum.grayLight)
+      );
+    }).toList();
     return RichText(
         text: TextSpan(
-            style: DesignTextTheme.get(type: TextThemeEnum.grayLight),
-            children: [TextSpan(text: description)]));
+            children: segments));
   }
 
   static toColor(String val) {

@@ -6,14 +6,14 @@ class PostTypeConfig {
   PostTypeConfig(this.name, this.value);
 
   factory PostTypeConfig.Moment(){
-    return PostTypeConfig("Publicacion", "Moment");
+    return PostTypeConfig("Publicacion", "MOMENT");
   }
 
   factory PostTypeConfig.Recipe(){
-    return PostTypeConfig("Receta", "Recipe");
+    return PostTypeConfig("Receta", "RECIPE");
   }
 
   factory PostTypeConfig.All(){
-    return PostTypeConfig("Todos", "All");
+    return PostTypeConfig("Todos", "ALL");
   }
 }

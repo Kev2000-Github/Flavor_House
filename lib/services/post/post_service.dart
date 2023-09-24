@@ -17,7 +17,7 @@ import '../../models/post/review.dart';
 abstract class PostService {
   Future<Either<Failure, Paginated<Moment>>> getMoments({SortConfig? sort, String? search, int? page});
   Future<Either<Failure, Paginated<Recipe>>> getRecipes({SortConfig? sort, String? search, List<String>? tags, int? page});
-  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter, bool? isFavorite, bool? isMine, int? page});
+  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter, bool? isFavorite, String? madeBy, int? page});
   Future<Either<Failure, List<Tag>>> getTags();
   Future<Either<Failure, Paginated<RecipePreparationStep>>> getRecipePreparation(String recipeId);
   Future<Either<Failure, Paginated<String>>> getIngredients(String recipeId);

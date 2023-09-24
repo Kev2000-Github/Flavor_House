@@ -109,7 +109,7 @@ class PostMoment extends StatelessWidget {
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Wrap(spacing: 10, children: [
                 LikeButton(
-                    isLiked: post.isLiked,
+                    isLiked: post.isFavorite,
                     size: 28,
                     onTap: (isFavorite) async {
                       PostService postService = HttpPost();
@@ -127,7 +127,7 @@ class PostMoment extends StatelessWidget {
                           color: isTapped ? redColor : gray03Color);
                     }),
                 LikeButton(
-                  isLiked: post.isFavorite,
+                  isLiked: post.isLiked,
                   size: 28,
                   onTap: (isLiked) async {
                     PostService postService = HttpPost();

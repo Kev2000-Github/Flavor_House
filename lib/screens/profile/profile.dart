@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     dartz.Either<Failure, Paginated> result =
     await postClient.getAll(
         sort: selectedSort,
-        isMine: true,
+        madeBy: user.id,
         page: posts.isNotEmpty && !reset ? posts.page + 1 : 1
     );
     result.fold((failure) {
@@ -99,10 +99,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void getUser() async {
+  void getUser(String userId) async {
     UserInfoService userInfoService = HttpUserInfoService();
     dartz.Either<Failure, User> result =
-    await userInfoService.getUser(widget.userId!);
+    await userInfoService.getUser(userId);
     result.fold((failure) => null, (newUser) {
       if (mounted) {
         setState(() {
@@ -135,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           getUserInfo();
         }
         else{
-          getUser();
+          getUser(widget.userId!);
         }
       });
     }
@@ -261,14 +261,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       });
                     },
                     borderSide: const BorderSide(style: BorderStyle.none),
-                    backgroundColor: user?.isFollowed != null && user!.isFollowed == true ? redColor : primaryColor,
+                    backgroundColor: user.isFollowed != null && user.isFollowed == true ? redColor : primaryColor,
                     textColor: whiteColor,
                     size: const Size.fromHeight(40),
                     fontSize: 20,
                   ) : Button(
                     text: "Editar Perfil",
-                    onPressed: () {
-                      Navigator.pushNamed(context, routes.edit_profile);
+                    onPressed: () async {
+                      var userId = await Navigator.pushNamed(context, routes.edit_profile);
+                      if(userId != null){
+                        getUser(userId as String);
+                      }
                     },
                     borderSide: null,
                     backgroundColor: primaryColor,

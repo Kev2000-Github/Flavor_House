@@ -1,11 +1,13 @@
 import 'package:dartz/dartz.dart' as dartz;
 import 'package:flavor_house/common/error/failures.dart';
 import 'package:flavor_house/models/country.dart';
+import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/services/register/register_step_two_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/popups/common.dart';
 import '../../services/register/http_register_step_two_service.dart';
+import '../../widgets/listview_infinite_loader.dart';
 
 class StepCountry extends StatefulWidget {
   final Function(String) onCountrySelect;
@@ -16,16 +18,27 @@ class StepCountry extends StatefulWidget {
 }
 
 class _StepCountryState extends State<StepCountry> {
-  List<Country> countries = [];
+  Paginated<Country> countries = Paginated.initial();
+  bool _loadingMore = false;
 
-  void getCountries() async {
+  void setLoadingMoreState(bool state) {
+    setState(() {
+      _loadingMore = state;
+    });
+  }
+
+  void getCountries(Function(bool) setLoadingState) async {
+    if (mounted) setLoadingState(true);
     RegisterStepTwo registerService = HttpRegisterStepTwo();
-    dartz.Either<Failure, List<Country>> result =
-        await registerService.getCountries();
-    result.fold((failure) => CommonPopup.alert(context, failure),
-        (List<Country> countries) {
+    dartz.Either<Failure, Paginated<Country>> result = await registerService
+        .getCountries(page: countries.isNotEmpty ? countries.page + 1 : 1);
+    result.fold((failure) {
+      if (mounted) setLoadingState(false);
+      CommonPopup.alert(context, failure);
+    }, (newCountries) {
+      if (mounted) setLoadingState(false);
       setState(() {
-        this.countries = countries;
+        countries.addPage(newCountries);
       });
     });
   }
@@ -33,31 +46,41 @@ class _StepCountryState extends State<StepCountry> {
   @override
   void initState() {
     super.initState();
-    getCountries();
+    getCountries(setLoadingMoreState);
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: List.generate(
-            countries.length,
-            (index) => InkWell(
-                onTap: () {
-                  widget.onCountrySelect(countries[index].id);
-                },
-                child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-                    child: Row(children: [
-                      Text(
-                        countries[index].name,
-                        style: const TextStyle(fontSize: 23),
-                      ),
-                      const Spacer(),
-                      const Icon(Icons.arrow_forward_ios)
-                    ])))),
-      ),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 1.4,
+      child: ListViewInfiniteLoader(
+          canLoadMore: countries.page < countries.totalPages,
+          loadingState: _loadingMore,
+          setLoadingModeState: setLoadingMoreState,
+          getMoreItems: getCountries,
+          children: List.generate(
+              countries.items,
+                  (index) => InkWell(
+                  onTap: () {
+                    widget.onCountrySelect(countries.getItem(index).id);
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 20),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 8,
+                                child: Text(
+                                  countries.getItem(index).name,
+                                  style: const TextStyle(fontSize: 23),
+                                )
+                            ),
+                            const Spacer(),
+                            const Icon(Icons.arrow_forward_ios)
+                          ]))))
+      )
     );
   }
 }

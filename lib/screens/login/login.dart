@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final FocusNode _passwordFocus = FocusNode();
   final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -38,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void onLogin() async {
+    if(!_formKey.currentState!.validate()) return;
     String email = _emailController.value.text;
     String password = _passwordController.value.text;
     Auth auth = HttpAuth();
@@ -66,6 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final inputBorder =
+    OutlineInputBorder(borderSide: Divider.createBorderSide(context));
     return Scaffold(
         body: SafeArea(
             child: GestureDetector(
@@ -87,53 +91,78 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               width: double.infinity,
-              child: Column(children: [
-                // svg image
-                // text field input for email
-                const SizedBox(height: 32),
-                const Text(
-                  "Inicio Sesion",
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 32),
-                TextFieldInput(
-                    hintText: "Ingresa tu correo",
+              child: Form(
+                key: _formKey,
+                child: Column(children: [
+                  // svg image
+                  // text field input for email
+                  const SizedBox(height: 32),
+                  const Text(
+                    "Inicio Sesion",
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 32),
+                  TextFormField(
+                    controller: _emailController,
                     focusNode: _emailFocus,
-                    textInputType: TextInputType.emailAddress,
-                    textEditingController: _emailController),
-                const SizedBox(height: 24),
-                // text field input for password
-                TextFieldInput(
-                  hintText: "Ingresa tu contraseña",
-                  textInputType: TextInputType.text,
-                  focusNode: _passwordFocus,
-                  textEditingController: _passwordController,
-                  isPass: true,
-                ),
-                Flexible(flex: 2, child: Container()),
-                // button login
-                Button(
-                  text: "Iniciar Sesion",
-                  onPressed: onLogin,
-                  borderSide: null,
-                  backgroundColor: primaryColor,
-                  textColor: whiteColor,
-                  size: const Size.fromHeight(50),
-                ),
-                Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(routes.forgotpassword);
-                      },
-                      child: const Text("¿Se te olvido la contraseña?",
-                          style: TextStyle(
-                              color: primaryColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15)),
-                    )),
-                const SizedBox(height: 24),
-              ]))
+                    validator: (val) {
+                      if(val == null || val.isEmpty) return 'email vacio';
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Ingresa tu correo",
+                      border: inputBorder,
+                      focusedBorder: inputBorder,
+                      enabledBorder: inputBorder,
+                      filled: true,
+                      contentPadding: const EdgeInsets.all(8),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 24),
+                  TextFormField(
+                    controller: _passwordController,
+                    focusNode: _passwordFocus,
+                    validator: (val) {
+                      if(val == null || val.isEmpty) return 'contraseña vacia';
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Ingresa tu contraseña",
+                      border: inputBorder,
+                      focusedBorder: inputBorder,
+                      enabledBorder: inputBorder,
+                      filled: true,
+                      contentPadding: const EdgeInsets.all(8),
+                    ),
+                    keyboardType: TextInputType.text,
+                    obscureText: true,
+                  ),
+                  Flexible(flex: 2, child: Container()),
+                  // button login
+                  Button(
+                    text: "Iniciar Sesion",
+                    onPressed: onLogin,
+                    borderSide: null,
+                    backgroundColor: primaryColor,
+                    textColor: whiteColor,
+                    size: const Size.fromHeight(50),
+                  ),
+                  Container(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(routes.forgotpassword);
+                        },
+                        child: const Text("¿Se te olvido la contraseña?",
+                            style: TextStyle(
+                                color: primaryColor,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15)),
+                      )),
+                  const SizedBox(height: 24),
+                ])
+              ))
         ],
       ),
     )));

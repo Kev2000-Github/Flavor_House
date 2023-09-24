@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../common/error/failures.dart';
 import '../../common/popups/common.dart';
 import '../../models/interest.dart';
+import '../../services/paginated.dart';
 import '../../utils/colors.dart';
 
 List<Interest> interests = [
@@ -34,10 +35,10 @@ class _StepInterestsState extends State<StepInterests> {
 
   void getInterests() async {
     RegisterStepTwo registerService = HttpRegisterStepTwo();
-    dartz.Either<Failure, List<Interest>> result =
+    dartz.Either<Failure, Paginated<Interest>> result =
         await registerService.getInterests();
     result.fold((failure) => CommonPopup.alert(context, failure), (interests) {
-      setState(() => this.interests = interests);
+      setState(() => this.interests = interests.getData());
     });
   }
 
@@ -77,7 +78,7 @@ class _StepInterestsState extends State<StepInterests> {
           height: 20,
         ),
         SizedBox(
-            height: MediaQuery.of(context).size.height / 1.6,
+            height: MediaQuery.of(context).size.height / 1.8,
             child: GridView.builder(
                 itemCount: interests.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

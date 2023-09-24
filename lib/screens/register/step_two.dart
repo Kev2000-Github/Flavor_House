@@ -155,6 +155,7 @@ class _RegisterTwoScreenState extends State<RegisterTwoScreen> {
                       ]
                     : [])),
         body: Stepper(
+          physics: null,
           controlsBuilder: (BuildContext context, ControlsDetails details) {
             return Row(
               children: [

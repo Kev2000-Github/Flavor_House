@@ -3,15 +3,20 @@ import 'package:flavor_house/common/constants/routes.dart' as routes;
 import 'package:flavor_house/common/popups/common.dart';
 import 'package:flavor_house/services/paginated.dart';
 import 'package:flavor_house/services/reviews/reviews_service.dart';
+import 'package:flavor_house/widgets/listview_infinite_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/error/failures.dart';
 import '../../../models/post/review.dart';
+import '../../../models/user/user.dart';
+import '../../../providers/user_provider.dart';
 import '../../../services/reviews/http_reviews_service.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/text_themes.dart';
 import '../../../utils/time.dart';
 import '../../button.dart';
+import '../../conditional.dart';
 import '../../stars.dart';
 import '../text_input.dart';
 
@@ -26,11 +31,18 @@ class Reviews extends StatefulWidget {
 class _ReviewsState extends State<Reviews> {
   Paginated<Review> reviews = Paginated.initial();
   ValueNotifier<int> starsValueNotifier = ValueNotifier<int>(0);
+  bool _loadingMore = false;
+  User? user;
 
   @override
   void initState() {
     super.initState();
-    getReviews();
+    if (mounted) {
+      setState(() {
+        user = Provider.of<UserProvider>(context, listen: false).user;
+      });
+    }
+    getReviews(setLoadingModeState);
   }
 
   @override
@@ -39,7 +51,7 @@ class _ReviewsState extends State<Reviews> {
     starsValueNotifier.dispose();
   }
 
-  void getReviews() async {
+  void getReviews(Function(bool) setLoadingState) async {
     ReviewService reviewService = HttpReviewService();
     dartz.Either<Failure, Paginated<Review>> result =
         await reviewService.getReviews(
@@ -48,8 +60,25 @@ class _ReviewsState extends State<Reviews> {
         );
     result.fold((l) => null, (Paginated<Review> reviews) {
       setState(() {
-        this.reviews = reviews;
+        this.reviews.addPage(reviews);
       });
+    });
+  }
+
+  void deleteReview(String id) async {
+    ReviewService reviewService = HttpReviewService();
+    dartz.Either<Failure, Review> result =
+    await reviewService.deleteReview(id);
+    result.fold((l) => CommonPopup.alert(context, l), (comment) {
+      setState(() {
+        reviews.removeWhere((item) => item.id == id);
+      });
+    });
+  }
+  
+  void setLoadingModeState(bool state) {
+    setState(() {
+      _loadingMore = state;
     });
   }
 
@@ -102,9 +131,7 @@ class _ReviewsState extends State<Reviews> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Button(
-              onPressed: () {
-                onOpenTextInput(context);
-              },
+              onPressed: () => onOpenTextInput(context),
               text: "Agrega una reseña...",
               borderSide: const BorderSide(color: gray01Color, width: 2),
               borderRadius: BorderRadius.circular(10),
@@ -114,56 +141,74 @@ class _ReviewsState extends State<Reviews> {
             ),
           ),
           Expanded(
-              child: SingleChildScrollView(
-                  child: Column(
-            children: List.generate(
-                reviews.items,
-                (index) => Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.done_all, size: 28, color: darkColor),
-                      const SizedBox(width: 5),
-                      Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.end,
-                                  spacing: 10,
-                                  children: [
-                                    GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).pushNamed(routes.other_user_profile,
-                                              arguments: reviews.getItem(index).userId);
-                                        },
-                                        child: Text(
-                                          reviews.getItem(index).fullName,
-                                          style: DesignTextTheme.get(
-                                              type: TextThemeEnum.darkSemiMedium),
-                                        )
-                                    ),
-                                    Text(formatTimeAgo(reviews.getItem(index).createdAt),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            color: gray04Color,
-                                            fontSize: 12))
-                                  ],
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text(reviews.getItem(index).review),
-                                ),
-                                StarsRating(
-                                    rate: reviews.getItem(index).stars, size: 20)
-                              ],
-                            )
+              child: ListViewInfiniteLoader(
+                setLoadingModeState: setLoadingModeState,
+                loadingState: _loadingMore,
+                getMoreItems: getReviews,
+                canLoadMore: reviews.page < reviews.totalPages,
+                children: List.generate(
+                    reviews.items,
+                        (index) => Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.done_all, size: 28, color: darkColor),
+                          const SizedBox(width: 5),
+                          Expanded(
+                              child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Wrap(
+                                        crossAxisAlignment: WrapCrossAlignment.end,
+                                        spacing: 10,
+                                        children: [
+                                          GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).pushNamed(routes.other_user_profile,
+                                                    arguments: reviews.getItem(index).userId);
+                                              },
+                                              child: Text(
+                                                reviews.getItem(index).fullName,
+                                                style: DesignTextTheme.get(
+                                                    type: TextThemeEnum.darkSemiMedium),
+                                              )
+                                          ),
+                                          Text(formatTimeAgo(reviews.getItem(index).createdAt),
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  color: gray04Color,
+                                                  fontSize: 12)),
+                                          Conditional(
+                                              condition: reviews.getItem(index).userId == user?.id && !hasOneDayPassed(reviews.getItem(index).createdAt),
+                                              positive: GestureDetector(
+                                                  onTap: () {
+                                                    deleteReview(reviews.getItem(index).id);
+                                                  },
+                                                  child: const Text(
+                                                      "Eliminar",
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.w400,
+                                                          color: redColor,
+                                                          fontSize: 12)
+                                                  )
+                                              )
+                                          )
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(vertical: 5.0),
+                                        child: Text(reviews.getItem(index).review),
+                                      ),
+                                      StarsRating(
+                                          rate: reviews.getItem(index).stars, size: 20)
+                                    ],
+                                  )
+                              )
                           )
-                      )
-                    ])),
-          )))
+                        ])),
+              ))
         ],
       ),
     );

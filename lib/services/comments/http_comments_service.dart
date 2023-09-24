@@ -50,6 +50,7 @@ class HttpCommentService implements CommentService {
       if (response.statusCode == 200) {
         String? avatar = decodedResponse['data']['User']['avatar'];
         if(avatar != null) decodedResponse['data']['User']['avatar'] = Config.imgURL(avatar);
+        decodedResponse['data']['createdAt'] = DateTime.parse(decodedResponse['data']['createdAt']);
         Comment deletedComment = Comment.fromJson(decodedResponse['data']);
         return Right(deletedComment);
       } else {

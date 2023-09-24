@@ -24,6 +24,7 @@ class HttpAuth implements Auth {
       var response = await http.post(url, body: body, headers: Config.headerInitial);
       var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
       if (response.statusCode == 200) {
+        decodedResponse['data']['avatar'] = Config.imgURL(decodedResponse['data']['avatar']);
         User user =  User.fromJson(decodedResponse['data']);
         user.token = decodedResponse['token'];
         return Right(user);

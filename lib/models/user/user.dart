@@ -69,7 +69,8 @@ class User extends Equatable {
       "gender": gender,
       "phoneNumber": phoneNumber,
       "pictureURL": pictureURL,
-      "token": token
+      "token": token,
+      "step": step
     };
     final country = this.country;
     if(country != null){

@@ -24,7 +24,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void verifyLoggedUser() async {
     User? loggedUser = await ProviderHelper.getLoggedUser(context);
     if(loggedUser == null) return;
-    if(mounted) Navigator.pushNamed(context, routes.main_screen);
+    if(mounted) {
+      if(loggedUser.step == 0){
+        Navigator.pushNamed(context, routes.register_two);
+      }
+      else{
+        Navigator.pushNamed(context, routes.main_screen);
+      }
+    }
   }
 
   @override

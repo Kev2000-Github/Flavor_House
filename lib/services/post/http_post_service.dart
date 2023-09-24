@@ -20,7 +20,7 @@ import '../../common/session.dart';
 class HttpPost implements PostService {
   @override
   Future<Either<Failure, Paginated<Moment>>> getMoments({SortConfig? sort, String? search, int? page}) async {
-    String? sortFormatted = sort != null ? 'sort=${sort.value}' : null;
+    String? sortFormatted = sort != null ? 'order=${sort.value}' : null;
     String? searchFormatted = search != null ? 'search=$search' : null;
     String? pageFormatted = page != null ? 'page=$page' : null;
     List<String?> possibleQueryURLs = [searchFormatted, sortFormatted, pageFormatted];
@@ -61,7 +61,7 @@ class HttpPost implements PostService {
   @override
   Future<Either<Failure, Paginated<Recipe>>> getRecipes({SortConfig? sort, String? search, List<String>? tags, int? page}) async {
     String? tagsFormatted = tags != null ? 'tags=${tags.join(',')}' : null;
-    String? sortFormatted = sort != null ? 'sort=${sort.value}' : null;
+    String? sortFormatted = sort != null ? 'order=${sort.value}' : null;
     String? searchFormatted = search != null ? 'search=$search' : null;
     String? pageFormatted = page != null ? 'page=$page' : null;
     List<String?> applicableQueryURLs = [pageFormatted, searchFormatted, tagsFormatted, sortFormatted].where((el) => el != null).toList();
@@ -113,13 +113,13 @@ class HttpPost implements PostService {
   }
 
   @override
-  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter, bool? isFavorite, bool? isMine, int? page}) async {
-    String? sortFormatted = sort != null ? 'sort=${sort.value}' : null;
+  Future<Either<Failure, Paginated>> getAll({SortConfig? sort, PostTypeConfig? postFilter, bool? isFavorite, String? madeBy, int? page}) async {
+    String? sortFormatted = sort != null ? 'order=${sort.value}' : null;
     String? postTypeFormatted = postFilter != null ? 'type=${postFilter.value}' : null;
     String? isFavoriteFormatted = isFavorite != null && isFavorite ? 'favorite=true' : null;
-    String? isMineFormatted = isMine != null && isMine ? 'own=true' : null;
     String? pageFormatted = page != null ? 'page=$page' : null;
-    List<String?> possibleQueryURLs = [pageFormatted, sortFormatted, postTypeFormatted, isFavoriteFormatted, isMineFormatted];
+    String? madeByFormatted = madeBy != null ? 'madeBy=$madeBy' : null;
+    List<String?> possibleQueryURLs = [pageFormatted, sortFormatted, postTypeFormatted, isFavoriteFormatted, madeByFormatted];
     List<String?> applicableQueryURLs = possibleQueryURLs.where((el) => el != null).toList();
     String queryURL = applicableQueryURLs.isNotEmpty ? '?${applicableQueryURLs.join('&')}' : '';
     String hostname = Config.backURL;

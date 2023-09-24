@@ -32,6 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final FocusNode _usernameFocus = FocusNode();
   final TextEditingController _usernameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -46,6 +47,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _fullNameController.dispose();
     _usernameFocus.dispose();
     _usernameController.dispose();
+  }
+
+  InputDecoration getDecoration(String hintText) {
+    final inputBorder =
+    OutlineInputBorder(borderSide: Divider.createBorderSide(context));
+    return InputDecoration(
+      hintText: hintText,
+      border: inputBorder,
+      focusedBorder: inputBorder,
+      enabledBorder: inputBorder,
+      filled: true,
+      contentPadding: const EdgeInsets.all(8),
+    );
   }
 
   @override
@@ -83,43 +97,67 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _emailFocus.unfocus();
             _passwordFocus.unfocus();
           },
-          child: SizedBox(
-              height: 500,
+          child: Form(
+              key: _formKey,
               child: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    TextFieldInput(
-                        hintText: "Nombre de usuario",
-                        focusNode: _usernameFocus,
-                        textInputType: TextInputType.text,
-                        textEditingController: _usernameController),
-                    const SizedBox(height: 24),
-                    TextFieldInput(
-                        hintText: "Nombre completo",
-                        focusNode: _fullNameFocus,
-                        textInputType: TextInputType.text,
-                        textEditingController: _fullNameController),
-                    const SizedBox(height: 24),
-                    TextFieldInput(
-                        hintText: "Correo electronico",
-                        focusNode: _emailFocus,
-                        textInputType: TextInputType.emailAddress,
-                        textEditingController: _emailController),
-                    const SizedBox(height: 24),
-                    TextFieldInput(
-                      hintText: "Contraseña",
-                      textInputType: TextInputType.text,
-                      focusNode: _passwordFocus,
-                      textEditingController: _passwordController,
-                      isPass: true,
+                    TextFormField(
+                      controller: _usernameController,
+                      focusNode: _usernameFocus,
+                      validator: (val) {
+                        if(val == null || val.isEmpty) return 'nombre de usuario vacio';
+                        return null;
+                      },
+                      decoration: getDecoration("nombre de usuario"),
+                      keyboardType: TextInputType.text,
                     ),
                     const SizedBox(height: 24),
-                    TextFieldInput(
-                      hintText: "Repite Contraseña",
-                      textInputType: TextInputType.text,
+                    TextFormField(
+                      controller: _fullNameController,
+                      focusNode: _fullNameFocus,
+                      validator: (val) {
+                        if(val == null || val.isEmpty) return 'Nombre vacio';
+                        return null;
+                      },
+                      decoration: getDecoration("Nombre completo"),
+                      keyboardType: TextInputType.text,
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: _emailController,
+                      focusNode: _emailFocus,
+                      validator: (val) {
+                        if(val == null || val.isEmpty) return 'Correo electronico vacio';
+                        return null;
+                      },
+                      decoration: getDecoration("Correo electronico"),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: _passwordController,
+                      focusNode: _passwordFocus,
+                      validator: (val) {
+                        if(val == null || val.isEmpty) return 'contraseña vacia';
+                        return null;
+                      },
+                      decoration: getDecoration("Contraseña"),
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: _repeatPasswordController,
                       focusNode: _repeatPasswordFocus,
-                      textEditingController: _repeatPasswordController,
-                      isPass: true,
+                      validator: (val) {
+                        if(val == null || val.isEmpty) return 'contraseña vacia';
+                        if(val != _passwordController.text) return 'Las contraseñas no coinciden';
+                        return null;
+                      },
+                      decoration: getDecoration("Repite la contraseña"),
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
                     ),
                     const SizedBox(height: 24),
                     Wrap(
@@ -128,26 +166,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Button(
                           text: "Registrarse",
                           onPressed: () async {
+                            if(!_formKey.currentState!.validate()) return;
                             String email = _emailController.value.text;
                             String password = _passwordController.value.text;
                             String fullName = _fullNameController.value.text;
                             String username = _usernameController.value.text;
-                            //TODO: Beware this is a dummy implementation!
                             RegisterStepOne register = HttpRegisterStepOne();
                             dartz.Either<Failure, User> result = await register
                                 .register(username, fullName, email, password);
                             result.fold(
-                                (failure) =>
+                                    (failure) =>
                                     CommonPopup.alert(context, failure),
-                                (user) async {
-                              await Provider.of<UserProvider>(context,
+                                    (user) async {
+                                  await Provider.of<UserProvider>(context,
                                       listen: false)
-                                  .login(user);
-                              if (context.mounted) {
-                                Navigator.of(context)
-                                    .pushNamed(routes.register_two);
-                              }
-                            });
+                                      .login(user);
+                                  if (context.mounted) {
+                                    Navigator.of(context)
+                                        .pushNamed(routes.register_two);
+                                  }
+                                });
                           },
                           borderSide: null,
                           backgroundColor: primaryColor,
@@ -158,7 +196,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ],
                     ),
                     Flexible(flex: 2, child: Container()),
-                  ]))),
+                  ]))
+          ),
         )));
   }
 }
